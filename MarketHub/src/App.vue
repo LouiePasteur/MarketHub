@@ -5,22 +5,22 @@
 
 <template>
   <div class="app">
-    <h1>MarketHub</h1>
-    <p>Your trusted marketplace for all your shopping needs</p>
-    <div class="color-preview">
-      <div class="color-swatch primary">Primary</div>
-      <div class="color-swatch primary-light">Primary Light</div>
-      <div class="color-swatch primary-dark">Primary Dark</div>
-      <div class="color-swatch secondary">Secondary</div>
-      <div class="color-swatch secondary-light">Secondary Light</div>
-      <div class="color-swatch secondary-dark">Secondary Dark</div>
-    </div>
+    <router-view v-slot="slotProps">
+      <transition name="route" mode="out-in">
+        <component :is="slotProps.Component"></component>
+      </transition>
+    </router-view>
   </div>
 </template>
 
 <style>
-/* Additional CSS Variables (shadows, spacing, etc.) */
+/* Additional CSS Variables (shadows, spacing, fonts, etc.) */
 :root {
+  /* Font Families */
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-secondary:
+    'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+
   /* Shadow Colors */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -46,10 +46,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  text-decoration: none;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-main);
   background-color: #f8fafc;
   color: #1e293b;
   line-height: 1.6;
@@ -57,15 +58,15 @@ body {
 
 .app {
   min-height: 100vh;
-  padding: var(--spacing-xl);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   text-align: center;
 }
 
 h1 {
+  font-family: var(--font-secondary);
   font-size: 3rem;
   font-weight: 700;
   color: var(--primary);
@@ -76,44 +77,5 @@ p {
   font-size: 1.25rem;
   color: #64748b;
   margin-bottom: var(--spacing-xl);
-}
-
-/* Color preview swatches */
-.color-preview {
-  display: flex;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-lg);
-}
-
-.color-swatch {
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-radius: var(--radius-lg);
-  color: #ffffff;
-  font-weight: 600;
-  box-shadow: var(--shadow-md);
-}
-
-.color-swatch.primary {
-  background-color: var(--primary);
-}
-
-.color-swatch.primary-light {
-  background-color: var(--primary-light);
-}
-
-.color-swatch.primary-dark {
-  background-color: var(--primary-dark);
-}
-
-.color-swatch.secondary {
-  background-color: var(--secondary);
-}
-
-.color-swatch.secondary-light {
-  background-color: var(--secondary-light);
-}
-
-.color-swatch.secondary-dark {
-  background-color: var(--secondary-dark);
 }
 </style>
