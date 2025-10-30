@@ -76,6 +76,5 @@ h1 {
 p {
   font-size: 1.25rem;
   color: #64748b;
-  margin-bottom: var(--spacing-xl);
 }
 </style>

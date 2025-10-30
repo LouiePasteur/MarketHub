@@ -45,6 +45,11 @@ export default {
   display: inline-block;
   transform-origin: center;
 
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    padding: var(--spacing-sm);
+  }
+
   &:hover {
     background-color: var(--primary-light);
     color: #fff;
@@ -60,5 +65,11 @@ export default {
     outline: none;
     box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.3);
   }
+}
+
+.cart-icon {
+  margin-right: 8px;
+  font-size: 1.2em;
+  vertical-align: middle;
 }
 </style>
