@@ -12,7 +12,7 @@
 }
 
 p {
-  margin: 10px 0;
+  margin: 10px 5px;
   font-size: 0.8rem;
   font-family: var(--font-secondary);
 }

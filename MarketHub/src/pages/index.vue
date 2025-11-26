@@ -8,9 +8,9 @@
           <p>Your trusted marketplace for all your shopping needs</p>
           <base-button
             class="button-sm"
-            :classes="'button-primary'"
+            :classes="'button-primary-lg'"
             :isLink="true"
-            :endpoint="'/login'"
+            :endpoint="'/products'"
             ><i class="fa-solid fa-store"></i> Shop Now</base-button
           >
         </div>
@@ -89,14 +89,14 @@
       <div class="content">
         <h2>Ready to start shopping?</h2>
         <div class="action-container">
-          <base-button class="button-sm" :isLink="true" :classes="'button-primary'">
+          <base-button class="button-sm" :isLink="true" :classes="'button-primary-lg'">
             <i class="fa-solid fa-user-plus"></i> Create an Account</base-button
           >
           <base-button
             class="button-sm"
             :isLink="true"
             :endpoint="'/home'"
-            :classes="'button-primary'"
+            :classes="'button-primary-lg'"
             ><i class="fa-solid fa-magnifying-glass"></i> Browse Products</base-button
           >
         </div>
@@ -128,14 +128,14 @@ export default {
         },
         {
           id: 3,
-          title: 'Personal Care & Cosmetics',
+          title: 'Health and Cosmetics',
           image: '/cosmetics.jpg',
           description:
-            'Enhance your beauty and well-being with premium skincare and grooming essentials.',
+            'Enhance your health and beauty with effective medicines, premium skincare and grooming essentials.',
         },
         {
           id: 4,
-          title: 'Groceries',
+          title: 'Food & Groceries',
           image: '/groceries.jpg',
           description:
             'Stock up on fresh and daily essentials to fuel your lifestyle with quality ingredients.',
@@ -191,7 +191,6 @@ h2 {
 .application {
   width: 100%;
   height: 100%;
-  margin: 0 40px;
 }
 
 .button-sm {

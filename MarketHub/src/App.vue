@@ -1,15 +1,13 @@
-<script setup>
-// Colors are now available globally via CSS custom properties
-// No need to import or apply them manually
-</script>
-
 <template>
   <div class="app">
-    <router-view v-slot="slotProps">
-      <transition name="route" mode="out-in">
-        <component :is="slotProps.Component"></component>
-      </transition>
-    </router-view>
+    <the-header v-if="!$route.meta.hideHeader" />
+    <div :class="!$route.meta.hideHeader ? 'container' : 'container-full-width'">
+      <router-view v-slot="slotProps">
+        <transition name="route" mode="out-in">
+          <component :is="slotProps.Component"></component>
+        </transition>
+      </router-view>
+    </div>
   </div>
 </template>
 
@@ -76,5 +74,16 @@ h1 {
 p {
   font-size: 1.25rem;
   color: #64748b;
+}
+
+.container {
+  width: 100%;
+  max-width: 1400px;
+}
+
+.container-full-width {
+  width: 100%;
+  max-width: 100%;
+  margin: none !important;
 }
 </style>

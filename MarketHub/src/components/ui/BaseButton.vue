@@ -31,6 +31,42 @@ export default {
 
 <style lang="scss" scoped>
 .button-primary {
+  background-color: var(--primary);
+  color: #fff;
+  border: none;
+  box-shadow: none;
+  padding: var(--spacing-md);
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+
+  &:hover {
+    color: #fff;
+    background-color: var(--primary-dark);
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+}
+
+.button-secondary {
+  background-color: #fff;
+  color: var(--secondary);
+  border: 2px solid var(--secondary);
+  box-shadow: none;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  cursor: pointer;
+
+  &:hover {
+    color: #fff;
+    background-color: var(--secondary);
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+}
+
+.button-primary-lg {
   background-color: #fff;
   color: var(--primary);
   border: 2px solid var(--primary);
@@ -71,5 +107,6 @@ export default {
   margin-right: 8px;
   font-size: 1.2em;
   vertical-align: middle;
+  cursor: pointer;
 }
 </style>
