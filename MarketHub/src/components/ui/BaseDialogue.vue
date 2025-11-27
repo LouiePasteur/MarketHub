@@ -54,6 +54,7 @@ export default {
 
 .dialogue-content {
   background-color: #fff;
+  padding: var(--spacing-xl);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   max-width: 600px;
@@ -64,6 +65,7 @@ export default {
   animation: slideUp 0.3s ease-out;
 
   @media (max-width: 1024px) {
+    padding: var(--spacing-lg);
     max-height: 70vh;
   }
 

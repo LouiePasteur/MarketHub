@@ -47,6 +47,7 @@ export default {
           image: '/cosmetics.jpg',
           price: 100,
           total_sold: 100,
+          description: 'Description of Product 1',
         },
         {
           id: 2,
@@ -54,6 +55,7 @@ export default {
           image: '/groceries.jpg',
           price: 100,
           total_sold: 100,
+          description: 'Description of Product 2',
         },
         {
           id: 3,
@@ -61,6 +63,7 @@ export default {
           image: '/computer.jpg',
           price: 100,
           total_sold: 100,
+          description: 'Description of Product 3',
         },
       ],
     }

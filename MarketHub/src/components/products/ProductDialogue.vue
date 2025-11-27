@@ -1,5 +1,5 @@
 <template>
-  <base-dialogue :isOpen="isOpen" @close="closeDialogue">
+  <base-dialogue :isOpen="isOpen" @close="closeDialogue" class="product-dialogue">
     <div class="dialogue-body">
       <div class="product-image-container">
         <img :src="product?.image" :alt="product?.name" class="product-image" />
@@ -13,15 +13,40 @@
         </div>
       </div>
     </div>
+    <div class="dialogue-navigation">
+      <div
+        class="dialogue-navigation-item"
+        :class="{ active: activeTab === 'product-details' }"
+        @click="setActiveTab('product-details')"
+      >
+        Product Details
+      </div>
+      <div
+        class="dialogue-navigation-item"
+        :class="{ active: activeTab === 'reviews' }"
+        @click="setActiveTab('reviews')"
+      >
+        Reviews
+      </div>
+    </div>
+    <product-details
+      :productDescription="product?.description"
+      v-if="activeTab === 'product-details'"
+    />
+    <product-reviews v-if="activeTab === 'reviews'" />
   </base-dialogue>
 </template>
 
 <script>
 import BaseButton from '@/components/ui/BaseButton.vue'
-
+import ProductDetails from '@/components/products/ProductDetails.vue'
+import ProductReviews from '@/components/products/ProductReviews.vue'
 export default {
   components: {
+    ProductReviews,
     BaseButton,
+    ProductDetails,
+    ProductReviews,
   },
   props: {
     isOpen: {
@@ -34,9 +59,17 @@ export default {
     },
   },
   emits: ['close', 'add-to-cart', 'buy-now'],
+  data() {
+    return {
+      activeTab: 'product-details',
+    }
+  },
   methods: {
     closeDialogue() {
       this.$emit('close')
+    },
+    setActiveTab(tab) {
+      this.activeTab = tab
     },
   },
   watch: {
@@ -66,26 +99,27 @@ export default {
   padding: var(--spacing-md);
 }
 
-.dialogue-content {
-  background-color: #fff;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  max-width: 600px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  animation: slideUp 0.3s ease-out;
+.dialogue-navigation {
+  display: flex;
+  flex-direction: row;
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+.dialogue-navigation-item {
+  width: 50%;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 700;
+
+  &.active {
+    color: var(--primary);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  &:hover {
+    background-color: #f8fafc;
+  }
+
+  &:first-child {
+    border-right: 3px solid var(--primary);
   }
 }
 
@@ -113,14 +147,14 @@ export default {
 }
 
 .dialogue-body {
-  padding: var(--spacing-xl);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
 }
 
 .product-image-container {
-  width: 100%;
+  width: 50%;
   height: 300px;
   overflow: hidden;
   border-radius: var(--radius-md);
@@ -134,6 +168,7 @@ export default {
 }
 
 .product-details {
+  width: 50%;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
@@ -156,6 +191,7 @@ export default {
 
 .product-actions {
   display: flex;
+  flex-direction: column;
   gap: var(--spacing-md);
   margin-top: var(--spacing-sm);
 }
@@ -176,11 +212,16 @@ export default {
   }
 
   .dialogue-body {
+    flex-direction: column;
+  }
+
+  .product-dialogue {
     padding: var(--spacing-lg);
   }
 
   .product-image-container {
     height: 250px;
+    width: 100%;
   }
 
   .product-name {
@@ -189,6 +230,10 @@ export default {
 
   .product-actions {
     flex-direction: column;
+  }
+
+  .product-details {
+    width: 100%;
   }
 }
 </style>
