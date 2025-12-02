@@ -3,9 +3,9 @@
     <div class="header-content">
       <span class="header-title">MarketHub</span>
       <div class="icons-container">
-        <span class="store-icon">
+        <router-link to="/store" class="store-icon">
           <i class="fa-solid fa-store" />
-        </span>
+        </router-link>
         <span class="cart-icon">
           <i class="fa-solid fa-cart-shopping" />
         </span>
@@ -76,6 +76,12 @@ i {
   border-radius: 50%;
   overflow: hidden;
   cursor: pointer;
+}
+
+.store-icon {
+  display: flex;
+  align-items: center;
+  color: #fff;
 }
 
 @media (max-width: 1024px) {
