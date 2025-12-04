@@ -33,20 +33,18 @@
       :productDescription="product?.description"
       v-if="activeTab === 'product-details'"
     />
-    <product-reviews v-if="activeTab === 'reviews'" />
+    <review-cards v-if="activeTab === 'reviews'" :reviews="reviews" />
   </base-dialogue>
 </template>
 
 <script>
 import BaseButton from '@/components/ui/BaseButton.vue'
 import ProductDetails from '@/components/products/ProductDetails.vue'
-import ProductReviews from '@/components/products/ProductReviews.vue'
+
 export default {
   components: {
-    ProductReviews,
     BaseButton,
     ProductDetails,
-    ProductReviews,
   },
   props: {
     isOpen: {
@@ -62,6 +60,32 @@ export default {
   data() {
     return {
       activeTab: 'product-details',
+      reviews: [
+        {
+          id: 1,
+          image: '/groceries.jpg',
+          name: 'John Doe',
+          date: '2021-01-01',
+          rating: 5,
+          content: 'This is a review',
+        },
+        {
+          id: 2,
+          image: '/groceries.jpg',
+          name: 'Jane Smith',
+          date: '2021-02-10',
+          rating: 3,
+          content: 'Pretty good overall, could be better.',
+        },
+        {
+          id: 3,
+          image: '/groceries.jpg',
+          name: 'Alex Johnson',
+          date: '2021-03-05',
+          rating: 4,
+          content: 'Satisfied with the purchase.',
+        },
+      ],
     }
   },
   methods: {

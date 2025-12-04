@@ -8,42 +8,40 @@
         <div class="store-information">
           <div class="store-header">
             <h1 class="store-name">{{ store.name }}</h1>
-            <base-button class="button button-secondary follow-button"> Follow </base-button>
+            <div class="store-edit" data-tooltip="Edit Store">
+              <i class="fa-solid fa-pen"></i>
+            </div>
           </div>
-          <div class="store-contact"><i class="fa-solid fa-phone"></i> {{ store.contact }}</div>
-          <div class="store-email"><i class="fa-solid fa-envelope"></i> {{ store.email }}</div>
-          <div class="store-address">
-            <i class="fa-solid fa-location-dot"></i> {{ store.address }}
+          <div class="store-contact--container">
+            <div class="store-contact"><i class="fa-solid fa-phone"></i> {{ store.contact }}</div>
+            <div class="store-email"><i class="fa-solid fa-envelope"></i> {{ store.email }}</div>
+            <div class="store-address">
+              <i class="fa-solid fa-location-dot"></i> {{ store.address }}
+            </div>
+            <div class="store-description"><b>About us: </b>{{ store.description }}</div>
+            <div class="store-owner"><b>Owner: </b>{{ store.owner }}</div>
+            <div class="store-created-date"><b>Store Date Created: </b>{{ store.createdDate }}</div>
           </div>
-          <div class="store-description"><b>About us: </b>{{ store.description }}</div>
-          <div class="store-owner"><b>Owner: </b>{{ store.owner }}</div>
-          <div class="store-created-date"><b>Store Date Created: </b>{{ store.createdDate }}</div>
         </div>
       </div>
       <div class="store-menu">
-        <button class="store-menu-arrow prev" @click="prevMenu">&lt;</button>
+        <button class="store-menu-arrow store-menu-arrow--left" @click="prevMenu">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
         <div
-          class="store-products menu-item"
-          :class="{ active: active === 'products' }"
-          @click="makeActive('products')"
+          v-for="item in menu"
+          :key="item.identifier"
+          class="store-menu-item"
+          :class="{ active: active === item.identifier }"
+          @click="makeActive(item.identifier)"
         >
-          Products
+          {{ item.name }}
         </div>
-        <div
-          class="store-reviews menu-item"
-          :class="{ active: active === 'reviews' }"
-          @click="makeActive('reviews')"
-        >
-          Reviews
-        </div>
-        <div
-          class="store-about menu-item"
-          :class="{ active: active === 'news' }"
-          @click="makeActive('news')"
-        >
-          News
-        </div>
-        <button class="store-menu-arrow next" @click="nextMenu">&gt;</button>
+
+        <button class="store-menu-arrow store-menu-arrow--right" @click="nextMenu">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
       </div>
       <div class="store-products" v-if="active === 'products'">
         <ul class="product-item">
@@ -81,7 +79,6 @@ export default {
       isDialogueOpen: false,
       selectedProduct: null,
       active: 'products',
-      menuOrder: ['products', 'reviews', 'news'],
       store: {
         id: 1,
         name: 'Store 1',
@@ -117,30 +114,48 @@ export default {
           description: 'Description of Product 3',
         },
       ],
+      menu: [
+        {
+          name: 'Products',
+          identifier: 'products',
+        },
+        {
+          name: 'Reviews',
+          identifier: 'reviews',
+        },
+        {
+          name: 'News',
+          identifier: 'news',
+        },
+        {
+          name: 'Order History',
+          identifier: 'history',
+        },
+      ],
       reviews: [
         {
           id: 1,
+          name: 'Review 1',
           image: '/groceries.jpg',
-          name: 'John Doe',
+          content: 'Content of Review 1',
           date: '2021-01-01',
           rating: 5,
-          content: 'This is a review',
         },
         {
           id: 2,
+          name: 'Review 2',
           image: '/groceries.jpg',
-          name: 'Jane Smith',
-          date: '2021-02-10',
-          rating: 3,
-          content: 'Pretty good overall, could be better.',
+          content: 'Content of Review 2',
+          date: '2021-01-02',
+          rating: 4,
         },
         {
           id: 3,
+          name: 'Review 3',
           image: '/groceries.jpg',
-          name: 'Alex Johnson',
-          date: '2021-03-05',
-          rating: 4,
-          content: 'Satisfied with the purchase.',
+          content: 'Content of Review 3',
+          date: '2021-01-03',
+          rating: 3,
         },
       ],
     }
@@ -149,15 +164,15 @@ export default {
     makeActive(menu) {
       this.active = menu
     },
-    prevMenu() {
-      const index = this.menuOrder.indexOf(this.active)
-      const prevIndex = (index - 1 + this.menuOrder.length) % this.menuOrder.length
-      this.active = this.menuOrder[prevIndex]
-    },
     nextMenu() {
-      const index = this.menuOrder.indexOf(this.active)
-      const nextIndex = (index + 1) % this.menuOrder.length
-      this.active = this.menuOrder[nextIndex]
+      const currentIndex = this.menu.findIndex((item) => item.identifier === this.active)
+      const nextIndex = (currentIndex + 1) % this.menu.length
+      this.active = this.menu[nextIndex].identifier
+    },
+    prevMenu() {
+      const currentIndex = this.menu.findIndex((item) => item.identifier === this.active)
+      const prevIndex = (currentIndex - 1 + this.menu.length) % this.menu.length
+      this.active = this.menu[prevIndex].identifier
     },
     openDialogue(product) {
       this.selectedProduct = product
@@ -185,9 +200,50 @@ div {
   }
 }
 
-.follow-button {
-  padding: 10px 20px;
-  height: fit-content;
+.store-edit {
+  position: relative;
+  cursor: pointer;
+  color: var(--secondary);
+
+  &::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50%;
+    bottom: 125%;
+    transform: translateX(-50%);
+    background: #0f172a;
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+  }
+
+  &:hover::after {
+    opacity: 1;
+  }
+}
+.store-contact {
+  &--container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    @media (max-width: 1024px) {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 724px) {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 1rem;
+    }
+  }
 }
 
 .store-detail {
@@ -204,6 +260,7 @@ div {
   @media (max-width: 1024px) {
     flex-direction: column;
     gap: 1rem;
+    margin-bottom: 20px;
   }
 }
 
@@ -219,6 +276,14 @@ div {
   gap: 1rem;
   height: fit-content;
   align-items: center;
+
+  @media (max-width: 1024px) {
+    gap: 2rem;
+  }
+
+  @media (max-width: 724px) {
+    justify-content: space-between;
+  }
 }
 
 .store-image img {
@@ -236,16 +301,17 @@ div {
 .store-menu {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
   align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
 
-  & .menu-item {
-    width: 100%;
+  .store-menu-item {
+    flex: 1;
     text-align: center;
     font-weight: 700;
 
-    &:first-child,
-    &:nth-child(2) {
+    &:first-of-type,
+    &:nth-of-type(2) {
       border-right: 3px solid var(--primary);
     }
 
@@ -257,17 +323,43 @@ div {
       cursor: pointer;
       background-color: #f8fafc;
     }
-  }
-}
 
-.store-menu-arrow {
-  display: none;
-  border: none;
-  background: transparent;
-  font-size: 1.25rem;
-  padding: 0 0.75rem;
-  cursor: pointer;
-  color: var(--primary);
+    @media (max-width: 1024px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  .store-menu-arrow {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: none;
+
+    i {
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    justify-content: center;
+    gap: 0;
+
+    .store-menu-item {
+      display: none;
+
+      &.active {
+        display: block;
+        border-right: none;
+      }
+    }
+
+    .store-menu-arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
 }
 
 .store-name {
@@ -286,28 +378,6 @@ div {
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 1024px) {
-  .store-menu {
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-
-  .store-menu-arrow {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .store-menu .menu-item {
-    width: auto;
-    border-right: none;
-  }
-
-  .store-menu .menu-item:not(.active) {
-    display: none;
   }
 }
 </style>
