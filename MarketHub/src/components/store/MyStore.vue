@@ -43,23 +43,31 @@
           <i class="fa-solid fa-chevron-right"></i>
         </button>
       </div>
-      <div class="store-products" v-if="active === 'products'">
-        <ul class="product-item">
-          <product-items
-            v-for="product in products"
-            :key="product.id"
-            :name="product.name"
-            :image="product.image"
-            :price="product.price"
-            :product="product"
-            @open-dialogue="openDialogue"
-          />
-        </ul>
+      <div v-if="active === 'products'">
+        <base-card class="store-products">
+          <base-button class="button button-primary add-button"> Add Product </base-button>
+          <ul class="product-item">
+            <product-items
+              v-for="product in products"
+              :key="product.id"
+              :name="product.name"
+              :image="product.image"
+              :price="product.price"
+              :product="product"
+              @open-dialogue="openDialogue"
+            />
+          </ul>
+        </base-card>
       </div>
     </div>
     <product-dialogue :isOpen="isDialogueOpen" :product="selectedProduct" @close="closeDialogue" />
     <review-cards v-if="active === 'reviews'" :reviews="reviews" />
-    <store-news v-if="active === 'news'" />
+    <div v-if="active === 'news'">
+      <base-card class="store-news">
+        <base-button class="button button-primary add-button">Add News</base-button>
+        <store-news v-if="active === 'news'" />
+      </base-card>
+    </div>
   </base-card>
 </template>
 
@@ -311,7 +319,8 @@ div {
     font-weight: 700;
 
     &:first-of-type,
-    &:nth-of-type(2) {
+    &:nth-of-type(2),
+    &:nth-of-type(3) {
       border-right: 3px solid var(--primary);
     }
 
@@ -365,6 +374,19 @@ div {
 .store-name {
   font-size: 2rem;
   margin-bottom: 0;
+}
+
+.store-products,
+.store-news {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 20px 0;
+
+  & .add-button {
+    width: fit-content;
+    align-self: flex-end;
+  }
 }
 
 .product-item {

@@ -219,6 +219,15 @@ div {
   gap: 1rem;
   height: fit-content;
   align-items: center;
+
+  @media (max-width: 1024px) {
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    justify-content: space-between;
+    gap: 1rem;
+  }
 }
 
 .store-image img {
