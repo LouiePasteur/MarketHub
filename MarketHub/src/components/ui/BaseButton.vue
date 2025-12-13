@@ -46,6 +46,10 @@ export default {
     transition: all 0.3s ease;
     text-decoration: none;
   }
+
+  @media (max-width: 768px) {
+    padding: var(--spacing-sm);
+  }
 }
 
 .button-secondary {

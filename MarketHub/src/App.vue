@@ -78,7 +78,12 @@ p {
 
 .container {
   width: 100%;
+  padding: 40px;
   max-width: 1400px;
+
+  @media (max-width: 1024px) {
+    padding: 20px;
+  }
 }
 
 .container-full-width {

@@ -82,10 +82,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
-  margin-top: 40px;
-}
-
 .product__filter--action {
   display: flex;
   justify-content: space-between;

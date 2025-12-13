@@ -1,5 +1,5 @@
 <template>
-  <base-card class="container">
+  <div class="container">
     <div class="store-detail">
       <div class="store-detail-header">
         <div class="store-image">
@@ -68,7 +68,7 @@
         <store-news v-if="active === 'news'" />
       </base-card>
     </div>
-  </base-card>
+  </div>
 </template>
 
 <script>
@@ -200,12 +200,7 @@ div {
 }
 
 .container {
-  margin: 40px;
   max-width: 1400px;
-
-  @media (max-width: 1024px) {
-    margin: 0;
-  }
 }
 
 .store-edit {

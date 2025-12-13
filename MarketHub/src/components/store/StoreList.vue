@@ -1,26 +1,30 @@
 <template>
   <div>
-    <base-card class="container">
-      <div class="store__filter--action">
-        <store-search></store-search>
-        <base-button class="button" :class="'button-secondary'"> Create my Store </base-button>
-      </div>
-      <div class="store-list-container">
-        <ul class="store-list">
-          <store-item
-            v-for="store in stores"
-            :key="store.id"
-            :id="store.id"
-            :name="store.name"
-            :image="store.image"
-            :address="store.address"
-            :ownerId="store.ownerId"
-            :description="store.description"
-          />
-        </ul>
-      </div>
-    </base-card>
-    <sp-navigation />
+    <div class="store__filter--action">
+      <store-search></store-search>
+      <base-button
+        class="button"
+        :class="'button-secondary'"
+        :isLink="true"
+        :endpoint="'store/create'"
+      >
+        Create my Store
+      </base-button>
+    </div>
+    <div class="store-list-container">
+      <ul class="store-list">
+        <store-item
+          v-for="store in stores"
+          :key="store.id"
+          :id="store.id"
+          :name="store.name"
+          :image="store.image"
+          :address="store.address"
+          :ownerId="store.ownerId"
+          :description="store.description"
+        />
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -67,10 +71,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
-  margin-top: 40px;
-}
-
 .store__filter--action {
   display: flex;
   justify-content: space-between;
