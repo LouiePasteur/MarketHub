@@ -1,15 +1,15 @@
 <template>
   <base-card class="container">
-    <h1>Create Store</h1>
-    <store-form class="store_form" @submit="handleSubmit"></store-form>
+    <h1>Create News</h1>
+    <news-form class="news_form" @submit="handleSubmit"></news-form>
   </base-card>
 </template>
 
 <script>
-import StoreForm from '@/components/store/StoreForm.vue'
+import NewsForm from '@/components/news/NewsForm.vue'
 export default {
   components: {
-    StoreForm,
+    NewsForm,
   },
   methods: {
     handleSubmit() {
@@ -20,7 +20,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.store_form {
+.news_form {
   display: flex;
   flex-direction: column;
   justify-content: center;

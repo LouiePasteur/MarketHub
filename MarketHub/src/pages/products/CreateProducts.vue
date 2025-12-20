@@ -1,15 +1,15 @@
 <template>
   <base-card class="container">
-    <h1>Create Store</h1>
-    <store-form class="store_form" @submit="handleSubmit"></store-form>
+    <h1>Add Product</h1>
+    <product-form class="product_form" @submit="handleSubmit"></product-form>
   </base-card>
 </template>
 
 <script>
-import StoreForm from '@/components/store/StoreForm.vue'
+import ProductForm from '@/components/products/ProductForm.vue'
 export default {
   components: {
-    StoreForm,
+    ProductForm,
   },
   methods: {
     handleSubmit() {
@@ -20,7 +20,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.store_form {
+.product_form {
   display: flex;
   flex-direction: column;
   justify-content: center;

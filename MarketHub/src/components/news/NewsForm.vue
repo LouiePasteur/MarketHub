@@ -1,31 +1,20 @@
 <template>
   <base-form @submit.prevent="submitForm">
     <div class="form-group">
-      <label for="name">Store Name</label>
-      <input type="text" id="name" required v-model="storename" />
-    </div>
-    <div class="form-group">
-      <label for="image">Image</label>
-      <input type="file" id="image" accept="image/*" @change="handleImageChange" />
-    </div>
-    <div class="form-group">
-      <label for="address">Address</label>
-      <input type="text" id="address" required v-model="address" />
+      <label for="header">Header</label>
+      <input type="text" id="name" required v-model="newsheader" />
     </div>
     <div class="form-group">
       <label for="description">Description</label>
       <textarea id="description" required v-model="description"></textarea>
     </div>
     <div class="form-group">
-      <label for="contact">Contact Number</label>
-      <input type="number" id="contact" required v-model="contact" />
+      <label for="image">Image</label>
+      <input type="file" id="image" accept="image/*" @change="handleImageChange" />
     </div>
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" id="email" required v-model="email" />
-    </div>
+
     <div class="form-group form-group--button">
-      <base-button class="button button-primary" type="submit">Create Store</base-button>
+      <base-button class="button button-primary" type="submit">Publish</base-button>
     </div>
   </base-form>
 </template>
@@ -101,6 +90,7 @@ export default {
   @media (max-width: 1024px) {
     flex-direction: column;
     align-items: flex-start;
+
     button {
       width: 80%;
       align-self: center;
