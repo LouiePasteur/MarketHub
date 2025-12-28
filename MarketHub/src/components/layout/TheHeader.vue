@@ -6,7 +6,7 @@
         <router-link to="/store" class="store-icon">
           <i class="fa-solid fa-store" />
         </router-link>
-        <span class="cart-icon">
+        <span class="cart-icon" @click="openCartDialogue">
           <i class="fa-solid fa-cart-shopping" />
         </span>
         <span class="notification-icon">
@@ -19,10 +19,34 @@
         </div>
       </div>
     </div>
+    <cart-dialogue-box :isOpen="isCartDialogueOpen" @close="closeCartDialogue" />
   </div>
 </template>
 
+<script>
+import CartDialogueBox from '@/components/order/CartDialogueBox.vue'
+export default {
+  components: {
+    CartDialogueBox,
+  },
+  data() {
+    return {
+      isCartDialogueOpen: false,
+    }
+  },
+  methods: {
+    openCartDialogue() {
+      this.isCartDialogueOpen = !this.isCartDialogueOpen
+    },
+  },
+}
+</script>
+
 <style lang="scss" scoped>
+.cart-icon {
+  position: relative;
+}
+
 .header {
   width: 100%;
   background-color: var(--primary);

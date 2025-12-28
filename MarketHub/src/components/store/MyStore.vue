@@ -59,6 +59,12 @@
           </ul>
         </base-card>
       </div>
+      <div v-if="active === 'current-orders'">
+        <cart-items :cartItems="cartItems" page="my-store" />
+      </div>
+      <div v-if="active === 'history'">
+        <cart-items :cartItems="cartItems" page="order-history" />
+      </div>
     </div>
     <product-dialogue :isOpen="isDialogueOpen" :product="selectedProduct" @close="closeDialogue" />
     <review-cards v-if="active === 'reviews'" :reviews="reviews" />
@@ -75,12 +81,14 @@
 import ProductItems from '@/components/products/ProductItems.vue'
 import ProductDialogue from '@/components/products/ProductDialogue.vue'
 import StoreNews from '@/components/store/StoreNews.vue'
+import CartItems from '@/components/order/CartItems.vue'
 
 export default {
   components: {
     ProductItems,
     ProductDialogue,
     StoreNews,
+    CartItems,
   },
   data() {
     return {
@@ -128,6 +136,10 @@ export default {
           identifier: 'products',
         },
         {
+          name: 'Current Orders',
+          identifier: 'current-orders',
+        },
+        {
           name: 'Reviews',
           identifier: 'reviews',
         },
@@ -164,6 +176,43 @@ export default {
           content: 'Content of Review 3',
           date: '2021-01-03',
           rating: 3,
+        },
+      ],
+      cartItems: [
+        {
+          id: 1,
+          name: 'Product 1',
+          image: '/groceries.jpg',
+          price: 100,
+          date: '2021-01-01',
+        },
+        {
+          id: 2,
+          name: 'Product 2',
+          image: '/groceries.jpg',
+          price: 100,
+          date: '2021-01-02',
+        },
+        {
+          id: 3,
+          name: 'Product 3',
+          image: '/groceries.jpg',
+          price: 100,
+          date: '2021-01-03',
+        },
+        {
+          id: 4,
+          name: 'Product 4',
+          image: '/groceries.jpg',
+          price: 100,
+          date: '2021-01-04',
+        },
+        {
+          id: 5,
+          name: 'Product 5',
+          image: '/groceries.jpg',
+          price: 100,
+          date: '2021-01-05',
         },
       ],
     }
@@ -241,7 +290,7 @@ div {
       gap: 1rem;
     }
 
-    @media (max-width: 724px) {
+    @media (max-width: 768px) {
       display: grid;
       grid-template-columns: repeat(1, 1fr);
       gap: 1rem;
@@ -394,7 +443,7 @@ div {
   }
 
   @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 </style>
