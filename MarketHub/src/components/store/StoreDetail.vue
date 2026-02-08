@@ -177,7 +177,7 @@ div {
 }
 
 .container {
-  margin: 40px;
+  margin: 20px;
   max-width: 1400px;
 
   @media (max-width: 1024px) {

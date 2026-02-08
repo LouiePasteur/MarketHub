@@ -5,8 +5,10 @@ import Store from '../pages/stores/Store.vue'
 import CreateStore from '../pages/stores/CreateStore.vue'
 import CreateNews from '../pages/news/CreateNews.vue'
 import CreateProducts from '../pages/products/CreateProducts.vue'
-import CreateUser from '../pages/users/CreateUser.vue'
+import EditUser from '../pages/users/EditUser.vue'
 import StoreDetail from '@/components/store/StoreDetail.vue'
+import Auth from '../pages/Auth.vue'
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -18,7 +20,9 @@ const router = createRouter({
     { path: '/store/:id', component: StoreDetail, meta: { hideHeader: false } },
     { path: '/news/create', component: CreateNews, meta: { hideHeader: false } },
     { path: '/products/create', component: CreateProducts, meta: { hideHeader: false } },
-    { path: '/users/create', component: CreateUser, meta: { hideHeader: false } },
+    { path: '/user/:id/edit', component: EditUser, meta: { hideHeader: false } },
+    { path: '/login', component: Auth, meta: { hideHeader: true } },
+    { path: '/signup', component: Auth, meta: { hideHeader: true } },
   ],
 })
 

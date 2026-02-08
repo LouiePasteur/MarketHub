@@ -55,6 +55,7 @@ body {
 }
 
 .app {
+  background-image: linear-gradient(to bottom right, #57D7E6, #7CED61);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -78,7 +79,7 @@ p {
 
 .container {
   width: 100%;
-  padding: 40px;
+  padding: 20px;
   max-width: 1400px;
 
   @media (max-width: 1024px) {

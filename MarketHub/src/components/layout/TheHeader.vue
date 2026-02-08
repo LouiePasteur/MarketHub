@@ -1,7 +1,10 @@
 <template>
   <div class="header">
     <div class="header-content">
-      <span class="header-title">MarketHub</span>
+      <div class="app_name">
+        <span class="header-title">Market</span><span class="header-title header-title--highlight">Hub</span>
+      </div>
+      
       <div class="icons-container">
         <router-link to="/store" class="store-icon">
           <i class="fa-solid fa-store" />
@@ -43,23 +46,37 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.header-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: var(--primary);
+  border-radius: var(--radius-lg);
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 0.25rem 1rem;
+
+  &--highlight {
+  color: var(--primary);
+  background-color: #fff;
+  border-radius: var(--radius-lg);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+  &:hover {
+      cursor: pointer;
+    }
+  }
+
 .cart-icon {
   position: relative;
 }
 
 .header {
   width: 100%;
-  background-color: var(--primary);
   padding: 5px 30px;
-
-  &-title {
-    font-size: 1.5rem;
-    font-weight: 500;
-
-    &:hover {
-      cursor: pointer;
-    }
-  }
 
   &-content {
     color: #fff;

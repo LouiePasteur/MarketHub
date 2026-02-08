@@ -1,14 +1,14 @@
 <template>
   <div class="application">
-    <section class="hero container--primary">
+    <section class="hero container container--primary">
       <div class="content">
         <img src="/get-started.png" alt="Get Started" class="image" />
         <div class="content-text">
-          <h1>Market Hub</h1>
+          <h1><span class="app_name">Market</span><span class="app_name app_name--highlight">Hub</span></h1>
           <p>Your trusted marketplace for all your shopping needs</p>
           <base-button
             class="button-sm"
-            :classes="'button-primary-lg'"
+            :classes="'button-transparent-lg'"
             :isLink="true"
             :endpoint="'/products'"
             ><i class="fa-solid fa-store"></i> Shop Now</base-button
@@ -85,18 +85,18 @@
         </ul>
       </div>
     </section>
-    <section class="container--primary action-section">
+    <section class="container container--primary action-section quarter-section">
       <div class="content">
         <h2>Ready to start shopping?</h2>
         <div class="action-container">
-          <base-button class="button-sm" :isLink="true" :classes="'button-primary-lg'">
+          <base-button class="button-sm" :isLink="true" :classes="'button-transparent-lg'">
             <i class="fa-solid fa-user-plus"></i> Create an Account</base-button
           >
           <base-button
             class="button-sm"
             :isLink="true"
             :endpoint="'/home'"
-            :classes="'button-primary-lg'"
+            :classes="'button-transparent-lg'"
             ><i class="fa-solid fa-magnifying-glass"></i> Browse Products</base-button
           >
         </div>
@@ -184,6 +184,34 @@ h2 {
   }
 }
 
+section {
+  height: 100vh !important;
+
+  &.quarter-section {
+    height: 50vh !important;
+  }
+}
+
+.app_name {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #fff;
+  background-color: var(--primary);
+  border-radius: var(--radius-lg);
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 0 1rem;
+
+  &--highlight {
+    color: var(--primary);
+    background-color: #fff;
+    border-radius: var(--radius-lg);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+
 .flex-column {
   flex-direction: column;
 }
@@ -219,8 +247,10 @@ h2 {
 }
 
 .container {
+
   &--primary {
-    background-color: var(--primary);
+    background-image: linear-gradient(to bottom right, #57D7E6, #7CED61);
+    max-width: 100%;
   }
   &--secondary {
     background-color: #eff2f6;

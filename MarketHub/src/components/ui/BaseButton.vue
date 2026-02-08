@@ -70,6 +70,41 @@ export default {
   }
 }
 
+.button-transparent-lg {
+  background-color: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+  box-shadow: none;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-family: var(--font-secondary);
+  font-size: 1.25rem;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  transform-origin: center;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    padding: var(--spacing-sm);
+  }
+
+  &:hover {
+    border: 2px solid #0FB9C6;
+    transform: scale(1.1);
+    text-decoration: none;
+    box-shadow: 0 0 10px 0 rgba(15, 185, 198, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.3);
+  }
+}
+
 .button-primary-lg {
   background-color: #fff;
   color: var(--primary);

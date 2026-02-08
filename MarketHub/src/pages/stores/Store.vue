@@ -48,21 +48,20 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
+  color: #fff;
 
   & div {
     padding: 5px 10px;
-    border: 2px solid var(--border);
     border-top-left-radius: var(--radius-md);
     border-top-right-radius: var(--radius-md);
 
     &:hover {
       cursor: pointer;
-      background-color: var(--border);
+      background-color: var(--primary-dark);
     }
 
     &.active {
       background-color: var(--primary);
-      color: #fff;
     }
   }
 }

@@ -1,20 +1,12 @@
 <template>
   <base-form @submit.prevent="submitForm">
     <div class="form-group">
-      <label for="name">First Name</label>
-      <input type="text" id="name" required v-model="firstname" />
+      <label for="firstname">First Name</label>
+      <input type="text" id="firstname" required v-model="firstname" />
     </div>
     <div class="form-group">
-      <label for="name">Last Name</label>
-      <input type="text" id="name" required v-model="lastname" />
-    </div>
-    <div class="form-group">
-      <label for="image">Profile Image</label>
-      <input type="file" id="image" accept="image/*" @change="handleImageChange" />
-    </div>
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" id="email" required v-model="email" />
+      <label for="lastname">Last Name</label>
+      <input type="text" id="lastname" required v-model="lastname" />
     </div>
     <div class="form-group">
       <label for="address">Address</label>
@@ -26,49 +18,37 @@
     </div>
 
     <div class="form-group form-group--button">
-      <base-button class="button button-primary" type="submit">Create Account</base-button>
+      <base-button class="button button-primary" type="submit">Save</base-button>
     </div>
   </base-form>
 </template>
 
 <script>
+import BaseForm from '@/components/ui/BaseForm.vue'
+
 export default {
+  components: {
+    BaseForm,
+  },
   emits: ['submit', 'image-selected'],
   data() {
     return {
       selectedImage: null,
+      firstname: '',
+      lastname: '',
+      address: '',
+      contact: '',
     }
   },
   methods: {
     submitForm() {
-      this.$emit('submit')
-    },
-    handleImageChange(event) {
-      const file = event.target.files[0]
-
-      if (!file) {
-        return
-      }
-
-      // Validate file type
-      const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
-      if (!validImageTypes.includes(file.type)) {
-        alert('Please select a valid image file (JPEG, PNG, GIF, or WebP)')
-        event.target.value = ''
-        this.selectedImage = null
-        return
-      }
-
-      const maxSize = 5 * 1024 * 1024
-      if (file.size > maxSize) {
-        alert('Image size should be less than 5MB')
-        event.target.value = ''
-        this.selectedImage = null
-        return
-      }
-
-      this.$emit('image-selected', file)
-    },
+      this.$emit('submit', {
+        firstname: this.firstname,
+        lastname: this.lastname,
+        address: this.address,
+        contact: this.contact,
+      })
+    }
   },
 }
 </script>
@@ -76,12 +56,13 @@ export default {
 <style lang="scss" scoped>
 .form-group {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
 
   label {
-    min-width: 120px;
     text-align: right;
     font-weight: 500;
     flex-shrink: 0;
@@ -94,10 +75,6 @@ export default {
         font-weight: bold;
       }
     }
-
-    @media (max-width: 1024px) {
-      text-align: left;
-    }
   }
 
   @media (max-width: 1024px) {
@@ -105,7 +82,7 @@ export default {
     align-items: flex-start;
 
     button {
-      width: 80%;
+      width: 100%;
       align-self: center;
     }
   }
@@ -133,12 +110,16 @@ export default {
 
   // For the button group, center it
   &--button {
-    justify-content: flex-end;
+    align-items: flex-end;
     margin-top: 0.5rem;
 
     label {
       display: none;
     }
   }
+}
+
+.button {
+  width: 30%;
 }
 </style>

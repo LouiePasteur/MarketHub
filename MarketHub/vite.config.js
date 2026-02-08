@@ -7,9 +7,9 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 // MarketHub Color Configuration - Simplified
 const colors = {
   // Primary Colors - Blue theme for trust and reliability
-  primary: '#16a34a', // Green-600 - Trust, reliability
-  'primary-light': '#bbf7d0', // Green-400 - Hover states
-  'primary-dark': '#14532d', // Green-700 - Active states
+  primary: '#9ACD32', // Green-600 - Trust, reliability
+  'primary-light': '#CCE698', // Green-400 - Hover states
+  'primary-dark': '#6E9324', // Green-700 - Active states
 
   // Secondary Colors - Green theme for success and growth
   secondary: '#0891b2', // Sky Blue-500 - Success, growth
