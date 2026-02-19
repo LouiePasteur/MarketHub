@@ -18,6 +18,12 @@ const colors = {
 
   // Border Color
   border: '#e2e8f0', // Slate-200 - Borders
+
+
+  //Er
+  error: '#dc2626', // Red-500 - Error
+  'error-light': '#fee2e2', // Red-400 - Hover states
+  'error-dark': '#b91c1c', // Red-600 - Active states
 }
 
 // Convert colors object to CSS custom properties

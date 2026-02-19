@@ -2,17 +2,14 @@ let timer = null
 
 export default {
   async signup(context, payload) {
-    console.log('signup in')
     return context.dispatch('auth', {
       ...payload,
       mode: 'signup',
     })
   },
   async auth(context, payload) {
-    console.log('auth in')
     const mode = payload.mode
     const apiKey = import.meta.env.VITE_API_KEY
-    console.log(apiKey)
 
     if (!apiKey) {
       const error = new Error(
@@ -36,7 +33,7 @@ export default {
     })
     const responseData = await response.json()
 
-    if (!response.ok) {
+    if (!response.ok) {   
       console.error('API Error:', responseData)
 
       // Firebase API error structure: { error: { message: "...", code: ... } }
@@ -68,6 +65,12 @@ export default {
     context.commit('setUser', {
       userId: responseData.localId,
       token: responseData.idToken,
+      email: payload.email,
+    })
+
+    context.dispatch('user/addUser', {
+      userId: responseData.localId,
+      email: payload.email,
     })
   },
   logout(context) {

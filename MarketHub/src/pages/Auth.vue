@@ -1,13 +1,7 @@
 <template>
   <div class="container">
-    <auth-form class="auth_form" :login="isLogin"></auth-form>
+    <auth-form class="auth_form" :login="false" :error="error" :errorMessage="errorMessage" @submit="submitForm"></auth-form>
     <img src="/auth.png" alt="Auth Background" />
-    <base-toast
-      :visible="toastVisible"
-      :message="toastMessage"
-      :type="toastType"
-      @close="toastVisible = false"
-    />
   </div>
 </template>
 
@@ -19,69 +13,36 @@ export default {
   },
   data() {
     return {
-      isLogin: true,
-      toastVisible: false,
-      toastMessage: '',
-      toastType: 'info',
-      toastTimeoutId: null,
-    }
-  },
-  mounted() {
-    if(this.$route.path.includes('signup')) {
-      this.isLogin = false;
+      error: false,
+      errorMessage: '',
     }
   },
   methods: {
-    async handleSubmit(formData) {
-      console.log('Form submitted:', formData)
-      const { password, confirmPassword } = formData
-
-      const payload = {
-        email: formData.email,
-        password: password,
-      }
-      if (password !== confirmPassword) {
-        this.showToast('Password and Confirm Password must be the same.', 'error')
-        return
-      }
-
-      if (!password || password.length < 8) {
-        this.showToast('Password must be at least 8 characters long.', 'error')
-        return
-      }
-
-      const complexityRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/
-      if (!complexityRegex.test(password)) {
-        this.showToast(
-          'Password must contain letters, numbers, and at least one special character.',
-          'error',
-        )
-        return
-      }
+    async submitForm(payload) {
+      // Reset error state
+      this.error = false
+      this.errorMessage = ''
 
       try {
-        await this.$store.dispatch('signup', payload)
-        this.showToast('Account created successfully!', 'success')
+        // Validate password confirmation for registration
+        if (payload.confirmPassword && payload.password !== payload.confirmPassword) {
+          this.error = true
+          this.errorMessage = 'Passwords do not match. Please try again.'
+          return
+        }
+
+        // Dispatch signup action
+        await this.$store.dispatch('signup', {
+          email: payload.email,
+          password: payload.password,
+        })
       } catch (error) {
-        this.showToast(error.message, 'error')
-        return
+        // Handle error
+        this.error = true
+        this.errorMessage = error.message || 'Failed to register. Please try again.'
       }
     },
-    showToast(message, type = 'info') {
-      this.toastMessage = message
-      this.toastType = type
-      this.toastVisible = true
-
-      if (this.toastTimeoutId) {
-        clearTimeout(this.toastTimeoutId)
-      }
-
-      this.toastTimeoutId = setTimeout(() => {
-        this.toastVisible = false
-        this.toastTimeoutId = null
-      }, 3000)
-    },
-  }
+  },
 }
 </script>
 

@@ -185,10 +185,10 @@ h2 {
 }
 
 section {
-  height: 100vh !important;
+  min-height: 100vh !important;
 
   &.quarter-section {
-    height: 50vh !important;
+    min-height: 50vh !important;
   }
 }
 
@@ -292,6 +292,7 @@ section {
 
 .about_us {
   height: auto;
+  background-color: #fff;
 }
 
 .about_us {
