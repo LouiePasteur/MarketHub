@@ -15,6 +15,8 @@ export default {
     return {
       error: false,
       errorMessage: '',
+      success: false,
+      successMessage: '',
     }
   },
   methods: {
@@ -36,10 +38,10 @@ export default {
           email: payload.email,
           password: payload.password,
         })
+        
       } catch (error) {
-        // Handle error
-        this.error = true
-        this.errorMessage = error.message || 'Failed to register. Please try again.'
+        // Check if account was created but auth failed
+        
       }
     },
   },

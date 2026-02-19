@@ -14,10 +14,11 @@ export default{
     async addUser(context, payload){
         const userId = payload.userId
         const userEmail = payload.email
-        const userFirstName = context.rootGetters.userFirstName
-        const userLastName = context.rootGetters.userLastName
-        const userPhone = context.rootGetters.userPhone
-        const userAddress = context.rootGetters.userAddress
+        // Get user details from rootGetters if they exist, otherwise use empty strings
+        const userFirstName = context.rootGetters.userFirstName || ''
+        const userLastName = context.rootGetters.userLastName || ''
+        const userPhone = context.rootGetters.userPhone || ''
+        const userAddress = context.rootGetters.userAddress || ''
 
         const response = await fetch('https://markethub-13478-default-rtdb.firebaseio.com/users.json', {
             method: 'POST',
