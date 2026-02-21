@@ -1,6 +1,13 @@
 <template>
   <div class="container">
-    <auth-form class="auth_form" :login="false" :error="error" :errorMessage="errorMessage" @submit="submitForm"></auth-form>
+    <auth-form
+      class="auth_form"
+      :login="false"
+      :error="error"
+      :errorMessage="errorMessage"
+      :submitting="submitting"
+      @submit="submitForm"
+    />
     <img src="/auth.png" alt="Auth Background" />
   </div>
 </template>
@@ -17,10 +24,15 @@ export default {
       errorMessage: '',
       success: false,
       successMessage: '',
+      submitting: false,
     }
   },
   methods: {
     async submitForm(payload) {
+      // Prevent double submission (avoids duplicate signUp request and ADMIN_ONLY_OPERATION + success in one click)
+      if (this.submitting) return
+      this.submitting = true
+
       // Reset error state
       this.error = false
       this.errorMessage = ''
@@ -38,10 +50,10 @@ export default {
           email: payload.email,
           password: payload.password,
         })
-        
       } catch (error) {
         // Check if account was created but auth failed
-        
+      } finally {
+        this.submitting = false
       }
     },
   },
@@ -55,6 +67,6 @@ export default {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  background-image: linear-gradient(to bottom right, #57D7E6, #7CED61);
+  background-image: linear-gradient(to bottom right, #57d7e6, #7ced61);
 }
 </style>

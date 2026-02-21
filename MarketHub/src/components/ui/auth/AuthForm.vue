@@ -47,7 +47,9 @@
           <input type="password" id="confirmPassword" required v-model="confirmPassword" />
         </div>
         <div class="form-group form-group--button">
-          <base-button class="button button-primary" type="submit">Register</base-button>
+          <base-button class="button button-primary" type="submit" :disabled="submitting">
+          {{ submitting ? 'Registering…' : 'Register' }}
+        </base-button>
         </div>
       </base-card>
     </base-form>
@@ -75,6 +77,10 @@ export default {
     errorMessage: {
       type: String,
       default: '',
+    },
+    submitting: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
