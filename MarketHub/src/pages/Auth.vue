@@ -38,13 +38,6 @@ export default {
       this.errorMessage = ''
 
       try {
-        // Validate password confirmation for registration
-        if (payload.confirmPassword && payload.password !== payload.confirmPassword) {
-          this.error = true
-          this.errorMessage = 'Passwords do not match. Please try again.'
-          return
-        }
-
         // Dispatch signup action
         await this.$store.dispatch('signup', {
           email: payload.email,
@@ -52,6 +45,37 @@ export default {
         })
       } catch (error) {
         // Check if account was created but auth failed
+        this.error = true
+        this.errorMessage = error.message
+
+        if (!payload.email.includes('@') || !payload.email.includes('.')) {
+          this.error = true
+          this.errorMessage = 'Please enter a valid email address. Please try again.'
+          return
+        }
+
+        if (this.errorMessage.includes('EMAIL_EXISTS')) {
+          this.errorMessage = 'This email is already in use. Please use a different email.'
+        }
+
+        const passwordStrength = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).+$/
+
+        if (payload.confirmPassword && payload.password !== payload.confirmPassword) {
+          this.error = true
+          this.errorMessage = 'Passwords do not match. Please try again.'
+          return
+        }
+        if (payload.password.length < 8) {
+          this.error = true
+          this.errorMessage = 'Password must be at least 8 characters long. Please try again.'
+          return
+        }
+        if (!passwordStrength.test(payload.password)) {
+          this.error = true
+          this.errorMessage =
+            'Password must contain at least one uppercase letter, one lowercase letter, and one special character. Please try again.'
+          return
+        }
       } finally {
         this.submitting = false
       }

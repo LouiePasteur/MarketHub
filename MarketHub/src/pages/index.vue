@@ -4,7 +4,10 @@
       <div class="content">
         <img src="/get-started.png" alt="Get Started" class="image" />
         <div class="content-text">
-          <h1><span class="app_name">Market</span><span class="app_name app_name--highlight">Hub</span></h1>
+          <h1>
+            <span class="app_name">Market</span
+            ><span class="app_name app_name--highlight">Hub</span>
+          </h1>
           <p>Your trusted marketplace for all your shopping needs</p>
           <base-button
             class="button-sm"
@@ -211,7 +214,6 @@ section {
   }
 }
 
-
 .flex-column {
   flex-direction: column;
 }
@@ -247,9 +249,8 @@ section {
 }
 
 .container {
-
   &--primary {
-    background-image: linear-gradient(to bottom right, #57D7E6, #7CED61);
+    background-image: linear-gradient(to bottom right, #57d7e6, #7ced61);
     max-width: 100%;
   }
   &--secondary {

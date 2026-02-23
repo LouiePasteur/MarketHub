@@ -1,39 +1,52 @@
 <template>
-<div>
-  <div class="login_container" v-if="login">
-    <base-form @submit.prevent="submitForm">
-    <base-card>
-      <h2>{{ login ? 'Login' : 'Register' }}</h2>
-      <p>{{ login ? 'Welcome back! Please enter your details.' : 'Create an account to get started.' }}</p>
-      <auth-error v-if="error" :errorMessage="errorMessage"></auth-error>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" required v-model="email" />
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" required v-model="password" />
-      </div>
-      <div class="form-group form-group--button">
-        <base-button class="button button-primary" type="submit">Login</base-button>
-      </div>
-    </base-card>
-      <div class="form-group form-group--links">
-        <a href="/forgot-password">Forgot password?</a>
-        <p href="/signup">Don't have an account? Sign up</p>
-      </div>
-      <div class="form-group">
-        <base-button class="button button-secondary" type="button" @click="googleLogin">Login with Google</base-button>
-        <base-button class="button button-secondary" type="button" @click="facebookLogin">Login with Facebook</base-button>
-      </div>
-    </base-form>
-  </div>
-  <div class="register" v-else>
-    <base-form @submit.prevent="submitForm">
-      <base-card>
-      <h2>{{ login ? 'Login' : 'Register' }}</h2>
-      <p>{{ login ? 'Welcome back! Please enter your details.' : 'Create an account to get started.' }}</p>
-      <auth-error v-if="error" :errorMessage="errorMessage"></auth-error>
+  <div>
+    <h1>
+      <span class="app_name">Market</span><span class="app_name app_name--highlight">Hub</span>
+    </h1>
+    <p class="app_subtitle">Your trusted marketplace for all your shopping needs</p>
+    <div class="login_container" v-if="login">
+      <base-form @submit.prevent="submitForm">
+        <h2>{{ login ? 'Login' : 'Register' }}</h2>
+        <p>
+          {{
+            login ? 'Welcome back! Please enter your details.' : 'Create an account to get started.'
+          }}
+        </p>
+        <auth-error v-if="error" :errorMessage="errorMessage"></auth-error>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required v-model="email" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required v-model="password" />
+        </div>
+        <div class="form-group form-group--button">
+          <base-button class="button button-primary" type="submit">Login</base-button>
+        </div>
+        <div class="form-group form-group--links">
+          <a href="/forgot-password">Forgot password?</a>
+          <p href="/signup">Don't have an account? Sign up</p>
+        </div>
+        <div class="form-group">
+          <base-button class="button button-secondary" type="button" @click="googleLogin"
+            >Login with Google</base-button
+          >
+          <base-button class="button button-secondary" type="button" @click="facebookLogin"
+            >Login with Facebook</base-button
+          >
+        </div>
+      </base-form>
+    </div>
+    <div class="login_container" v-else>
+      <base-form @submit.prevent="submitForm">
+        <h2>{{ login ? 'Login' : 'Register' }}</h2>
+        <p>
+          {{
+            login ? 'Welcome back! Please enter your details.' : 'Create an account to get started.'
+          }}
+        </p>
+        <auth-error v-if="error" :errorMessage="errorMessage"></auth-error>
         <div class="form-group">
           <label for="email">Email</label>
           <input type="email" id="email" required v-model="email" />
@@ -48,13 +61,12 @@
         </div>
         <div class="form-group form-group--button">
           <base-button class="button button-primary" type="submit" :disabled="submitting">
-          {{ submitting ? 'Registering…' : 'Register' }}
-        </base-button>
+            {{ submitting ? 'Registering…' : 'Register' }}
+          </base-button>
         </div>
-      </base-card>
-    </base-form>
+      </base-form>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -92,18 +104,47 @@ export default {
   },
   methods: {
     submitForm() {
-      this.$emit('submit', { 
-        email: this.email, 
+      this.$emit('submit', {
+        email: this.email,
         password: this.password,
-        confirmPassword: this.confirmPassword
+        confirmPassword: this.confirmPassword,
       })
     },
-  }
+  },
 }
 </script>
 
-
 <style scoped lang="scss">
+h1 {
+  margin-bottom: 0 !important;
+}
+
+.app_name {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #fff;
+  background-color: var(--primary);
+  border-radius: var(--radius-lg);
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 0 1rem;
+
+  &--highlight {
+    color: var(--primary);
+    background-color: #fff;
+    border-radius: var(--radius-lg);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.app_subtitle {
+  font-size: 1rem;
+  color: #fff;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -123,6 +164,17 @@ export default {
 
   &--links {
     margin-top: 1rem;
+  }
+}
+
+.login_container {
+  & h2 {
+    font-size: 1.75rem;
+    color: var(--primary);
+  }
+
+  & p {
+    font-size: 1rem;
   }
 }
 </style>
