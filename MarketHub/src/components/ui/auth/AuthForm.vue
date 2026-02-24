@@ -15,11 +15,27 @@
         <auth-error v-if="error" :errorMessage="errorMessage"></auth-error>
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" id="email" required v-model="email" />
+          <input
+            type="email"
+            id="email"
+            ref="loginEmail"
+            :class="{ error: issueLocation === 'email' }"
+            required
+            v-model="email"
+            @input="onFieldChange"
+          />
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" required v-model="password" />
+          <input
+            type="password"
+            id="password"
+            ref="loginPassword"
+            :class="{ error: issueLocation === 'password' }"
+            required
+            v-model="password"
+            @input="onFieldChange"
+          />
         </div>
         <div class="form-group form-group--button">
           <base-button class="button button-primary" type="submit">Login</base-button>
@@ -49,15 +65,38 @@
         <auth-error v-if="error" :errorMessage="errorMessage"></auth-error>
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" id="email" required v-model="email" />
+          <input
+            type="email"
+            id="email"
+            ref="signupEmail"
+            :class="{ error: issueLocation === 'email' }"
+            required
+            v-model="email"
+            @input="onFieldChange"
+          />
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" required v-model="password" />
+          <input
+            type="password"
+            id="password"
+            ref="signupPassword"
+            :class="{ error: issueLocation === 'password' }"
+            required
+            v-model="password"
+            @input="onFieldChange"
+          />
         </div>
         <div class="form-group">
           <label for="confirmPassword">Confirm Password</label>
-          <input type="password" id="confirmPassword" required v-model="confirmPassword" />
+          <input
+            type="password"
+            id="confirmPassword"
+            ref="signupConfirmPassword"
+            required
+            v-model="confirmPassword"
+            @input="onFieldChange"
+          />
         </div>
         <div class="form-group form-group--button">
           <base-button class="button button-primary" type="submit" :disabled="submitting">
@@ -90,6 +129,10 @@ export default {
       type: String,
       default: '',
     },
+    issueLocation: {
+      type: String,
+      default: '',
+    },
     submitting: {
       type: Boolean,
       default: false,
@@ -102,6 +145,31 @@ export default {
       confirmPassword: '',
     }
   },
+  watch: {
+    issueLocation(newVal) {
+      if (!newVal) return
+
+      this.password = ''
+      this.confirmPassword = ''
+
+      this.$nextTick(() => {
+        if (this.login) {
+          if (newVal === 'email' && this.$refs.loginEmail) {
+            this.$refs.loginEmail.focus()
+          } else if (newVal === 'password' && this.$refs.loginPassword) {
+            this.$refs.loginPassword.focus()
+          }
+          return
+        }
+
+        if (newVal === 'email' && this.$refs.signupEmail) {
+          this.$refs.signupEmail.focus()
+        } else if (newVal === 'password' && this.$refs.signupPassword) {
+          this.$refs.signupPassword.focus()
+        }
+      })
+    },
+  },
   methods: {
     submitForm() {
       this.$emit('submit', {
@@ -109,6 +177,9 @@ export default {
         password: this.password,
         confirmPassword: this.confirmPassword,
       })
+    },
+    onFieldChange() {
+      this.$emit('clear-error')
     },
   },
 }
@@ -143,6 +214,18 @@ h1 {
   color: #fff;
   font-weight: 500;
   margin-bottom: 1rem;
+}
+
+.error {
+  border: 2px solid var(--error);
+  border-radius: var(--radius-lg);
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+
+  &:focus {
+    outline: none;
+    border: 2px solid var(--error);
+  }
 }
 
 .form-group {
