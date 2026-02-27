@@ -43,12 +43,12 @@ export default {
   methods: {
     submitForm() {
       this.$emit('submit', {
-        firstname: this.firstname,
-        lastname: this.lastname,
+        firstName: this.firstname,
+        lastName: this.lastname,
         address: this.address,
-        contact: this.contact,
+        phone: this.contact,
       })
-    }
+    },
   },
 }
 </script>

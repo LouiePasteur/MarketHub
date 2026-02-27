@@ -8,7 +8,8 @@ export default {
     return {
       users: [
         {
-          id: 1,
+          id: '1',
+          userId: '1',
           firstName: 'John',
           lastName: 'Doe',
           email: 'john.doe@example.com',

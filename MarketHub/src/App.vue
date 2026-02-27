@@ -11,6 +11,14 @@
   </div>
 </template>
 
+<script>
+export default {
+  created() {
+    this.$store.dispatch('autoLogin')
+  },
+}
+</script>
+
 <style>
 /* Additional CSS Variables (shadows, spacing, fonts, etc.) */
 :root {
@@ -55,7 +63,7 @@ body {
 }
 
 .app {
-  background-image: linear-gradient(to bottom right, #57D7E6, #7CED61);
+  background-image: linear-gradient(to bottom right, #57d7e6, #7ced61);
   min-height: 100vh;
   display: flex;
   flex-direction: column;

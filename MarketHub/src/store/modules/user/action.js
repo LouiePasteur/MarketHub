@@ -1,3 +1,4 @@
+import router from '@/router'
 export default {
   async fetchUsers(context) {
     const response = await fetch(
@@ -57,7 +58,8 @@ export default {
     }
 
     const newUser = {
-      id: userId,
+      id: responseData.name,
+      userid: userId,
       email: userEmail,
       firstName: userFirstName,
       lastName: userLastName,
@@ -65,5 +67,66 @@ export default {
       address: userAddress,
     }
     context.commit('users/addUser', newUser)
+
+    const currentRoute = router.currentRoute.value
+    const redirectPath = currentRoute?.query?.redirect || `user/${newUser.id}/edit`
+    const redirectUrl = `/${redirectPath}`
+
+    router.push(redirectUrl)
+  },
+
+  async updateUser(context, payload) {
+    const id = payload.id
+    const userId = payload.userId
+    const userEmail = payload.email
+    const userFirstName = payload.firstName
+    const userLastName = payload.lastName
+    const userPhone = payload.phone
+    const userAddress = payload.address
+    const userCart = payload.cart
+    const userOrders = payload.orders
+    const userAddresses = payload.addresses
+    const userPaymentMethods = payload.paymentMethods
+    const userFollowers = payload.followers
+    const userFollowedStores = payload.followedStores
+    const userSettings = payload.settings
+
+    const response = await fetch(
+      `https://markethub-e46d7-default-rtdb.asia-southeast1.firebasedatabase.app/users/${id}.json?auth=${context.rootGetters.token}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          userId: userId,
+          email: userEmail,
+          firstName: userFirstName,
+          lastName: userLastName,
+          phone: userPhone,
+          address: userAddress,
+          cart: userCart,
+          orders: userOrders,
+          addresses: userAddresses,
+          paymentMethods: userPaymentMethods,
+          followers: userFollowers,
+          followedStores: userFollowedStores,
+          settings: userSettings,
+        }),
+      },
+    )
+    const responseData = await response.json()
+
+    if (!response.ok) {
+      const error = new Error(responseData.message || 'Failed to update user')
+      throw error
+    }
+
+    const updatedUser = {
+      id: userId,
+      email: userEmail,
+      firstName: userFirstName,
+      lastName: userLastName,
+      phone: userPhone,
+      address: userAddress,
+    }
+    context.commit('users/updateUser', updatedUser)
   },
 }

@@ -15,10 +15,22 @@ export default {
     UserForm,
   },
   methods: {
-    handleSubmit() {
-      console.log('Create Store')
+    handleSubmit(payload) {
+      this.$store.dispatch('user/updateUser', {
+        id: this.$route.params.id,
+        userId: this.$store.getters.userId,
+        firstName: payload.firstName,
+        lastName: payload.lastName,
+        phone: payload.phone,
+        cart: [],
+        addresses: payload.address,
+        paymentMethods: [],
+        followers: [],
+        followedStores: [],
+        settings: [],
+      })
     },
-  }
+  },
 }
 </script>
 
