@@ -57,6 +57,14 @@ export default {
       throw error
     }
 
+    await fetch(
+      `https://markethub-e46d7-default-rtdb.asia-southeast1.firebasedatabase.app/users/${responseData.name}.json?auth=${context.rootGetters.token}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({ id: responseData.name }),
+      },
+    )
+
     const newUser = {
       id: responseData.name,
       userid: userId,
@@ -66,7 +74,9 @@ export default {
       phone: userPhone,
       address: userAddress,
     }
-    context.commit('users/addUser', newUser)
+    context.commit('addUser', newUser)
+
+    console.log('currentUser', context.getters.currentUser)
 
     const currentRoute = router.currentRoute.value
     const redirectPath = currentRoute?.query?.redirect || `user/${newUser.id}/edit`
@@ -96,6 +106,7 @@ export default {
       {
         method: 'PUT',
         body: JSON.stringify({
+          id: id,
           userId: userId,
           email: userEmail,
           firstName: userFirstName,
@@ -120,7 +131,8 @@ export default {
     }
 
     const updatedUser = {
-      id: userId,
+      id: id,
+      userId: userId,
       email: userEmail,
       firstName: userFirstName,
       lastName: userLastName,

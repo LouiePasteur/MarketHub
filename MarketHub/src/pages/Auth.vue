@@ -32,6 +32,9 @@ export default {
   },
   methods: {
     async submitForm(payload) {
+      // Always have a payload object
+      payload = payload || {}
+
       // Prevent double submission (avoids duplicate signUp request and ADMIN_ONLY_OPERATION + success in one click)
       if (this.submitting) return
       this.submitting = true
@@ -41,48 +44,62 @@ export default {
       this.errorMessage = ''
       this.issueLocation = ''
 
+      const email =
+        typeof payload.email === 'string' ? payload.email.trim() : ''
+      const password =
+        typeof payload.password === 'string' ? payload.password : ''
+      const confirmPassword =
+        typeof payload.confirmPassword === 'string'
+          ? payload.confirmPassword
+          : ''
+
+      // 1) Email validation (first, matches UI order)
+      if (!email || !email.includes('@') || !email.includes('.')) {
+        this.issueLocation = 'email'
+        this.error = true
+        this.errorMessage = 'Please enter a valid email address. Please try again.'
+        this.submitting = false
+        return
+      }
+
+      const passwordStrength = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).+$/
+
+      // 2) Password validations
+      if (confirmPassword && password !== confirmPassword) {
+        this.issueLocation = 'password'
+        this.error = true
+        this.submitting = false
+        return
+      }
+      if (password.length < 8) {
+        this.issueLocation = 'password'
+        this.error = true
+        this.errorMessage = 'Password must be at least 8 characters long. Please try again.'
+        this.submitting = false
+        return
+      }
+      if (!passwordStrength.test(password)) {
+        this.issueLocation = 'password'
+        this.error = true
+        this.errorMessage =
+          'Password must contain at least one uppercase letter, one lowercase letter, and one special character. Please try again.'
+        this.submitting = false
+        return
+      }
+
       try {
         // Dispatch signup action
         await this.$store.dispatch('signup', {
-          email: payload.email,
-          password: payload.password,
+          email: email,
+          password: password,
         })
       } catch (error) {
-        // Check if account was created but auth failed
-        this.error = true
-        this.errorMessage = error.message
-
-        if (!payload.email.includes('@') || !payload.email.includes('.')) {
+        const msg = error?.message || ''
+        if (msg.includes('EMAIL_EXISTS')) {
           this.issueLocation = 'email'
           this.error = true
-          this.errorMessage = 'Please enter a valid email address. Please try again.'
-          return
-        }
-
-        if (this.errorMessage.includes('EMAIL_EXISTS')) {
-          this.issueLocation = 'email'
           this.errorMessage = 'This email is already in use. Please use a different email.'
-        }
-
-        const passwordStrength = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).+$/
-
-        if (payload.confirmPassword && payload.password !== payload.confirmPassword) {
-          this.issueLocation = 'password'
-          this.error = true
-          this.errorMessage = 'Passwords do not match. Please try again.'
-          return
-        }
-        if (payload.password.length < 8) {
-          this.issueLocation = 'password'
-          this.error = true
-          this.errorMessage = 'Password must be at least 8 characters long. Please try again.'
-          return
-        }
-        if (!passwordStrength.test(payload.password)) {
-          this.issueLocation = 'password'
-          this.error = true
-          this.errorMessage =
-            'Password must contain at least one uppercase letter, one lowercase letter, and one special character. Please try again.'
+          this.submitting = false
           return
         }
       } finally {

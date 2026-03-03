@@ -5,4 +5,7 @@ export default {
   token(state) {
     return state.token
   },
+  currentUser(state) {
+    return state.users.find((user) => user.userId === state.userId)
+  },
 }

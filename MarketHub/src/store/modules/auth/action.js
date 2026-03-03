@@ -6,8 +6,9 @@ export default {
     })
   },
   async auth(context, payload) {
-    let url =
-      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCC_-iEf_rfXLbYZCKvGKv20NGYkHa5Glc'
+    const apiKey = import.meta.env.VITE_FIREBASE_API_KEY
+
+    let url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`
 
     const response = await fetch(url, {
       method: 'POST',
@@ -61,6 +62,8 @@ export default {
       followedStores: [],
       settings: [],
     })
+
+    console.log('currentUser', context.getters.currentUser)
   },
   autoLogin(context) {
     const token = localStorage.getItem('token')
