@@ -32,8 +32,10 @@ export default {
   },
   methods: {
     async submitForm(payload) {
-      // Always have a payload object
-      payload = payload || {}
+      // If a native submit event bubbles up, ignore it; we only care about the payload object
+      if (payload && payload.target && payload.type === 'submit') {
+        return
+      }
 
       // Prevent double submission (avoids duplicate signUp request and ADMIN_ONLY_OPERATION + success in one click)
       if (this.submitting) return
@@ -44,14 +46,9 @@ export default {
       this.errorMessage = ''
       this.issueLocation = ''
 
-      const email =
-        typeof payload.email === 'string' ? payload.email.trim() : ''
-      const password =
-        typeof payload.password === 'string' ? payload.password : ''
-      const confirmPassword =
-        typeof payload.confirmPassword === 'string'
-          ? payload.confirmPassword
-          : ''
+      const email = payload.email
+      const password = payload.password
+      const confirmPassword = payload.confirmPassword
 
       // 1) Email validation (first, matches UI order)
       if (!email || !email.includes('@') || !email.includes('.')) {
@@ -68,6 +65,7 @@ export default {
       if (confirmPassword && password !== confirmPassword) {
         this.issueLocation = 'password'
         this.error = true
+        this.errorMessage = 'Passwords do not match. Please try again.'
         this.submitting = false
         return
       }
