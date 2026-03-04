@@ -4,6 +4,7 @@ export default {
   },
   addUser(state, user) {
     state.users.push(user)
+    console.log('all Users in add user', state.users.length)
   },
   updateUser(state, user) {
     const index = state.users.findIndex((u) => u.id === user.id)

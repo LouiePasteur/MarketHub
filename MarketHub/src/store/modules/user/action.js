@@ -8,7 +8,6 @@ export default {
     const users = []
     for (const key in responseData) {
       users.push({
-        id: key,
         ...responseData[key],
       })
     }
@@ -67,16 +66,21 @@ export default {
 
     const newUser = {
       id: responseData.name,
-      userid: userId,
+      userId: userId,
       email: userEmail,
       firstName: userFirstName,
       lastName: userLastName,
       phone: userPhone,
       address: userAddress,
+      cart: userCart,
+      orders: userOrders,
+      addresses: userAddresses,
+      paymentMethods: userPaymentMethods,
+      followers: userFollowers,
+      followedStores: userFollowedStores,
+      settings: userSettings,
     }
     context.commit('addUser', newUser)
-
-    console.log('currentUser', context.getters.currentUser)
 
     const currentRoute = router.currentRoute.value
     const redirectPath = currentRoute?.query?.redirect || `user/${newUser.id}/edit`
@@ -124,6 +128,7 @@ export default {
       },
     )
     const responseData = await response.json()
+    console.log('currentUser2', context.rootGetters['user/currentUser'])
 
     if (!response.ok) {
       const error = new Error(responseData.message || 'Failed to update user')
@@ -138,7 +143,14 @@ export default {
       lastName: userLastName,
       phone: userPhone,
       address: userAddress,
+      cart: userCart,
+      orders: userOrders,
+      addresses: userAddresses,
+      paymentMethods: userPaymentMethods,
+      followers: userFollowers,
+      followedStores: userFollowedStores,
+      settings: userSettings,
     }
-    context.commit('users/updateUser', updatedUser)
+    context.commit('updateUser', updatedUser)
   },
 }
