@@ -42,7 +42,7 @@
         </div>
         <div class="form-group form-group--links">
           <a href="/forgot-password">Forgot password?</a>
-          <p href="/signup">Don't have an account? Sign up</p>
+          <p @click="toggleLoginForm">Don't have an account? Sign up</p>
         </div>
         <div class="form-group">
           <base-button class="button button-secondary" type="button" @click="googleLogin"
@@ -176,10 +176,14 @@ export default {
         email: this.email,
         password: this.password,
         confirmPassword: this.confirmPassword,
+        login: this.login,
       })
     },
     onFieldChange() {
       this.$emit('clear-error')
+    },
+    toggleLoginForm() {
+      this.$emit('toggle-form')
     },
   },
 }

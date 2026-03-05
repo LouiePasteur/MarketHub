@@ -2,13 +2,14 @@
   <div class="container">
     <auth-form
       class="auth_form"
-      :login="false"
+      :login="isLogin"
       :error="error"
       :errorMessage="errorMessage"
       :submitting="submitting"
       :issueLocation="issueLocation"
       @submit="submitForm"
       @clear-error="clearErrorState"
+      @toggle-form="toggleLoginForm"
     />
     <img src="/auth.png" alt="Auth Background" />
   </div>
@@ -28,6 +29,7 @@ export default {
       successMessage: '',
       submitting: false,
       issueLocation: '',
+      isLogin: true,
     }
   },
   methods: {
@@ -50,7 +52,6 @@ export default {
       const password = payload.password
       const confirmPassword = payload.confirmPassword
 
-      // 1) Email validation (first, matches UI order)
       if (!email || !email.includes('@') || !email.includes('.')) {
         this.issueLocation = 'email'
         this.error = true
@@ -61,28 +62,29 @@ export default {
 
       const passwordStrength = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).+$/
 
-      // 2) Password validations
-      if (confirmPassword && password !== confirmPassword) {
-        this.issueLocation = 'password'
-        this.error = true
-        this.errorMessage = 'Passwords do not match. Please try again.'
-        this.submitting = false
-        return
-      }
-      if (password.length < 8) {
-        this.issueLocation = 'password'
-        this.error = true
-        this.errorMessage = 'Password must be at least 8 characters long. Please try again.'
-        this.submitting = false
-        return
-      }
-      if (!passwordStrength.test(password)) {
-        this.issueLocation = 'password'
-        this.error = true
-        this.errorMessage =
-          'Password must contain at least one uppercase letter, one lowercase letter, and one special character. Please try again.'
-        this.submitting = false
-        return
+      if (!payload.login) {
+        if (confirmPassword && password !== confirmPassword) {
+          this.issueLocation = 'password'
+          this.error = true
+          this.errorMessage = 'Passwords do not match. Please try again.'
+          this.submitting = false
+          return
+        }
+        if (password.length < 8) {
+          this.issueLocation = 'password'
+          this.error = true
+          this.errorMessage = 'Password must be at least 8 characters long. Please try again.'
+          this.submitting = false
+          return
+        }
+        if (!passwordStrength.test(password)) {
+          this.issueLocation = 'password'
+          this.error = true
+          this.errorMessage =
+            'Password must contain at least one uppercase letter, one lowercase letter, and one special character. Please try again.'
+          this.submitting = false
+          return
+        }
       }
 
       try {
@@ -90,13 +92,23 @@ export default {
         await this.$store.dispatch('signup', {
           email: email,
           password: password,
+          login: payload.login,
         })
+        console.log('this is called3')
       } catch (error) {
-        const msg = error?.message || ''
-        if (msg.includes('EMAIL_EXISTS')) {
-          this.issueLocation = 'email'
+        if (!payload.login) {
+          const msg = error?.message || ''
+          if (msg.includes('EMAIL_EXISTS')) {
+            this.issueLocation = 'email'
+            this.error = true
+            this.errorMessage = 'This email is already in use. Please use a different email.'
+            this.submitting = false
+            return
+          }
+        } else {
+          console.log('error', error)
           this.error = true
-          this.errorMessage = 'This email is already in use. Please use a different email.'
+          this.errorMessage = 'Incorrect username or password. Please try again.'
           this.submitting = false
           return
         }
@@ -108,6 +120,9 @@ export default {
       this.error = false
       this.errorMessage = ''
       this.issueLocation = ''
+    },
+    toggleLoginForm() {
+      this.isLogin = false
     },
   },
 }

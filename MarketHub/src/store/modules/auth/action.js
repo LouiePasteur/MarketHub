@@ -1,3 +1,4 @@
+import router from '@/router'
 let timer = null
 export default {
   async signup(context, payload) {
@@ -8,7 +9,12 @@ export default {
   async auth(context, payload) {
     const apiKey = import.meta.env.VITE_FIREBASE_API_KEY
 
-    let url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`
+    let url = ''
+    if (payload.login) {
+      url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`
+    } else {
+      url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`
+    }
 
     const response = await fetch(url, {
       method: 'POST',
@@ -48,22 +54,25 @@ export default {
       userId: responseData.localId,
     })
 
-    context.dispatch('user/addUser', {
-      userId: responseData.localId,
-      email: payload.email,
-      firstName: payload.firstName,
-      lastName: payload.lastName,
-      phone: '',
-      cart: [],
-      orders: [],
-      addresses: [],
-      paymentMethods: [],
-      followers: [],
-      followedStores: [],
-      settings: [],
-    })
-
-    console.log('currentUser', context.getters.currentUser)
+    if (!payload.login) {
+      context.dispatch('user/addUser', {
+        userId: responseData.localId,
+        email: payload.email,
+        firstName: payload.firstName,
+        lastName: payload.lastName,
+        phone: '',
+        cart: [],
+        orders: [],
+        addresses: [],
+        paymentMethods: [],
+        followers: [],
+        followedStores: [],
+        settings: [],
+      })
+    } else {
+      console.log('currentUser', context.getters.currentUser)
+      router.replace('/products')
+    }
   },
   autoLogin(context) {
     const token = localStorage.getItem('token')
