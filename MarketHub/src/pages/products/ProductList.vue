@@ -78,6 +78,9 @@ export default {
       this.selectedProduct = null
     },
   },
+  mounted() {
+    console.log('currentUser', this.$store.getters['user/currentUser'])
+  },
 }
 </script>
 

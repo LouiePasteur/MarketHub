@@ -74,6 +74,50 @@ export default {
   }
 }
 
+.button-google {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #3c4043;
+  border: 1px solid #dadce0;
+  font-weight: 500;
+  font-size: 14px;
+  box-shadow:
+    0 1px 2px rgba(60, 64, 67, 0.3),
+    0 1px 3px 1px rgba(60, 64, 67, 0.15);
+
+  &:hover {
+    background-color: #f7f8f8;
+  }
+}
+
+.button-facebook {
+  width: 100%;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border-radius: 4px;
+  background-color: #1877f2;
+  color: #ffffff;
+  border: 1px solid #1877f2;
+  font-weight: 500;
+  font-size: 14px;
+
+  box-shadow: 0 1px 2px rgba(24, 119, 242, 0.4), 0 1px 3px 1px rgba(24, 119, 242, 0.3);
+
+  &:hover {
+    background-color: #166fe5;
+  }
+}
+
 .button-transparent-lg {
   background-color: transparent;
   color: #fff;
@@ -93,7 +137,7 @@ export default {
   }
 
   &:hover {
-    border: 2px solid #0FB9C6;
+    border: 2px solid #0fb9c6;
     transform: scale(1.1);
     text-decoration: none;
     box-shadow: 0 0 10px 0 rgba(15, 185, 198, 0.3);

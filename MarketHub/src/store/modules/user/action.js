@@ -152,5 +152,7 @@ export default {
       settings: userSettings,
     }
     context.commit('updateUser', updatedUser)
+    console.log('currentUser3', context.rootGetters['user/currentUser'])
+    router.push('/products')
   },
 }
