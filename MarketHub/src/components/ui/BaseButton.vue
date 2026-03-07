@@ -111,7 +111,9 @@ export default {
   font-weight: 500;
   font-size: 14px;
 
-  box-shadow: 0 1px 2px rgba(24, 119, 242, 0.4), 0 1px 3px 1px rgba(24, 119, 242, 0.3);
+  box-shadow:
+    0 1px 2px rgba(24, 119, 242, 0.4),
+    0 1px 3px 1px rgba(24, 119, 242, 0.3);
 
   &:hover {
     background-color: #166fe5;

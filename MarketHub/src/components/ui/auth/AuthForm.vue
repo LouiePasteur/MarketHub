@@ -41,8 +41,10 @@
           <base-button class="button button-primary" type="submit">Login</base-button>
         </div>
         <div class="form-group form-group--links">
-          <a href="/forgot-password">Forgot password?</a>
-          <p @click="toggleLoginForm">Don't have an account? Sign up</p>
+          <a href="/forgot-password" class="form-group--links-forgot">Forgot password?</a>
+          <p @click="toggleLoginForm" class="form-group--links-signup">
+            Don't have an account? Sign up
+          </p>
         </div>
         <div class="form-group social-login-group">
           <base-button class="button-google" type="button" @click="googleLogin">
@@ -296,6 +298,26 @@ h1 {
 
   &--links {
     margin-top: 1rem;
+  }
+
+  &--links-signup {
+    cursor: pointer;
+    color: var(--primary);
+    font-weight: 500;
+    &:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+  }
+
+  &--links-forgot {
+    cursor: pointer;
+    color: var(--secondary);
+    font-weight: 500;
+    &:hover {
+      color: var(--secondary-dark);
+      text-decoration: underline;
+    }
   }
 }
 

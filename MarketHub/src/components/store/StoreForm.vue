@@ -2,27 +2,31 @@
   <base-form @submit.prevent="submitForm">
     <div class="form-group">
       <label for="name">Store Name</label>
-      <input type="text" id="name" required v-model="storename" />
-    </div>
-    <div class="form-group">
-      <label for="image">Image</label>
-      <input type="file" id="image" accept="image/*" @change="handleImageChange" />
+      <input type="text" id="name" v-model="storename" />
     </div>
     <div class="form-group">
       <label for="address">Address</label>
-      <input type="text" id="address" required v-model="address" />
+      <input type="text" id="address" v-model="address" />
     </div>
     <div class="form-group">
       <label for="description">Description</label>
-      <textarea id="description" required v-model="description"></textarea>
+      <textarea id="description" v-model="description"></textarea>
     </div>
     <div class="form-group">
       <label for="contact">Contact Number</label>
-      <input type="number" id="contact" required v-model="contact" />
+      <input
+        type="tel"
+        id="contact"
+        inputmode="numeric"
+        maxlength="11"
+        min-length="11"
+        v-model="contact"
+        @input="onContactInput"
+      />
     </div>
     <div class="form-group">
       <label for="email">Email</label>
-      <input type="email" id="email" required v-model="email" />
+      <input type="email" id="email" v-model="email" />
     </div>
     <div class="form-group form-group--button">
       <base-button class="button button-primary" type="submit">Create Store</base-button>
@@ -31,42 +35,50 @@
 </template>
 
 <script>
+import BaseForm from '@/components/ui/BaseForm.vue'
 export default {
-  emits: ['submit', 'image-selected'],
+  emits: ['submit'],
+  components: {
+    BaseForm,
+  },
   data() {
     return {
       selectedImage: null,
+      storename: '',
+      address: '',
+      description: '',
+      contact: '',
+      email: '',
     }
   },
-  methods: {
-    submitForm() {
-      this.$emit('submit')
+  computed: {
+    validInputs() {
+      return (
+        !this.storename ||
+        !this.address ||
+        !this.description ||
+        !this.contact ||
+        this.contact.length !== 11 ||
+        !this.email
+      )
     },
-    handleImageChange(event) {
-      const file = event.target.files[0]
-
-      if (!file) {
-        return
-      }
-
-      // Validate file type
-      const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
-      if (!validImageTypes.includes(file.type)) {
-        alert('Please select a valid image file (JPEG, PNG, GIF, or WebP)')
-        event.target.value = ''
-        this.selectedImage = null
-        return
-      }
-
-      const maxSize = 5 * 1024 * 1024
-      if (file.size > maxSize) {
-        alert('Image size should be less than 5MB')
-        event.target.value = ''
-        this.selectedImage = null
-        return
-      }
-
-      this.$emit('image-selected', file)
+  },
+  methods: {
+    onContactInput(event) {
+      const digits = event.target.value.replace(/\D/g, '').slice(0, 11)
+      this.contact = digits
+    },
+    submitForm() {
+      if (this.validInputs) return
+      this.$emit('submit', {
+        storeName: this.storename,
+        storeAddress: this.address,
+        storeDescription: this.description,
+        storeContact: this.contact,
+        storeEmail: this.email,
+        storeId: '',
+        storeImage: null,
+      })
     },
   },
 }

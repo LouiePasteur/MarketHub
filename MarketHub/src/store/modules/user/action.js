@@ -12,6 +12,7 @@ export default {
       })
     }
     context.commit('setUsers', users)
+    console.log('users list user action', context.getters['user/users'])
   },
   async addUser(context, payload) {
     const userId = payload.userId

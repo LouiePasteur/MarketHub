@@ -30,7 +30,7 @@ export default {
   components: {
     BaseForm,
   },
-  emits: ['submit', 'image-selected'],
+  emits: ['submit'],
   data() {
     return {
       selectedImage: null,

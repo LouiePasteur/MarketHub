@@ -2,9 +2,10 @@
   <div class="header">
     <div class="header-content">
       <div class="app_name">
-        <span class="header-title">Market</span><span class="header-title header-title--highlight">Hub</span>
+        <span class="header-title">Market</span
+        ><span class="header-title header-title--highlight">Hub</span>
       </div>
-      
+
       <div class="icons-container">
         <router-link to="/store" class="store-icon">
           <i class="fa-solid fa-store" />
@@ -19,6 +20,8 @@
           <div class="profile-container">
             <img src="/groceries.jpg" alt="Profile" />
           </div>
+          <span class="profile-name">{{ $store.getters['user/currentUser']?.firstName }} </span>
+          <span class="profile-name">{{ $store.getters['user/currentUser']?.lastName }}</span>
         </div>
       </div>
     </div>
@@ -46,7 +49,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .header-title {
   font-size: 1.5rem;
   font-weight: 500;
@@ -58,17 +60,17 @@ export default {
   padding: 0.25rem 1rem;
 
   &--highlight {
-  color: var(--primary);
-  background-color: #fff;
-  border-radius: var(--radius-lg);
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
+    color: var(--primary);
+    background-color: #fff;
+    border-radius: var(--radius-lg);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
 
   &:hover {
-      cursor: pointer;
-    }
+    cursor: pointer;
   }
+}
 
 .cart-icon {
   position: relative;

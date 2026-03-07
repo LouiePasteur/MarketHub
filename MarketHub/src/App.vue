@@ -13,9 +13,9 @@
 
 <script>
 export default {
-  created() {
+  async created() {
     this.$store.dispatch('autoLogin')
-    this.$store.dispatch('user/fetchUsers')
+    await this.$store.dispatch('user/fetchUsers')
   },
 }
 </script>
