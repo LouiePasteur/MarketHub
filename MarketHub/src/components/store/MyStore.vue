@@ -95,18 +95,6 @@ export default {
       isDialogueOpen: false,
       selectedProduct: null,
       active: 'products',
-      store: {
-        id: 1,
-        name: 'Store 1',
-        image: '/fashion.jpg',
-        address: '123 Main St, Anytown, USA',
-        description: 'Description of Store 1',
-        owner: 'John Doe',
-        ownerId: 1,
-        contact: '1234567890',
-        email: 'john.doe@example.com',
-        createdDate: '2021-01-01',
-      },
       products: [
         {
           id: 1,
@@ -216,6 +204,40 @@ export default {
         },
       ],
     }
+  },
+  computed: {
+    store() {
+      const myStore = this.$store.getters['stores/myStore']
+
+      if (!myStore) {
+        // still loading or user has no store
+        return {
+          id: null,
+          name: '',
+          image: '',
+          address: '',
+          description: '',
+          owner: '',
+          ownerId: '',
+          contact: '',
+          email: '',
+          createdDate: '',
+        }
+      }
+
+      return {
+        id: myStore.id ?? myStore.storeId ?? 1,
+        name: myStore.storeName || '',
+        image: myStore.storeImage || '/fashion.jpg',
+        address: myStore.storeAddress || '',
+        description: myStore.storeDescription || '',
+        owner: myStore.storeOwner || '',
+        ownerId: myStore.storeOwnerId || '',
+        contact: myStore.storeContact || '',
+        email: myStore.storeEmail || '',
+        createdDate: myStore.createdDate || '2021-01-01',
+      }
+    },
   },
   methods: {
     makeActive(menu) {

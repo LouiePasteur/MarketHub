@@ -258,6 +258,10 @@ h1 {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
+
+  @media (max-width: 1024px) {
+    font-size: 2rem;
+  }
 }
 
 .app_subtitle {
@@ -265,6 +269,10 @@ h1 {
   color: #fff;
   font-weight: 500;
   margin-bottom: 1rem;
+
+  @media (max-width: 1024px) {
+    font-size: 0.8rem;
+  }
 }
 
 .error {
@@ -289,6 +297,10 @@ h1 {
   & label {
     text-align: left;
     font-weight: 700;
+
+    @media (max-width: 1024px) {
+      font-size: 0.8rem;
+    }
   }
 
   & input {
@@ -318,6 +330,10 @@ h1 {
       color: var(--secondary-dark);
       text-decoration: underline;
     }
+
+    @media (max-width: 1024px) {
+      font-size: 0.8rem;
+    }
   }
 }
 
@@ -325,10 +341,18 @@ h1 {
   & h2 {
     font-size: 1.75rem;
     color: var(--primary);
+
+    @media (max-width: 1024px) {
+      font-size: 1.25rem;
+    }
   }
 
   & p {
     font-size: 1rem;
+
+    @media (max-width: 1024px) {
+      font-size: 0.8rem;
+    }
   }
 }
 

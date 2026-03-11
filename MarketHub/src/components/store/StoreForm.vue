@@ -1,16 +1,18 @@
 <template>
   <base-form @submit.prevent="submitForm">
+    <h1>Create Store</h1>
+    <error-card v-if="error" :errorMessage="errorMessage"></error-card>
     <div class="form-group">
       <label for="name">Store Name</label>
-      <input type="text" id="name" v-model="storename" />
+      <input type="text" id="name" required v-model="storename" />
     </div>
     <div class="form-group">
       <label for="address">Address</label>
-      <input type="text" id="address" v-model="address" />
+      <input type="text" id="address" required v-model="address" />
     </div>
     <div class="form-group">
       <label for="description">Description</label>
-      <textarea id="description" v-model="description"></textarea>
+      <textarea id="description" required v-model="description"></textarea>
     </div>
     <div class="form-group">
       <label for="contact">Contact Number</label>
@@ -20,36 +22,69 @@
         inputmode="numeric"
         maxlength="11"
         min-length="11"
+        required
         v-model="contact"
         @input="onContactInput"
       />
     </div>
     <div class="form-group">
       <label for="email">Email</label>
-      <input type="email" id="email" v-model="email" />
+      <input
+        type="email"
+        id="email"
+        required
+        v-model="email"
+        :class="{ error: inputAffected === 'email' }"
+        @input="onFieldChange"
+      />
     </div>
     <div class="form-group form-group--button">
-      <base-button class="button button-primary" type="submit">Create Store</base-button>
+      <base-button class="button button-primary" type="submit" :disabled="validInputs"
+        >Create Store</base-button
+      >
     </div>
   </base-form>
 </template>
 
 <script>
+import ErrorCard from '@/components/ui/ErrorCard.vue'
 import BaseForm from '@/components/ui/BaseForm.vue'
 export default {
   emits: ['submit'],
   components: {
     BaseForm,
+    ErrorCard,
+  },
+  props: {
+    store: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
       selectedImage: null,
-      storename: '',
-      address: '',
-      description: '',
-      contact: '',
-      email: '',
+      storename: this.store?.storeName || '',
+      address: this.store?.storeAddress || '',
+      description: this.store?.storeDescription || '',
+      contact: this.store?.storeContact || '',
+      email: this.store?.storeEmail || '',
+      error: false,
+      errorMessage: '',
+      inputAffected: '',
     }
+  },
+  watch: {
+    store: {
+      handler(newStore) {
+        if (!newStore) return
+        this.storename = newStore.storeName || ''
+        this.address = newStore.storeAddress || ''
+        this.description = newStore.storeDescription || ''
+        this.contact = newStore.storeContact || ''
+        this.email = newStore.storeEmail || ''
+      },
+    },
   },
   computed: {
     validInputs() {
@@ -69,7 +104,15 @@ export default {
       this.contact = digits
     },
     submitForm() {
+      this.resetError()
       if (this.validInputs) return
+
+      if (!this.email.includes('@') || !this.email.includes('.')) {
+        this.error = true
+        this.errorMessage = 'Please enter a valid email address. Please try again.'
+        this.inputAffected = 'email'
+        return
+      }
       this.$emit('submit', {
         storeName: this.storename,
         storeAddress: this.address,
@@ -80,6 +123,14 @@ export default {
         storeImage: null,
       })
     },
+    onFieldChange() {
+      this.resetError()
+    },
+    resetError() {
+      this.error = false
+      this.errorMessage = ''
+      this.inputAffected = ''
+    },
   },
 }
 </script>
@@ -87,12 +138,19 @@ export default {
 <style lang="scss" scoped>
 .form-group {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+
+  & input.error {
+    border-color: var(--error);
+  }
 
   label {
     min-width: 120px;
-    text-align: right;
+    text-align: left;
     font-weight: 500;
     flex-shrink: 0;
 
@@ -148,6 +206,25 @@ export default {
     label {
       display: none;
     }
+  }
+}
+
+button {
+  align-self: flex-end;
+
+  &:disabled {
+    background-color: #6b7280;
+    cursor: not-allowed;
+
+    &:hover {
+      background-color: #6b7280;
+    }
+  }
+}
+
+h1 {
+  @media (max-width: 1024px) {
+    font-size: 1.8em;
   }
 }
 </style>

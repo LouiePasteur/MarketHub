@@ -94,7 +94,6 @@ export default {
           password: password,
           login: payload.login,
         })
-        console.log('this is called3')
       } catch (error) {
         if (!payload.login) {
           const msg = error?.message || ''
@@ -140,5 +139,15 @@ export default {
 
 .auth_form {
   width: 30%;
+
+  @media (max-width: 1024px) {
+    width: 100%;
+  }
+}
+
+img {
+  @media (max-width: 1024px) {
+    display: none;
+  }
 }
 </style>

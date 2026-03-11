@@ -19,6 +19,7 @@ export default {
     if (!currentUser?.userId) {
       throw new Error('You must be logged in to create a store.')
     }
+
     const id = ''
     const storeName = payload.storeName
     const storeImage = payload.storeImage ?? null

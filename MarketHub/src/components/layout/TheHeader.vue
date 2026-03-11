@@ -70,6 +70,10 @@ export default {
   &:hover {
     cursor: pointer;
   }
+
+  @media (max-width: 1024px) {
+    font-size: 1.25rem;
+  }
 }
 
 .cart-icon {
@@ -119,12 +123,27 @@ i {
   border-radius: 50%;
   overflow: hidden;
   cursor: pointer;
+
+  & img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
 .store-icon {
   display: flex;
   align-items: center;
   color: #fff;
+}
+
+.profile-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  gap: 0.2rem;
 }
 
 @media (max-width: 1024px) {

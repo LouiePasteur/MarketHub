@@ -1,8 +1,8 @@
 <template>
-  <base-card class="container">
-    <h1>Create Store</h1>
+  <div class="container">
     <store-form class="store_form" @submit="handleSubmit"></store-form>
-  </base-card>
+    <img src="/store-market.png" alt="Auth Background" />
+  </div>
 </template>
 
 <script>
@@ -13,7 +13,6 @@ export default {
   },
   methods: {
     handleSubmit(payload) {
-      console.log('this is handleSubmit')
       this.$store.dispatch('stores/addStore', payload)
     },
   },
@@ -26,11 +25,27 @@ export default {
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
+  width: 50%;
+
+  @media (max-width: 1024px) {
+    width: 100%;
+  }
 }
 
-h1 {
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
+img {
+  width: 50%;
+  height: 100%;
+  object-fit: cover;
+
   @media (max-width: 1024px) {
-    font-size: 1.8em;
+    display: none;
   }
 }
 </style>

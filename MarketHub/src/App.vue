@@ -16,6 +16,9 @@ export default {
   async created() {
     this.$store.dispatch('autoLogin')
     await this.$store.dispatch('user/fetchUsers')
+    await this.$store.dispatch('stores/fetchStores')
+
+    console.log('myStore', this.$store.getters['stores/myStore'])
   },
 }
 </script>
