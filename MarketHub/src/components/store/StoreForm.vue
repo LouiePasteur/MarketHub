@@ -78,11 +78,19 @@ export default {
     store: {
       handler(newStore) {
         if (!newStore) return
-        this.storename = newStore.storeName || ''
-        this.address = newStore.storeAddress || ''
-        this.description = newStore.storeDescription || ''
-        this.contact = newStore.storeContact || ''
-        this.email = newStore.storeEmail || ''
+        const {
+          storeName = '',
+          storeAddress = '',
+          storeDescription = '',
+          storeContact = '',
+          storeEmail = '',
+        } = newStore
+
+        this.storename = storeName
+        this.address = storeAddress
+        this.description = storeDescription
+        this.contact = storeContact
+        this.email = storeEmail
       },
     },
   },
@@ -114,13 +122,14 @@ export default {
         return
       }
       this.$emit('submit', {
+        ...this.store,
         storeName: this.storename,
         storeAddress: this.address,
         storeDescription: this.description,
         storeContact: this.contact,
         storeEmail: this.email,
-        storeId: '',
-        storeImage: null,
+        storeId: this.store?.storeId || '',
+        storeImage: this.store?.storeImage ?? null,
       })
     },
     onFieldChange() {
