@@ -1,78 +1,90 @@
 <template>
   <div class="container">
-    <div class="store-detail">
-      <div class="store-detail-header">
-        <div class="store-image">
-          <img :src="store.image" :alt="store.name" />
-        </div>
-        <div class="store-information">
-          <div class="store-header">
-            <h1 class="store-name">{{ store.name }}</h1>
-            <div class="store-edit" data-tooltip="Edit Store">
-              <i class="fa-solid fa-pen"></i>
+    <div v-if="myStore">
+      <div class="store-detail">
+        <div class="store-detail-header">
+          <div class="store-image">
+            <img :src="store.image" :alt="store.name" />
+          </div>
+          <div class="store-information">
+            <div class="store-header">
+              <h1 class="store-name">{{ store.name }}</h1>
+              <div class="store-edit" data-tooltip="Edit Store">
+                <i class="fa-solid fa-pen"></i>
+              </div>
+            </div>
+            <div class="store-contact--container">
+              <div class="store-contact"><i class="fa-solid fa-phone"></i> {{ store.contact }}</div>
+              <div class="store-email"><i class="fa-solid fa-envelope"></i> {{ store.email }}</div>
+              <div class="store-address">
+                <i class="fa-solid fa-location-dot"></i> {{ store.address }}
+              </div>
+              <div class="store-description"><b>About us: </b>{{ store.description }}</div>
+              <div class="store-owner"><b>Owner: </b>{{ store.owner }}</div>
+              <div class="store-created-date">
+                <b>Store Date Created: </b>{{ store.createdDate }}
+              </div>
             </div>
           </div>
-          <div class="store-contact--container">
-            <div class="store-contact"><i class="fa-solid fa-phone"></i> {{ store.contact }}</div>
-            <div class="store-email"><i class="fa-solid fa-envelope"></i> {{ store.email }}</div>
-            <div class="store-address">
-              <i class="fa-solid fa-location-dot"></i> {{ store.address }}
-            </div>
-            <div class="store-description"><b>About us: </b>{{ store.description }}</div>
-            <div class="store-owner"><b>Owner: </b>{{ store.owner }}</div>
-            <div class="store-created-date"><b>Store Date Created: </b>{{ store.createdDate }}</div>
+        </div>
+        <div class="store-menu">
+          <button class="store-menu-arrow store-menu-arrow--left" @click="prevMenu">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+
+          <div
+            v-for="item in menu"
+            :key="item.identifier"
+            class="store-menu-item"
+            :class="{ active: active === item.identifier }"
+            @click="makeActive(item.identifier)"
+          >
+            {{ item.name }}
           </div>
+
+          <button class="store-menu-arrow store-menu-arrow--right" @click="nextMenu">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+        <div v-if="active === 'products'">
+          <base-card class="store-products">
+            <base-button class="button button-primary add-button"> Add Product </base-button>
+            <ul class="product-item">
+              <product-items
+                v-for="product in products"
+                :key="product.id"
+                :name="product.name"
+                :image="product.image"
+                :price="product.price"
+                :product="product"
+                @open-dialogue="openDialogue"
+              />
+            </ul>
+          </base-card>
+        </div>
+        <div v-if="active === 'current-orders'">
+          <cart-items :cartItems="cartItems" page="my-store" />
+        </div>
+        <div v-if="active === 'history'">
+          <cart-items :cartItems="cartItems" page="order-history" />
         </div>
       </div>
-      <div class="store-menu">
-        <button class="store-menu-arrow store-menu-arrow--left" @click="prevMenu">
-          <i class="fa-solid fa-chevron-left"></i>
-        </button>
-
-        <div
-          v-for="item in menu"
-          :key="item.identifier"
-          class="store-menu-item"
-          :class="{ active: active === item.identifier }"
-          @click="makeActive(item.identifier)"
-        >
-          {{ item.name }}
-        </div>
-
-        <button class="store-menu-arrow store-menu-arrow--right" @click="nextMenu">
-          <i class="fa-solid fa-chevron-right"></i>
-        </button>
-      </div>
-      <div v-if="active === 'products'">
-        <base-card class="store-products">
-          <base-button class="button button-primary add-button"> Add Product </base-button>
-          <ul class="product-item">
-            <product-items
-              v-for="product in products"
-              :key="product.id"
-              :name="product.name"
-              :image="product.image"
-              :price="product.price"
-              :product="product"
-              @open-dialogue="openDialogue"
-            />
-          </ul>
+      <product-dialogue
+        :isOpen="isDialogueOpen"
+        :product="selectedProduct"
+        @close="closeDialogue"
+      />
+      <review-cards v-if="active === 'reviews'" :reviews="reviews" />
+      <div v-if="active === 'news'">
+        <base-card class="store-news">
+          <base-button class="button button-primary add-button">Add News</base-button>
+          <store-news v-if="active === 'news'" />
         </base-card>
       </div>
-      <div v-if="active === 'current-orders'">
-        <cart-items :cartItems="cartItems" page="my-store" />
-      </div>
-      <div v-if="active === 'history'">
-        <cart-items :cartItems="cartItems" page="order-history" />
-      </div>
     </div>
-    <product-dialogue :isOpen="isDialogueOpen" :product="selectedProduct" @close="closeDialogue" />
-    <review-cards v-if="active === 'reviews'" :reviews="reviews" />
-    <div v-if="active === 'news'">
-      <base-card class="store-news">
-        <base-button class="button button-primary add-button">Add News</base-button>
-        <store-news v-if="active === 'news'" />
-      </base-card>
+    <div class="no-store" v-else>
+      <h3>You don't have any store yet. Please create a store first.</h3>
+      <base-button class="button button-primary">Create Store</base-button>
     </div>
   </div>
 </template>
@@ -237,6 +249,9 @@ export default {
         email: myStore.storeEmail || '',
         createdDate: myStore.createdDate || '2021-01-01',
       }
+    },
+    myStore() {
+      return !!this.$store.getters['stores/myStore']
     },
   },
   methods: {
@@ -467,5 +482,13 @@ div {
   @media (max-width: 768px) {
     grid-template-columns: repeat(1, 1fr);
   }
+}
+
+.no-store {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
 }
 </style>

@@ -2,7 +2,7 @@
   <base-card>
     <router-link to="/store/{{ id }}" class="store-link">
       <li class="store-item">
-        <img :src="image" alt="Store Image" />
+        <img :src="'fashion.jpg'" alt="Store Image" />
         <div class="store-stars">
           <span v-for="star in 5" :key="star" class="star filled"> ★ </span>
           <span class="numeric-rating">(4.5)</span>

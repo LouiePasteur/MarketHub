@@ -7,23 +7,28 @@
         :class="'button-secondary'"
         :isLink="true"
         :endpoint="'store/create'"
+        v-if="!myStore"
       >
         Create my Store
       </base-button>
     </div>
-    <div class="store-list-container">
+    <div class="store-list-container" v-if="stores.length > 0">
       <ul class="store-list">
         <store-item
           v-for="store in stores"
-          :key="store.id"
-          :id="store.id"
-          :name="store.name"
-          :image="store.image"
-          :address="store.address"
+          :key="store.storeId"
+          :id="store.storeId"
+          :name="store.storeName"
+          :image="store.storeImage"
+          :address="store.storeAddress"
           :ownerId="store.ownerId"
-          :description="store.description"
+          :description="store.storeDescription"
+          :rate="store.storeRate"
         />
       </ul>
+    </div>
+    <div class="no-store" v-else>
+      <h3>There is no available store yet.</h3>
     </div>
   </div>
 </template>
@@ -36,36 +41,16 @@ export default {
   components: { StoreItem, StoreSearch },
   data() {
     return {
-      stores: [
-        {
-          id: 1,
-          name: 'Store 1',
-          image: '/fashion.jpg',
-          address: '123 Main St, Anytown, USA',
-          owner: 'John Doe',
-          ownerId: 1,
-          description: 'Description of Store 1',
-        },
-        {
-          id: 2,
-          name: 'Store 2',
-          image: '/fashion.jpg',
-          address: '123 Main St, Anytown, USA',
-          owner: 'Jane Doe',
-          ownerId: 2,
-          description: 'Description of Store 2',
-        },
-        {
-          id: 3,
-          name: 'Store 3',
-          image: '/fashion.jpg',
-          address: '123 Main St, Anytown, USA',
-          owner: 'Jim Doe',
-          ownerId: 3,
-          description: 'Description of Store 3',
-        },
-      ],
+      storesItems: [],
     }
+  },
+  computed: {
+    stores() {
+      return this.$store.getters['stores/stores']
+    },
+    myStore() {
+      return !!this.$store.getters['stores/myStore']
+    },
   },
 }
 </script>

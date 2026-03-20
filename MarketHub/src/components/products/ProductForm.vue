@@ -5,12 +5,36 @@
       <input type="text" id="name" required v-model="storename" />
     </div>
     <div class="form-group">
-      <label for="image">Image</label>
-      <input type="file" id="image" accept="image/*" @change="handleImageChange" />
+      <label for="image">Product Image</label>
+      <div class="image-upload-grid">
+        <div class="image-upload-slot" v-for="slotIndex in visibleUploadSlots" :key="slotIndex">
+          <input
+            type="file"
+            :id="`image-${slotIndex}`"
+            class="visually-hidden-file-input"
+            accept="image/*"
+            multiple
+            @change="handleImageChange($event, slotIndex)"
+          />
+          <label :for="`image-${slotIndex}`" class="image-upload-square">
+            <img
+              v-if="selectedImages[slotIndex]"
+              :src="selectedImages[slotIndex].preview"
+              :alt="`Selected Product Image ${slotIndex + 1}`"
+            />
+            <span v-if="selectedImages[slotIndex]" class="image-upload-overlay">Change</span>
+            <span v-else class="image-upload-placeholder">+ Upload Image</span>
+          </label>
+        </div>
+      </div>
+      <small class="input-help">
+        {{ selectedImages.length }}/{{ maxUploads }} images uploaded (you can select multiple at once)
+      </small>
     </div>
     <div class="form-group">
       <label for="address">Category</label>
-      <select id="category" name="category" v-model="category">
+      <select id="category" name="category" v-model="category" required>
+        <option disabled value="">Select a category</option>
         <option v-for="category in categories" :key="category.id" :value="category.name">
           {{ category.name }}
         </option>
@@ -39,8 +63,9 @@ export default {
   emits: ['submit', 'image-selected'],
   data() {
     return {
-      selectedImage: null,
-      category: 'Fashion',
+      selectedImages: [],
+      maxUploads: 4,
+      category: '',
       categories: [
         {
           id: 1,
@@ -61,36 +86,92 @@ export default {
       ],
     }
   },
+  computed: {
+    visibleUploadSlots() {
+      const totalSlots = Math.min(this.selectedImages.length + 1, this.maxUploads)
+      return Array.from({ length: totalSlots }, (_, index) => index)
+    },
+  },
   methods: {
     submitForm() {
       this.$emit('submit')
     },
-    handleImageChange(event) {
-      const file = event.target.files[0]
-
-      if (!file) {
+    handleImageChange(event, slotIndex) {
+      const files = Array.from(event.target.files || [])
+      if (!files.length) {
         return
       }
 
-      // Validate file type
+      const acceptedFiles = []
       const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
-      if (!validImageTypes.includes(file.type)) {
-        alert('Please select a valid image file (JPEG, PNG, GIF, or WebP)')
-        event.target.value = ''
-        this.selectedImage = null
-        return
-      }
-
       const maxSize = 5 * 1024 * 1024
-      if (file.size > maxSize) {
-        alert('Image size should be less than 5MB')
+
+      for (const file of files) {
+        if (!validImageTypes.includes(file.type)) {
+          alert(`"${file.name}" is not a valid image file (JPEG, PNG, GIF, or WebP)`)
+          continue
+        }
+
+        if (file.size > maxSize) {
+          alert(`"${file.name}" is larger than 5MB`)
+          continue
+        }
+
+        acceptedFiles.push(file)
+      }
+
+      if (!acceptedFiles.length) {
         event.target.value = ''
-        this.selectedImage = null
         return
       }
 
-      this.$emit('image-selected', file)
+      const currentCount = this.selectedImages.length
+      const availableSlots = this.maxUploads - Math.min(currentCount, this.maxUploads)
+      const filesToUse = acceptedFiles.slice(0, availableSlots || 1)
+
+      if (acceptedFiles.length > filesToUse.length) {
+        alert(`Only ${this.maxUploads} images are allowed.`)
+      }
+
+      if (slotIndex < this.selectedImages.length) {
+        const existing = this.selectedImages[slotIndex]
+        if (existing?.preview) {
+          URL.revokeObjectURL(existing.preview)
+        }
+
+        const replacementFile = filesToUse[0]
+        this.selectedImages.splice(slotIndex, 1, {
+          file: replacementFile,
+          preview: URL.createObjectURL(replacementFile),
+        })
+
+        const remainingFiles = filesToUse.slice(1)
+        for (const file of remainingFiles) {
+          if (this.selectedImages.length >= this.maxUploads) break
+          this.selectedImages.push({
+            file,
+            preview: URL.createObjectURL(file),
+          })
+        }
+      } else {
+        for (const file of filesToUse) {
+          if (this.selectedImages.length >= this.maxUploads) break
+          this.selectedImages.push({
+            file,
+            preview: URL.createObjectURL(file),
+          })
+        }
+      }
+
+      this.$emit(
+        'image-selected',
+        this.selectedImages.map((image) => image.file),
+      )
+      event.target.value = ''
     },
+  },
+  beforeUnmount() {
+    this.selectedImages.forEach((image) => URL.revokeObjectURL(image.preview))
   },
 }
 </script>
@@ -98,12 +179,12 @@ export default {
 <style lang="scss" scoped>
 .form-group {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
 
   label {
     min-width: 120px;
-    text-align: right;
     font-weight: 500;
     flex-shrink: 0;
 
@@ -114,10 +195,6 @@ export default {
         color: #ef4444;
         font-weight: bold;
       }
-    }
-
-    @media (max-width: 1024px) {
-      text-align: left;
     }
   }
 
@@ -136,6 +213,7 @@ export default {
   }
 
   input,
+  select,
   textarea {
     flex: 1;
     padding: 0.5rem;
@@ -151,9 +229,91 @@ export default {
     }
   }
 
+  .visually-hidden-file-input {
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  select {
+    background-color: #fff;
+    cursor: pointer;
+  }
+
   textarea {
     min-height: 100px;
     resize: vertical;
+  }
+
+  .input-help {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #475569;
+  }
+
+  .image-upload-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 180px));
+    gap: 0.75rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(1, minmax(0, 180px));
+    }
+  }
+
+  .image-upload-slot {
+    position: relative;
+  }
+
+  .image-upload-square {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    border: 2px dashed #cbd5e1;
+    border-radius: var(--radius-md, 0.375rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    cursor: pointer;
+    overflow: hidden;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease;
+
+    &:hover {
+      border-color: var(--primary, #3b82f6);
+      background-color: #eff6ff;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  .image-upload-overlay {
+    position: absolute;
+    inset: auto 0 0 0;
+    background: rgba(15, 23, 42, 0.65);
+    color: #fff;
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 0.35rem 0.25rem;
+  }
+
+  .image-upload-placeholder {
+    font-size: 0.95rem;
+    color: #475569;
+    text-align: center;
+    padding: 0 0.5rem;
   }
 
   // For the button group, center it

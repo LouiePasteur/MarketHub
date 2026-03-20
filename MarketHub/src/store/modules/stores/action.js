@@ -28,6 +28,7 @@ export default {
     const storeContact = payload.storeContact
     const storeEmail = payload.storeEmail
     const storeOwnerId = currentUser.userId
+    const storeRate = payload.storeRate
 
     const response = await fetch(
       `https://markethub-e46d7-default-rtdb.asia-southeast1.firebasedatabase.app/stores.json?auth=${context.rootGetters.token}`,
@@ -42,6 +43,7 @@ export default {
           storeContact: storeContact,
           storeEmail: storeEmail,
           storeOwnerId: storeOwnerId,
+          storeRate: storeRate,
         }),
       },
     )
@@ -69,6 +71,7 @@ export default {
       storeContact: storeContact,
       storeEmail: storeEmail,
       storeOwnerId: storeOwnerId,
+      storeRate: storeRate,
     }
     context.commit('addStore', newStore)
 
@@ -84,6 +87,7 @@ export default {
     const storeContact = payload.storeContact
     const storeEmail = payload.storeEmail
     const storeOwnerId = context.rootGetters['user/currentUser']?.userId
+    const storeRate = payload.storeRate
 
     const response = await fetch(
       `https://markethub-e46d7-default-rtdb.asia-southeast1.firebasedatabase.app/stores/${id}.json?auth=${context.rootGetters.token}`,
@@ -98,6 +102,7 @@ export default {
           storeContact: storeContact,
           storeEmail: storeEmail,
           storeOwnerId: storeOwnerId,
+          storeRate: storeRate,
         }),
       },
     )
@@ -117,6 +122,7 @@ export default {
       storeContact: storeContact,
       storeEmail: storeEmail,
       storeOwnerId: storeOwnerId,
+      storeRate: storeRate,
     }
     context.commit('updateStore', updatedStore)
     router.push('/products')
