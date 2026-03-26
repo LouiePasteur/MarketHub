@@ -1,8 +1,8 @@
 <template>
-  <base-card class="container">
-    <h1>Add Product</h1>
+  <div class="container">
     <product-form class="product_form" @submit="handleSubmit"></product-form>
-  </base-card>
+    <img src="/factory.png" alt="Auth Background" />
+  </div>
 </template>
 
 <script>
@@ -25,11 +25,27 @@ export default {
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
+  width: 50%;
+
+  @media (max-width: 1024px) {
+    width: 100%;
+  }
 }
 
-h1 {
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
+img {
+  width: 50%;
+  height: 100%;
+  object-fit: cover;
+
   @media (max-width: 1024px) {
-    font-size: 1.8em;
+    display: none;
   }
 }
 </style>

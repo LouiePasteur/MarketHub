@@ -1,60 +1,80 @@
 <template>
   <base-form @submit.prevent="submitForm">
-    <div class="form-group">
-      <label for="name">Product Name</label>
-      <input type="text" id="name" required v-model="storename" />
-    </div>
-    <div class="form-group">
-      <label for="image">Product Image</label>
-      <div class="image-upload-grid">
-        <div class="image-upload-slot" v-for="slotIndex in visibleUploadSlots" :key="slotIndex">
-          <input
-            type="file"
-            :id="`image-${slotIndex}`"
-            class="visually-hidden-file-input"
-            accept="image/*"
-            multiple
-            @change="handleImageChange($event, slotIndex)"
-          />
-          <label :for="`image-${slotIndex}`" class="image-upload-square">
-            <img
-              v-if="selectedImages[slotIndex]"
-              :src="selectedImages[slotIndex].preview"
-              :alt="`Selected Product Image ${slotIndex + 1}`"
+    <base-card>
+      <h1>Add Product</h1>
+      <div class="form-group">
+        <label for="name">Product Name</label>
+        <input type="text" id="name" required v-model="storename" />
+      </div>
+      <div class="form-group">
+        <label for="image">Product Image</label>
+        <div class="image-upload-grid">
+          <div class="image-upload-slot" v-for="slotIndex in visibleUploadSlots" :key="slotIndex">
+            <input
+              type="file"
+              :id="`image-${slotIndex}`"
+              class="visually-hidden-file-input"
+              accept="image/*"
+              multiple
+              @change="handleImageChange($event, slotIndex)"
+              required
             />
-            <span v-if="selectedImages[slotIndex]" class="image-upload-overlay">Change</span>
-            <span v-else class="image-upload-placeholder">+ Upload Image</span>
-          </label>
+            <label :for="`image-${slotIndex}`" class="image-upload-square">
+              <img
+                v-if="selectedImages[slotIndex]"
+                :src="selectedImages[slotIndex].preview"
+                :alt="`Selected Product Image ${slotIndex + 1}`"
+                required
+              />
+              <span v-if="selectedImages[slotIndex]" class="image-upload-overlay">Change</span>
+              <span v-else class="image-upload-placeholder">+ Upload Image</span>
+            </label>
+          </div>
+        </div>
+        <small class="input-help">
+          {{ selectedImages.length }}/{{ maxUploads }} images uploaded (you can select multiple at
+          once)
+        </small>
+      </div>
+      <div class="form-group">
+        <label for="address">Category</label>
+        <select id="category" name="category" v-model="category" required>
+          <option disabled value="">Select a category</option>
+          <option v-for="category in categories" :key="category.id" :value="category.name">
+            {{ category.name }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" required v-model="description"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="stocks">Stocks</label>
+        <input type="number" id="stocks" required v-model="stocks" />
+      </div>
+      <div class="form-group">
+        <label for="price">Price</label>
+        <div class="currency-input-wrapper">
+          <span class="currency-prefix" aria-hidden="true">$</span>
+          <input
+            type="number"
+            id="price"
+            required
+            v-model="price"
+            min="0"
+            max="10000"
+            placeholder="0.00"
+            inputmode="decimal"
+          />
         </div>
       </div>
-      <small class="input-help">
-        {{ selectedImages.length }}/{{ maxUploads }} images uploaded (you can select multiple at once)
-      </small>
-    </div>
-    <div class="form-group">
-      <label for="address">Category</label>
-      <select id="category" name="category" v-model="category" required>
-        <option disabled value="">Select a category</option>
-        <option v-for="category in categories" :key="category.id" :value="category.name">
-          {{ category.name }}
-        </option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea id="description" required v-model="description"></textarea>
-    </div>
-    <div class="form-group">
-      <label for="stocks">Stocks</label>
-      <input type="number" id="stocks" required v-model="stocks" />
-    </div>
-    <div class="form-group">
-      <label for="price">Price</label>
-      <input type="number" id="price" required v-model="price" />
-    </div>
-    <div class="form-group form-group--button">
-      <base-button class="button button-primary" type="submit">Add Product</base-button>
-    </div>
+      <div class="form-group form-group--button">
+        <base-button class="button button-primary" :disabled="validInputs" type="submit"
+          >Add Product</base-button
+        >
+      </div>
+    </base-card>
   </base-form>
 </template>
 
@@ -90,6 +110,16 @@ export default {
     visibleUploadSlots() {
       const totalSlots = Math.min(this.selectedImages.length + 1, this.maxUploads)
       return Array.from({ length: totalSlots }, (_, index) => index)
+    },
+    validInputs() {
+      return (
+        !this.storename ||
+        !this.selectedImages.length ||
+        !this.category ||
+        !this.description ||
+        !this.stocks ||
+        !this.price
+      )
     },
   },
   methods: {
@@ -177,11 +207,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+h1 {
+  @media (max-width: 1024px) {
+    font-size: 1.8em;
+  }
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
+  margin-bottom: 1rem;
 
   label {
     min-width: 120px;
@@ -189,7 +226,9 @@ export default {
     flex-shrink: 0;
 
     &:has(+ input[required]),
-    &:has(+ textarea[required]) {
+    &:has(+ textarea[required]),
+    &:has(+ select[required]),
+    &:has(+ .currency-input-wrapper input[required]) {
       &::after {
         content: ' *';
         color: #ef4444;
@@ -229,6 +268,11 @@ export default {
     }
   }
 
+  button[disabled] {
+    background-color: #6b7280;
+    cursor: not-allowed;
+  }
+
   .visually-hidden-file-input {
     width: 1px;
     height: 1px;
@@ -256,13 +300,35 @@ export default {
     color: #475569;
   }
 
-  .image-upload-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 180px));
-    gap: 0.75rem;
+  .currency-input-wrapper {
+    position: relative;
+    width: 100%;
+  }
 
-    @media (max-width: 768px) {
-      grid-template-columns: repeat(1, minmax(0, 180px));
+  .currency-prefix {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    transform: translateY(-50%);
+    color: #475569;
+    font-weight: 500;
+    pointer-events: none;
+  }
+
+  .currency-input-wrapper input {
+    padding-left: 1.75rem;
+  }
+
+  .image-upload-grid {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+
+    @media (max-width: 1024px) {
+      display: flex;
+      justify-content: center;
     }
   }
 
@@ -316,10 +382,14 @@ export default {
     padding: 0 0.5rem;
   }
 
-  // For the button group, center it
   &--button {
-    justify-content: flex-end;
     margin-top: 0.5rem;
+    align-items: flex-end;
+
+    @media (max-width: 1024px) {
+      align-items: center;
+      width: 100%;
+    }
 
     label {
       display: none;

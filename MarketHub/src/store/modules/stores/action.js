@@ -14,6 +14,7 @@ export default {
     }
     context.commit('setStores', stores)
   },
+
   async addStore(context, payload) {
     const currentUser = context.rootGetters['user/currentUser']
     if (!currentUser?.userId) {
