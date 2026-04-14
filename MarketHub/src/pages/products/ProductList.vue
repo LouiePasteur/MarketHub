@@ -10,8 +10,8 @@
           <product-items
             v-for="product in products"
             :key="product.id"
-            :name="product.name"
-            :image="product.image"
+            :name="product.productName"
+            :image="getProductImage(product)"
             :price="product.price"
             :product="product"
             @open-dialogue="openDialogue"
@@ -40,35 +40,22 @@ export default {
     return {
       isDialogueOpen: false,
       selectedProduct: null,
-      products: [
-        {
-          id: 1,
-          name: 'Product 1',
-          image: '/cosmetics.jpg',
-          price: 100,
-          total_sold: 100,
-          description: 'Description of Product 1',
-        },
-        {
-          id: 2,
-          name: 'Product 2',
-          image: '/groceries.jpg',
-          price: 100,
-          total_sold: 100,
-          description: 'Description of Product 2',
-        },
-        {
-          id: 3,
-          name: 'Product 3',
-          image: '/computer.jpg',
-          price: 100,
-          total_sold: 100,
-          description: 'Description of Product 3',
-        },
-      ],
     }
   },
   methods: {
+    getProductImage(product) {
+      const firstImage = product?.productImage?.[0]
+
+      if (typeof firstImage === 'string') {
+        return firstImage
+      }
+
+      if (typeof firstImage?.preview === 'string') {
+        return firstImage.preview
+      }
+
+      return ''
+    },
     openDialogue(product) {
       this.selectedProduct = product
       this.isDialogueOpen = true
@@ -78,8 +65,10 @@ export default {
       this.selectedProduct = null
     },
   },
-  mounted() {
-    console.log('currentUser', this.$store.getters['user/currentUser'])
+  computed: {
+    products() {
+      return this.$store.getters['products/products']
+    },
   },
 }
 </script>

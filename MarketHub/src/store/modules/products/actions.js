@@ -1,3 +1,47 @@
+import router from '@/router'
+
+function blobToDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+    reader.readAsDataURL(blob)
+  })
+}
+
+async function normalizeProductImages(images = []) {
+  const normalized = await Promise.all(
+    images.map(async (image) => {
+      if (typeof image === 'string') {
+        if (image.startsWith('data:') || image.startsWith('https://')) return image
+        return null
+      }
+
+      if (image?.file instanceof File) {
+        return await blobToDataUrl(image.file)
+      }
+
+      if (typeof image?.preview === 'string') {
+        if (image.preview.startsWith('data:') || image.preview.startsWith('https://')) {
+          return image.preview
+        }
+
+        if (image.preview.startsWith('blob:')) {
+          const blobResponse = await fetch(image.preview)
+          const blob = await blobResponse.blob()
+          return await blobToDataUrl(blob)
+        }
+
+        return null
+      }
+
+      return null
+    }),
+  )
+
+  return normalized.filter((url) => typeof url === 'string' && url.length > 0)
+}
+
 export default {
   async fetchProducts(context) {
     const response = await fetch(
@@ -26,7 +70,7 @@ export default {
 
     const id = ''
     const productName = payload.productName
-    const productImage = payload.productImage
+    const productImage = await normalizeProductImages(payload.productImage)
     const productCategory = payload.productCategory
     const productDescription = payload.productDescription
     const stocks = payload.stocks
@@ -86,7 +130,7 @@ export default {
   async updateProduct(context, payload) {
     const id = payload.id
     const productName = payload.productName
-    const productImage = payload.productImage
+    const productImage = await normalizeProductImages(payload.productImage)
     const productCategory = payload.productCategory
     const productDescription = payload.productDescription
     const stocks = payload.stocks

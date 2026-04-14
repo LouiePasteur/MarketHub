@@ -12,8 +12,9 @@ export default {
     ProductForm,
   },
   methods: {
-    handleSubmit() {
-      console.log('Create Store')
+    handleSubmit(payload) {
+      console.log('clicked handle submit', payload)
+      this.$store.dispatch('products/addProduct', payload)
     },
   },
 }

@@ -2,11 +2,16 @@
   <base-dialogue :isOpen="isOpen" @close="closeDialogue" class="product-dialogue">
     <div class="dialogue-body">
       <div class="product-image-container">
-        <img :src="product?.image" :alt="product?.name" class="product-image" />
+        <img :src="product?.productImage?.[0]" :alt="product?.name" class="product-image" />
       </div>
       <div class="product-details">
-        <h2 class="product-name">{{ product?.name }}</h2>
-        <div class="product-price">$ {{ product?.price }}</div>
+        <h2 class="product-name">{{ product?.productName }}</h2>
+        <div>
+          <div class="product-price">$ {{ product?.price }}</div>
+          <small class="product-stocks">Stocks: {{ product?.stocks }}</small>
+        </div>
+        <div class="product-description">{{ product?.productDescription }}</div>
+
         <div class="product-actions">
           <base-button class="button button-secondary"> Add to Cart </base-button>
           <base-button class="button button-primary"> Buy Now </base-button>

@@ -4,7 +4,7 @@
       <h1>Add Product</h1>
       <div class="form-group">
         <label for="name">Product Name</label>
-        <input type="text" id="name" required v-model="storename" />
+        <input type="text" id="name" required v-model="productName" />
       </div>
       <div class="form-group">
         <label for="image">Product Image</label>
@@ -17,7 +17,6 @@
               accept="image/*"
               multiple
               @change="handleImageChange($event, slotIndex)"
-              required
             />
             <label :for="`image-${slotIndex}`" class="image-upload-square">
               <img
@@ -79,7 +78,11 @@
 </template>
 
 <script>
+import BaseForm from '@/components/ui/BaseForm.vue'
 export default {
+  components: {
+    BaseForm,
+  },
   emits: ['submit', 'image-selected'],
   data() {
     return {
@@ -112,8 +115,16 @@ export default {
       return Array.from({ length: totalSlots }, (_, index) => index)
     },
     validInputs() {
+      console.log(
+        this.productName,
+        this.selectedImages,
+        this.category,
+        this.description,
+        this.stocks,
+        this.price,
+      )
       return (
-        !this.storename ||
+        !this.productName ||
         !this.selectedImages.length ||
         !this.category ||
         !this.description ||
@@ -124,7 +135,17 @@ export default {
   },
   methods: {
     submitForm() {
-      this.$emit('submit')
+      this.$emit('submit', {
+        productName: this.productName,
+        productImage: this.selectedImages,
+        productCategory: this.category,
+        productDescription: this.description,
+        stocks: this.stocks,
+        price: this.price,
+        sold: 0,
+        storeId: this.storeId,
+        productRating: 0,
+      })
     },
     handleImageChange(event, slotIndex) {
       const files = Array.from(event.target.files || [])

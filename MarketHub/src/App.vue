@@ -17,7 +17,8 @@ export default {
     this.$store.dispatch('autoLogin')
     await this.$store.dispatch('user/fetchUsers')
     await this.$store.dispatch('stores/fetchStores')
-
+    await this.$store.dispatch('products/fetchProducts')
+    console.log('products', this.$store.getters['products/products'])
     console.log('myStore', this.$store.getters['stores/myStore'])
   },
 }
