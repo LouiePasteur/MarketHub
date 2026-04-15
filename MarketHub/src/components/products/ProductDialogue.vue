@@ -2,7 +2,42 @@
   <base-dialogue :isOpen="isOpen" @close="closeDialogue" class="product-dialogue">
     <div class="dialogue-body">
       <div class="product-image-container">
-        <img :src="product?.productImage?.[0]" :alt="product?.name" class="product-image" />
+        <div class="product-image-main">
+          <div class="image-action" v-if="imageLength > 1">
+            <div class="previous-image" @click="previousImage">
+              <i class="fa-solid fa-chevron-left"></i>
+            </div>
+            <div class="image-pointer">
+              <span
+                class="image-pointer-item"
+                v-for="(image, index) in product?.productImage"
+                :key="image"
+                @click="setImageIndex(index)"
+                :class="{ active: imageIndex === index }"
+                >.</span
+              >
+            </div>
+            <div class="next-image">
+              <i class="fa-solid fa-chevron-right" @click="nextImage"></i>
+            </div>
+          </div>
+          <img
+            :src="product?.productImage?.[imageIndex]"
+            :alt="product?.name"
+            class="product-image product-image--main"
+          />
+        </div>
+        <div class="product-image-container product-image-container--mini" v-if="imageLength > 1">
+          <img
+            v-for="(image, index) in product?.productImage"
+            :key="image"
+            :src="image"
+            :alt="product?.name"
+            class="product-image"
+            :class="{ active: imageIndex === index }"
+            @click="setImageIndex(index)"
+          />
+        </div>
       </div>
       <div class="product-details">
         <h2 class="product-name">{{ product?.productName }}</h2>
@@ -64,6 +99,7 @@ export default {
   emits: ['close', 'add-to-cart', 'buy-now'],
   data() {
     return {
+      imageIndex: 0,
       activeTab: 'product-details',
       reviews: [
         {
@@ -93,12 +129,32 @@ export default {
       ],
     }
   },
+  computed: {
+    imageLength() {
+      return this.product?.productImage?.length
+    },
+  },
   methods: {
     closeDialogue() {
       this.$emit('close')
     },
     setActiveTab(tab) {
       this.activeTab = tab
+    },
+    nextImage() {
+      this.imageIndex++
+      if (this.imageIndex >= this.product?.productImage?.length) {
+        this.imageIndex = 0
+      }
+    },
+    previousImage() {
+      this.imageIndex--
+      if (this.imageIndex < 0) {
+        this.imageIndex = this.product?.productImage?.length - 1
+      }
+    },
+    setImageIndex(index) {
+      this.imageIndex = index
     },
   },
   watch: {
@@ -107,6 +163,7 @@ export default {
         document.body.style.overflow = 'hidden'
       } else {
         document.body.style.overflow = ''
+        this.imageIndex = 0
       }
     },
   },
@@ -175,6 +232,52 @@ export default {
   }
 }
 
+.image-action {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-md);
+  position: absolute;
+  inset: 0;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+div :is(.previous-image, .next-image) {
+  color: rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  display: flex;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+
+  &:is(:hover, :focus) {
+    color: var(--primary);
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.image-pointer {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25rem;
+  color: rgba(0, 0, 0, 0.25);
+  align-self: flex-end;
+
+  & span {
+    cursor: pointer;
+
+    &:is(:hover, :focus) {
+      color: var(--primary);
+    }
+  }
+  & span.active {
+    color: var(--primary);
+  }
+}
+
 .dialogue-body {
   display: flex;
   flex-direction: row;
@@ -182,18 +285,55 @@ export default {
   margin-bottom: var(--spacing-lg);
 }
 
+.product-image-main {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-sm);
+  border: 3px solid var(--primary);
+}
+
 .product-image-container {
   width: 50%;
-  height: 300px;
+  height: 100%;
   overflow: hidden;
   border-radius: var(--radius-md);
   background-color: #f8fafc;
+
+  &--mini {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-md);
+    width: 100%;
+    height: 50px;
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-top: var(--spacing-sm);
+
+    img {
+      width: 50px;
+      flex: 0 0 50px;
+      height: 100%;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+    & img.active {
+      border: 2px solid var(--primary);
+    }
+  }
 }
 
 .product-image {
   width: 100%;
-  height: 100%;
   object-fit: cover;
+
+  &--main {
+    display: block;
+    height: 300px;
+  }
 }
 
 .product-details {
@@ -222,7 +362,6 @@ export default {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
-  margin-top: var(--spacing-sm);
 }
 
 .fade-enter-active,
@@ -249,8 +388,12 @@ export default {
   }
 
   .product-image-container {
-    height: 250px;
     width: 100%;
+    height: auto;
+  }
+
+  .product-image--main {
+    height: 250px;
   }
 
   .product-name {
