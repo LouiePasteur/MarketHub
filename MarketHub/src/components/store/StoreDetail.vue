@@ -60,7 +60,7 @@
       </div>
     </div>
     <product-dialogue :isOpen="isDialogueOpen" :product="selectedProduct" @close="closeDialogue" />
-    <review-cards v-if="active === 'reviews'" :reviews="reviews" />
+    <review-cards v-if="active === 'reviews'" :reviews="reviews" :page="'store'" />
     <store-news v-if="active === 'news'" />
   </base-card>
 </template>
