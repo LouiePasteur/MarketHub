@@ -60,7 +60,12 @@
       </div>
     </div>
     <product-dialogue :isOpen="isDialogueOpen" :product="selectedProduct" @close="closeDialogue" />
-    <review-cards v-if="active === 'reviews'" :reviews="reviews" :page="'store'" />
+    <review-cards
+      v-if="active === 'reviews'"
+      :reviews="reviews"
+      :page="'store'"
+      @add-review="addReview"
+    />
     <store-news v-if="active === 'news'" />
   </base-card>
 </template>
@@ -166,6 +171,9 @@ export default {
     closeDialogue() {
       this.isDialogueOpen = false
       this.selectedProduct = null
+    },
+    addReview(review) {
+      this.$store.dispatch('comments/addStoreComment', review)
     },
   },
 }

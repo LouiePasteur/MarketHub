@@ -141,9 +141,13 @@ export default {
         reviewContent: '',
         reviewRating: 1,
         reviewDate: new Date().toISOString(),
-        reviewerProfile: '',
-        reviewerId: '',
-        reviewerEmail: '',
+        reviewerProfile: this.$store.getters['user/currentUser'].profilePicture,
+        reviewerId: this.$store.getters['user/currentUser'].userId,
+        reviewerEmail: this.$store.getters['user/currentUser'].email,
+        reviewerName:
+          this.$store.getters['user/currentUser'].firstName +
+          ' ' +
+          this.$store.getters['user/currentUser'].lastName,
       },
     }
   },

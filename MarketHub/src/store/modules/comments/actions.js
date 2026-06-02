@@ -25,6 +25,7 @@ export default {
     }
     context.commit('setProductComments', responseData)
   },
+
   async addStoreComment(context, payload) {
     const currentUser = context.rootGetters['user/currentUser']
     if (!currentUser?.userId) {
