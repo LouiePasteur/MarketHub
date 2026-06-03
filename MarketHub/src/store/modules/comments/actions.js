@@ -5,12 +5,14 @@ export default {
     )
     const responseData = await response.json()
     const storeComments = []
-    for (const key in responseData) {
-      storeComments.push({
-        ...responseData[key],
-      })
+    if (responseData) {
+      for (const key in responseData) {
+        storeComments.push({
+          ...responseData[key],
+        })
+      }
     }
-    context.commit('setStoreComments', responseData)
+    context.commit('setStoreComments', storeComments)
   },
   async fetchProductComments(context) {
     const response = await fetch(
@@ -18,12 +20,14 @@ export default {
     )
     const responseData = await response.json()
     const productComments = []
-    for (const key in responseData) {
-      productComments.push({
-        ...responseData[key],
-      })
+    if (responseData) {
+      for (const key in responseData) {
+        productComments.push({
+          ...responseData[key],
+        })
+      }
     }
-    context.commit('setProductComments', responseData)
+    context.commit('setProductComments', productComments)
   },
 
   async addStoreComment(context, payload) {
@@ -139,6 +143,7 @@ export default {
     const commentDate = new Date().toISOString()
     const likeCount = payload.likeCount
     const likers = payload.likers
+
     const response = await fetch(
       `https://markethub-e46d7-default-rtdb.asia-southeast1.firebasedatabase.app/storeComments/${id}.json?auth=${context.rootGetters.token}`,
       {

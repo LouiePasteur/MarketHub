@@ -62,9 +62,11 @@
     <product-dialogue :isOpen="isDialogueOpen" :product="selectedProduct" @close="closeDialogue" />
     <review-cards
       v-if="active === 'reviews'"
-      :reviews="reviews"
+      :reviews="review"
       :page="'store'"
+      :store-id="store.id"
       @add-review="addReview"
+      @edit-review="editReview"
     />
     <store-news v-if="active === 'news'" />
   </base-card>
@@ -83,6 +85,7 @@ export default {
   },
   data() {
     return {
+      review: [],
       isDialogueOpen: false,
       selectedProduct: null,
       active: 'products',
@@ -150,7 +153,32 @@ export default {
       ],
     }
   },
+  async created() {
+    await this.$store.dispatch('comments/fetchStoreComments')
+    this.review = this.$store.getters['comments/storeComments']
+    console.log('review', this.review)
+  },
+  watch: {
+    review(newVal) {
+      this.reviews = newVal
+    },
+  },
   methods: {
+    editReview(reviewId) {
+      console.log('edit review', reviewId)
+      /*this.$store.dispatch('comments/editStoreComment', {
+        id: reviewId,
+        storeId: this.store.id,
+        comment: this.review.comment,
+        commentDate: this.review.commentDate,
+        commenterId: this.review.commenterId,
+        commenterName: this.review.commenterName,
+        //commenterProfile: this.review.commenterProfile,
+        rating: this.review.rating,
+        likeCount: this.review.likeCount,
+        likers: this.review.likers,
+      })*/
+    },
     makeActive(menu) {
       this.active = menu
     },

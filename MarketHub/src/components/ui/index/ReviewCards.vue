@@ -1,6 +1,6 @@
 <template>
   <div class="reviews-list">
-    <div class="review-input">
+    <div class="review-input" v-if="showReviewInput">
       <div class="review-input-main">
         <div class="review-rating-input" @mouseleave="hoverRating = null">
           <span
@@ -60,26 +60,40 @@
       <button type="button" class="add-review-button" @click="addReview">Add Review</button>
     </div>
 
-    <div v-if="reviews.length === 0" class="reviews-empty">
+    <div v-if="normalizedReviews.length === 0" class="reviews-empty">
       <h3>No reviews yet</h3>
     </div>
     <div v-else>
-      <div v-for="review in reviews" :key="review.id" class="review-container">
+      <div v-for="review in normalizedReviews" :key="review.id" class="review-container">
         <div class="basic-information">
           <div class="reviewer-header">
             <div class="reviewer-profile">
               <img :src="review.image" alt="Reviewer Profile" />
               <div class="reviewer-name">
-                <h3>{{ review.name }}</h3>
+                <h3>{{ review.reviewerName }}</h3>
               </div>
             </div>
-            <button class="delete-button delete-button--mobile" type="button" title="Delete review">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
+            <div class="review-actions" v-if="currentUserIds.includes(String(review.reviewerId))">
+              <button
+                class="delete-button delete-button--mobile"
+                type="button"
+                title="Delete review"
+              >
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+              <button
+                class="edit-button edit-button--mobile"
+                type="button"
+                title="Edit review"
+                @click="editReview(review.id)"
+              >
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+            </div>
           </div>
           <div class="rating-container">
             <div class="review-date">
-              <p>{{ review.date }}</p>
+              <p>{{ review.reviewDate }}</p>
             </div>
             <div class="rating-actions">
               <div class="review-rating">
@@ -87,24 +101,37 @@
                   v-for="star in 5"
                   :key="star"
                   class="star"
-                  :class="{ filled: star <= review.rating }"
+                  :class="{ filled: star <= review.reviewRating }"
                 >
                   ★
                 </span>
                 <span class="numeric-rating">{{ review.rating }}</span>
               </div>
-              <button
-                class="delete-button delete-button--desktop"
-                type="button"
-                title="Delete review"
+              <div
+                class="review-actions-desktop"
+                v-if="currentUserIds.includes(String(review.reviewerId))"
               >
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
+                <button
+                  class="delete-button delete-button--desktop"
+                  type="button"
+                  title="Delete review"
+                >
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+                <button
+                  class="edit-button edit-button--desktop"
+                  type="button"
+                  title="Edit review"
+                  @click="editReview(review.id)"
+                >
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
         <div class="review-content">
-          <p>{{ review.content }}</p>
+          <p>{{ review.reviewContent }}</p>
           <div v-if="review.images?.length" class="review-attached-images">
             <img
               v-for="(image, index) in review.images"
@@ -130,10 +157,19 @@ export default {
       type: String,
       required: true,
     },
+    storeId: {
+      type: [String],
+      default: null,
+    },
+    productId: {
+      type: [String],
+      default: null,
+    },
   },
-  emits: ['add-review'],
+  emits: ['add-review', 'edit-review'],
   data() {
     return {
+      isEditing: false,
       hoverRating: null,
       maxImages: 4,
       reviewImages: [],
@@ -141,8 +177,11 @@ export default {
         reviewContent: '',
         reviewRating: 1,
         reviewDate: new Date().toISOString(),
-        reviewerProfile: this.$store.getters['user/currentUser'].profilePicture,
-        reviewerId: this.$store.getters['user/currentUser'].userId,
+        // reviewerProfile: this.$store.getters['user/currentUser'].profilePicture,
+        reviewerId:
+          this.$store.getters['user/currentUser']?.id ??
+          this.$store.getters['user/currentUser']?.userId ??
+          this.$store.getters.userId,
         reviewerEmail: this.$store.getters['user/currentUser'].email,
         reviewerName:
           this.$store.getters['user/currentUser'].firstName +
@@ -151,7 +190,60 @@ export default {
       },
     }
   },
+  created() {
+    console.log('check if reviews', this.reviews.reviewerId)
+  },
   computed: {
+    currentUserId() {
+      const user = this.$store.getters['user/currentUser']
+      return user?.id ?? user?.userId ?? this.$store.getters.userId ?? null
+    },
+    currentUserIds() {
+      const user = this.$store.getters['user/currentUser']
+      const authUserId = this.$store.getters.userId
+      return [...new Set([user?.id, user?.userId, authUserId].filter(Boolean).map(String))]
+    },
+    normalizedReviews() {
+      if (Array.isArray(this.reviews)) {
+        return this.reviews
+      }
+      if (this.reviews && typeof this.reviews === 'object') {
+        return Object.values(this.reviews)
+      }
+      return []
+    },
+    reviewsForContext() {
+      if (this.page === 'store' && this.storeId != null) {
+        const reviewsWithStoreId = this.normalizedReviews.filter((review) => review.storeId != null)
+        if (reviewsWithStoreId.length > 0) {
+          return reviewsWithStoreId.filter(
+            (review) => String(review.storeId) === String(this.storeId),
+          )
+        }
+      }
+      if (this.page === 'product' && this.productId != null) {
+        const reviewsWithProductId = this.normalizedReviews.filter(
+          (review) => review.productId != null,
+        )
+        if (reviewsWithProductId.length > 0) {
+          return reviewsWithProductId.filter(
+            (review) => String(review.productId) === String(this.productId),
+          )
+        }
+      }
+      return this.normalizedReviews
+    },
+    hasUserReviewed() {
+      if (!this.currentUserIds.length) {
+        return false
+      }
+      return this.reviewsForContext.some((review) =>
+        this.currentUserIds.includes(String(review.reviewerId)),
+      )
+    },
+    showReviewInput() {
+      return this.currentUserIds.length > 0 && !this.hasUserReviewed
+    },
     displayRating() {
       return this.hoverRating ?? this.reviewInfo.reviewRating
     },
@@ -186,6 +278,9 @@ export default {
         }
       })
       this.reviewImages = []
+    },
+    editReview(reviewId) {
+      this.$emit('edit-review', reviewId)
     },
     handleImageChange(event, slotIndex) {
       const files = Array.from(event.target.files || [])
@@ -562,11 +657,37 @@ export default {
   }
 }
 
-.delete-button--mobile {
+.edit-button {
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background-color: #dff3f7;
+    color: var(--secondary);
+  }
+
+  i {
+    font-size: 0.9rem;
+  }
+}
+
+.delete-button--mobile,
+.edit-button--mobile {
   display: none;
 }
 
-.delete-button--desktop {
+.delete-button--desktop,
+.edit-button--desktop {
   display: inline-flex;
 }
 
@@ -589,6 +710,7 @@ export default {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
+    margin-bottom: 2rem;
   }
 
   .reviewer-header {
@@ -600,11 +722,13 @@ export default {
     align-items: flex-start;
   }
 
-  .delete-button--desktop {
+  .delete-button--desktop,
+  .edit-button--desktop {
     display: none;
   }
 
-  .delete-button--mobile {
+  .delete-button--mobile,
+  .edit-button--mobile {
     display: inline-flex;
   }
 }
