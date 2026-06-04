@@ -74,7 +74,12 @@
         :product="selectedProduct"
         @close="closeDialogue"
       />
-      <review-cards v-if="active === 'reviews'" :reviews="reviews" />
+      <review-cards
+        v-if="active === 'reviews'"
+        :reviews="reviews"
+        :page="'store'"
+        :store-id="store.id != null ? store.id : null"
+      />
       <div v-if="active === 'news'">
         <base-card class="store-news">
           <base-button class="button button-primary add-button">Add News</base-button>

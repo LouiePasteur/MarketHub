@@ -91,7 +91,7 @@ export default {
       active: 'products',
       menuOrder: ['products', 'reviews', 'news'],
       store: {
-        id: 1,
+        id: '-OnY-Q_bym1SnxMPq8OO',
         name: 'Store 1',
         image: '/fashion.jpg',
         address: '123 Main St, Anytown, USA',
@@ -164,20 +164,20 @@ export default {
     },
   },
   methods: {
-    editReview(reviewId) {
-      console.log('edit review', reviewId)
-      /*this.$store.dispatch('comments/editStoreComment', {
-        id: reviewId,
+    editReview(review) {
+      console.log('edit review', review)
+      this.$store.dispatch('comments/editStoreComment', {
+        id: review.id,
         storeId: this.store.id,
-        comment: this.review.comment,
-        commentDate: this.review.commentDate,
-        commenterId: this.review.commenterId,
-        commenterName: this.review.commenterName,
+        comment: review.reviewContent,
+        commentDate: new Date().toISOString(),
+        commenterId: review.reviewerId,
+        commenterName: review.reviewerName,
         //commenterProfile: this.review.commenterProfile,
-        rating: this.review.rating,
+        rating: review.reviewRating,
         likeCount: this.review.likeCount,
         likers: this.review.likers,
-      })*/
+      })
     },
     makeActive(menu) {
       this.active = menu

@@ -39,7 +39,7 @@ export default {
     const id = ''
     const storeId = payload.storeId
     const comment = payload.comment
-    const commenterId = context.rootGetters['user/currentUser'].userId
+    const commenterId = context.rootGetters['user/currentUser'].id
     const commenterName = currentUser.firstName + ' ' + currentUser.lastName
     const commenterProfile = currentUser.profilePicture
     const rating = payload.rating
@@ -51,7 +51,7 @@ export default {
       'https://markethub-e46d7-default-rtdb.asia-southeast1.firebasedatabase.app/storeComments.json',
       {
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, storeId: storeId }),
       },
     )
     const responseData = await response.json()
@@ -133,25 +133,36 @@ export default {
     context.commit('addProductComment', newProductComment)
   },
   async editStoreComment(context, payload) {
+    const currentUser = context.rootGetters['user/currentUser']
+    if (!currentUser?.userId) {
+      throw new Error('You must be logged in to edit a store comment.')
+    }
     const id = payload.id
     const storeId = payload.storeId
     const comment = payload.comment
-    const commenterId = context.rootGetters['user/currentUser'].userId
+    const commenterId = context.rootGetters['user/currentUser'].id
     const commenterName = currentUser.firstName + ' ' + currentUser.lastName
+    const commenterEmail = currentUser.email
     const commenterProfile = currentUser.profilePicture
     const rating = payload.rating
-    const commentDate = new Date().toISOString()
+    const commentDate = payload.commentDate
     const likeCount = payload.likeCount
     const likers = payload.likers
 
     const response = await fetch(
-      `https://markethub-e46d7-default-rtdb.asia-southeast1.firebasedatabase.app/storeComments/${id}.json?auth=${context.rootGetters.token}`,
+      `https://markethub-e46d7-default-rtdb.asia-southeast1.firebasedatabase.app/storeComments/${payload.id}.json?auth=${context.rootGetters.token}`,
       {
         method: 'PUT',
         body: JSON.stringify({
-          comment: comment,
-          rating: rating,
-          commentDate: commentDate,
+          id: id,
+          storeId: storeId,
+          reviewContent: comment,
+          reviewRating: rating,
+          reviewDate: commentDate,
+          reviewerId: commenterId,
+          reviewerEmail: commenterEmail,
+          reviewerName: commenterName,
+          reviewerProfile: commenterProfile,
           likeCount: likeCount,
           likers: likers,
         }),

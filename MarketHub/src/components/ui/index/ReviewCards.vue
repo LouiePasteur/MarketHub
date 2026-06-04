@@ -1,6 +1,9 @@
 <template>
   <div class="reviews-list">
     <div class="review-input" v-if="showReviewInput">
+      <button v-if="isEditing" type="button" class="cancel-edit-button" @click="cancelEdit">
+        Cancel
+      </button>
       <div class="review-input-main">
         <div class="review-rating-input" @mouseleave="hoverRating = null">
           <span
@@ -57,7 +60,9 @@
           </small>
         </div>
       </div>
-      <button type="button" class="add-review-button" @click="addReview">Add Review</button>
+      <button type="button" class="add-review-button" @click="submitReview">
+        {{ isEditing ? 'Update Review' : 'Add Review' }}
+      </button>
     </div>
 
     <div v-if="normalizedReviews.length === 0" class="reviews-empty">
@@ -96,7 +101,7 @@
               <p>{{ review.reviewDate }}</p>
             </div>
             <div class="rating-actions">
-              <div class="review-rating">
+              <div v-if="!(page === 'store' && isEditingReview(review.id))" class="review-rating">
                 <span
                   v-for="star in 5"
                   :key="star"
@@ -131,14 +136,45 @@
           </div>
         </div>
         <div class="review-content">
-          <p>{{ review.reviewContent }}</p>
-          <div v-if="review.images?.length" class="review-attached-images">
-            <img
-              v-for="(image, index) in review.images"
-              :key="index"
-              :src="image"
-              :alt="`Review attachment ${index + 1}`"
-            />
+          <template v-if="!isEditingReview(review.id)">
+            <p>{{ review.reviewContent }}</p>
+            <div v-if="review.images?.length && page != 'store'" class="review-attached-images">
+              <img
+                v-for="(image, index) in review.images"
+                :key="index"
+                :src="image"
+                :alt="`Review attachment ${index + 1}`"
+              />
+            </div>
+          </template>
+          <div v-else-if="page === 'store'" class="review-inline-edit">
+            <div class="review-rating-input" @mouseleave="hoverRating = null">
+              <span
+                v-for="star in 5"
+                :key="`edit-${review.id}-${star}`"
+                class="star star--interactive"
+                :class="{ filled: star <= displayRating }"
+                role="button"
+                tabindex="0"
+                :aria-label="`Rate ${star} out of 5`"
+                @mouseenter="hoverRating = star"
+                @click="setRating(star)"
+                @keydown.enter.prevent="setRating(star)"
+              >
+                ★
+              </span>
+            </div>
+            <textarea
+              v-model="reviewInfo.reviewContent"
+              class="review-inline-textarea"
+              placeholder="Edit your review"
+            ></textarea>
+            <div class="review-inline-actions">
+              <button type="button" class="cancel-edit-button" @click="cancelEdit">Cancel</button>
+              <button type="button" class="add-review-button" @click="submitReview">
+                Update Review
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -170,6 +206,7 @@ export default {
   data() {
     return {
       isEditing: false,
+      editingReviewId: null,
       hoverRating: null,
       maxImages: 4,
       reviewImages: [],
@@ -204,13 +241,13 @@ export default {
       return [...new Set([user?.id, user?.userId, authUserId].filter(Boolean).map(String))]
     },
     normalizedReviews() {
+      let reviews = []
       if (Array.isArray(this.reviews)) {
-        return this.reviews
+        reviews = this.reviews
+      } else if (this.reviews && typeof this.reviews === 'object') {
+        reviews = Object.values(this.reviews)
       }
-      if (this.reviews && typeof this.reviews === 'object') {
-        return Object.values(this.reviews)
-      }
-      return []
+      return reviews.map((review) => this.normalizeReview(review))
     },
     reviewsForContext() {
       if (this.page === 'store' && this.storeId != null) {
@@ -233,15 +270,41 @@ export default {
       }
       return this.normalizedReviews
     },
+    myStore() {
+      return this.$store.getters['stores/myStore']
+    },
+    myStoreId() {
+      const store = this.myStore
+      if (!store) {
+        return null
+      }
+      return store.id ?? store.storeId ?? null
+    },
+    isViewingOwnStore() {
+      if (this.page !== 'store' || this.storeId == null || this.myStoreId == null) {
+        return false
+      }
+      return String(this.storeId) === String(this.myStoreId)
+    },
     hasUserReviewed() {
       if (!this.currentUserIds.length) {
         return false
       }
-      return this.reviewsForContext.some((review) =>
-        this.currentUserIds.includes(String(review.reviewerId)),
-      )
+      return this.reviewsForContext.some((review) => {
+        const reviewUserId = review.reviewerId ?? review.commenterId
+        return reviewUserId != null && this.currentUserIds.includes(String(reviewUserId))
+      })
     },
     showReviewInput() {
+      if (this.isViewingOwnStore) {
+        return false
+      }
+      if (this.isEditing && this.page === 'store') {
+        return false
+      }
+      if (this.isEditing) {
+        return true
+      }
       return this.currentUserIds.length > 0 && !this.hasUserReviewed
     },
     displayRating() {
@@ -252,35 +315,98 @@ export default {
       return Array.from({ length: totalSlots }, (_, index) => index)
     },
   },
+  mounted() {
+    console.log(this.currentUserIds.length > 0 && !this.hasUserReviewed)
+  },
   methods: {
+    normalizeReview(review) {
+      const rawImages = review.images ?? review.reviewImages ?? review.imageUrls ?? []
+      const imageList = Array.isArray(rawImages) ? rawImages : []
+      return {
+        ...review,
+        image: review.image ?? review.commenterProfile ?? review.reviewerProfile,
+        reviewerName: review.reviewerName ?? review.commenterName ?? review.name ?? 'Anonymous',
+        reviewerId: review.reviewerId ?? review.commenterId,
+        reviewDate: review.reviewDate ?? review.commentDate ?? review.date ?? '',
+        reviewRating: Number(review.reviewRating ?? review.rating ?? 0),
+        rating: review.rating ?? review.reviewRating ?? 0,
+        reviewContent: review.reviewContent ?? review.comment ?? review.content ?? '',
+        images: imageList.map((img) =>
+          typeof img === 'string' ? img : (img?.url ?? img?.preview ?? img),
+        ),
+      }
+    },
+    isEditingReview(reviewId) {
+      return this.isEditing && String(this.editingReviewId) === String(reviewId)
+    },
     setRating(star) {
       this.reviewInfo.reviewRating = Math.max(1, star)
       this.hoverRating = null
     },
-    addReview() {
+    submitReview() {
       if (!this.reviewInfo.reviewContent.trim()) {
         return
       }
 
-      this.$emit('add-review', {
+      const payload = {
         ...this.reviewInfo,
-        reviewImages: this.reviewImages.map((image) => image.file),
-      })
-      this.resetForm()
+        id: this.editingReviewId,
+        reviewImages: this.reviewImages.map((image) => image.file).filter(Boolean),
+        existingImages: this.reviewImages
+          .filter((image) => image.isExisting)
+          .map((image) => image.preview),
+      }
+
+      if (this.isEditing) {
+        this.$emit('edit-review', payload)
+        console.log('payload', payload)
+      } else {
+        this.$emit('add-review', { ...payload, storeId: this.storeId })
+      }
+      this.cancelEdit()
     },
-    resetForm() {
-      this.reviewInfo.reviewContent = ''
-      this.reviewInfo.reviewRating = 1
-      this.hoverRating = null
+    clearReviewImages() {
       this.reviewImages.forEach((image) => {
-        if (image.preview) {
+        if (image.preview && !image.isExisting) {
           URL.revokeObjectURL(image.preview)
         }
       })
       this.reviewImages = []
     },
+    resetForm() {
+      this.reviewInfo.reviewContent = ''
+      this.reviewInfo.reviewRating = 1
+      this.hoverRating = null
+      this.clearReviewImages()
+    },
+    populateFormFromReview(review) {
+      const normalized = this.normalizeReview(review)
+      this.reviewInfo.reviewContent = normalized.reviewContent
+      this.reviewInfo.reviewRating = Math.max(1, normalized.reviewRating || 1)
+      this.clearReviewImages()
+      normalized.images.forEach((url) => {
+        if (url) {
+          this.reviewImages.push({
+            file: null,
+            preview: url,
+            isExisting: true,
+          })
+        }
+      })
+    },
+    cancelEdit() {
+      this.isEditing = false
+      this.editingReviewId = null
+      this.resetForm()
+    },
     editReview(reviewId) {
-      this.$emit('edit-review', reviewId)
+      const review = this.normalizedReviews.find((item) => String(item.id) === String(reviewId))
+      if (!review) {
+        return
+      }
+      this.isEditing = true
+      this.editingReviewId = reviewId
+      this.populateFormFromReview(review)
     },
     handleImageChange(event, slotIndex) {
       const files = Array.from(event.target.files || [])
@@ -320,7 +446,7 @@ export default {
 
       if (slotIndex < this.reviewImages.length) {
         const existing = this.reviewImages[slotIndex]
-        if (existing?.preview) {
+        if (existing?.preview && !existing.isExisting) {
           URL.revokeObjectURL(existing.preview)
         }
 
@@ -352,18 +478,14 @@ export default {
     },
     removeImage(slotIndex) {
       const existing = this.reviewImages[slotIndex]
-      if (existing?.preview) {
+      if (existing?.preview && !existing.isExisting) {
         URL.revokeObjectURL(existing.preview)
       }
       this.reviewImages.splice(slotIndex, 1)
     },
   },
   beforeUnmount() {
-    this.reviewImages.forEach((image) => {
-      if (image.preview) {
-        URL.revokeObjectURL(image.preview)
-      }
-    })
+    this.clearReviewImages()
   },
 }
 </script>
@@ -399,6 +521,23 @@ export default {
   align-items: flex-end;
   gap: 0.75rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.cancel-edit-button {
+  flex-shrink: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  background-color: #fff;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 0.875rem;
+
+  &:hover {
+    background-color: #f8fafc;
+    color: #0f172a;
+  }
 }
 
 .review-input-main {
@@ -694,6 +833,41 @@ export default {
 .review-content p {
   font-size: 0.8rem;
   color: #0f172a;
+}
+
+.review-inline-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.review-inline-textarea {
+  width: 100%;
+  min-height: 80px;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 0.5rem;
+  resize: vertical;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #0f172a;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+}
+
+.review-inline-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+
+  .add-review-button {
+    width: auto;
+    min-width: 100px;
+  }
 }
 
 @media (max-width: 1024px) {
