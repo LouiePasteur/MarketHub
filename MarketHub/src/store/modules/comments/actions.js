@@ -38,11 +38,15 @@ export default {
 
     const id = ''
     const storeId = payload.storeId
-    const comment = payload.comment
-    const commenterId = context.rootGetters['user/currentUser'].id
-    const commenterName = currentUser.firstName + ' ' + currentUser.lastName
+    const comment = payload.reviewContent ?? payload.comment ?? ''
+    const commenterId =
+      payload.reviewerId ??
+      context.rootGetters['user/currentUser'].id ??
+      context.rootGetters['user/currentUser'].userId
+    const commenterName =
+      payload.reviewerName ?? `${currentUser.firstName} ${currentUser.lastName}`
     const commenterProfile = currentUser.profilePicture
-    const rating = payload.rating
+    const rating = payload.reviewRating ?? payload.rating ?? 0
     const commentDate = new Date().toISOString()
     const likeCount = 0
     const likers = []
@@ -70,14 +74,19 @@ export default {
     const newStoreComment = {
       id: responseData.name,
       storeId: storeId,
-      comment: comment,
-      commenterId: commenterId,
-      commenterName: commenterName,
-      commenterProfile: commenterProfile,
-      rating: rating,
-      commentDate: commentDate,
-      likeCount: likeCount,
-      likers: likers,
+      comment,
+      reviewContent: comment,
+      commenterId,
+      reviewerId: commenterId,
+      commenterName,
+      reviewerName: commenterName,
+      commenterProfile,
+      rating,
+      reviewRating: rating,
+      commentDate,
+      reviewDate: commentDate,
+      likeCount,
+      likers,
     }
     context.commit('addStoreComment', newStoreComment)
   },

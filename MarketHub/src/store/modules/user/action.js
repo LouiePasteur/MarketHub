@@ -12,7 +12,6 @@ export default {
       })
     }
     context.commit('setUsers', users)
-    console.log('users list user action', context.getters['user/users'])
   },
   async addUser(context, payload) {
     const userId = payload.userId
@@ -129,7 +128,6 @@ export default {
       },
     )
     const responseData = await response.json()
-    console.log('currentUser2', context.rootGetters['user/currentUser'])
 
     if (!response.ok) {
       const error = new Error(responseData.message || 'Failed to update user')
@@ -153,7 +151,6 @@ export default {
       settings: userSettings,
     }
     context.commit('updateUser', updatedUser)
-    console.log('currentUser3', context.rootGetters['user/currentUser'])
     router.push('/products')
   },
 }

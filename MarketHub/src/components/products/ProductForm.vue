@@ -119,14 +119,6 @@ export default {
       return Array.from({ length: totalSlots }, (_, index) => index)
     },
     validInputs() {
-      console.log(
-        this.productName,
-        this.selectedImages,
-        this.category,
-        this.description,
-        this.stocks,
-        this.price,
-      )
       return (
         !this.productName ||
         !this.selectedImages.length ||

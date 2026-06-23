@@ -73,7 +73,12 @@
       :productDescription="product?.description"
       v-if="activeTab === 'product-details'"
     />
-    <review-cards v-if="activeTab === 'reviews'" :reviews="reviews" />
+    <review-cards
+      v-if="activeTab === 'reviews'"
+      :reviews="reviews"
+      page="product"
+      :product-id="product?.id"
+    />
   </base-dialogue>
 </template>
 

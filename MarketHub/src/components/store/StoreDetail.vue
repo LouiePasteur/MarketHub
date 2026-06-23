@@ -85,7 +85,6 @@ export default {
   },
   data() {
     return {
-      review: [],
       isDialogueOpen: false,
       selectedProduct: null,
       active: 'products',
@@ -155,17 +154,14 @@ export default {
   },
   async created() {
     await this.$store.dispatch('comments/fetchStoreComments')
-    this.review = this.$store.getters['comments/storeComments']
-    console.log('review', this.review)
   },
-  watch: {
-    review(newVal) {
-      this.reviews = newVal
+  computed: {
+    review() {
+      return this.$store.getters['comments/storeComments']
     },
   },
   methods: {
     editReview(review) {
-      console.log('edit review', review)
       this.$store.dispatch('comments/editStoreComment', {
         id: review.id,
         storeId: this.store.id,

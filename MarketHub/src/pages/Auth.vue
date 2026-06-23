@@ -105,7 +105,6 @@ export default {
             return
           }
         } else {
-          console.log('error', error)
           this.error = true
           this.errorMessage = 'Incorrect username or password. Please try again.'
           this.submitting = false

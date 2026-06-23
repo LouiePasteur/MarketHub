@@ -13,7 +13,6 @@ export default {
   },
   methods: {
     handleSubmit(payload) {
-      console.log('clicked handle submit', payload)
       this.$store.dispatch('products/addProduct', payload)
     },
   },

@@ -3,8 +3,10 @@ export default {
     return state.stores
   },
   myStore(state, _, __, rootGetters) {
-    return state.stores.find(
-      (store) => store.storeOwnerId === rootGetters['user/currentUser'].userId,
-    )
+    const userId = rootGetters['user/currentUser']?.userId
+    if (!userId) {
+      return undefined
+    }
+    return state.stores.find((store) => store.storeOwnerId === userId)
   },
 }

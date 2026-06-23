@@ -30,10 +30,7 @@ export default {
 
     const responseData = await response.json()
 
-    console.log('responseData', responseData)
-
     if (!response.ok) {
-      console.log(responseData)
       const error = new Error(responseData.error?.message || 'Failed to authenticate')
       throw error
     }
@@ -70,7 +67,6 @@ export default {
         settings: [],
       })
     } else {
-      console.log('currentUser', context.getters.currentUser)
       router.replace('/products')
     }
   },
