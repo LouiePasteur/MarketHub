@@ -1,26 +1,35 @@
-<script setup>
-// Colors are now available globally via CSS custom properties
-// No need to import or apply them manually
-</script>
-
 <template>
   <div class="app">
-    <h1>MarketHub</h1>
-    <p>Your trusted marketplace for all your shopping needs</p>
-    <div class="color-preview">
-      <div class="color-swatch primary">Primary</div>
-      <div class="color-swatch primary-light">Primary Light</div>
-      <div class="color-swatch primary-dark">Primary Dark</div>
-      <div class="color-swatch secondary">Secondary</div>
-      <div class="color-swatch secondary-light">Secondary Light</div>
-      <div class="color-swatch secondary-dark">Secondary Dark</div>
+    <the-header v-if="!$route.meta.hideHeader" />
+    <div :class="!$route.meta.hideHeader ? 'container' : 'container-full-width'">
+      <router-view v-slot="slotProps">
+        <transition name="route" mode="out-in">
+          <component :is="slotProps.Component"></component>
+        </transition>
+      </router-view>
     </div>
   </div>
 </template>
 
+<script>
+export default {
+  async created() {
+    this.$store.dispatch('autoLogin')
+    await this.$store.dispatch('user/fetchUsers')
+    await this.$store.dispatch('stores/fetchStores')
+    await this.$store.dispatch('products/fetchProducts')
+  },
+}
+</script>
+
 <style>
-/* Additional CSS Variables (shadows, spacing, etc.) */
+/* Additional CSS Variables (shadows, spacing, fonts, etc.) */
 :root {
+  /* Font Families */
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-secondary:
+    'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+
   /* Shadow Colors */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -46,26 +55,28 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  text-decoration: none;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-main);
   background-color: #f8fafc;
   color: #1e293b;
   line-height: 1.6;
 }
 
 .app {
+  background-image: linear-gradient(to bottom right, #57d7e6, #7ced61);
   min-height: 100vh;
-  padding: var(--spacing-xl);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   text-align: center;
 }
 
 h1 {
+  font-family: var(--font-secondary);
   font-size: 3rem;
   font-weight: 700;
   color: var(--primary);
@@ -75,45 +86,21 @@ h1 {
 p {
   font-size: 1.25rem;
   color: #64748b;
-  margin-bottom: var(--spacing-xl);
 }
 
-/* Color preview swatches */
-.color-preview {
-  display: flex;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-lg);
+.container {
+  width: 100%;
+  padding: 20px;
+  max-width: 1400px;
+
+  @media (max-width: 1024px) {
+    padding: 20px;
+  }
 }
 
-.color-swatch {
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-radius: var(--radius-lg);
-  color: #ffffff;
-  font-weight: 600;
-  box-shadow: var(--shadow-md);
-}
-
-.color-swatch.primary {
-  background-color: var(--primary);
-}
-
-.color-swatch.primary-light {
-  background-color: var(--primary-light);
-}
-
-.color-swatch.primary-dark {
-  background-color: var(--primary-dark);
-}
-
-.color-swatch.secondary {
-  background-color: var(--secondary);
-}
-
-.color-swatch.secondary-light {
-  background-color: var(--secondary-light);
-}
-
-.color-swatch.secondary-dark {
-  background-color: var(--secondary-dark);
+.container-full-width {
+  width: 100%;
+  max-width: 100%;
+  margin: none !important;
 }
 </style>
