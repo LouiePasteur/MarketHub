@@ -59,7 +59,12 @@
         </ul>
       </div>
     </div>
-    <product-dialogue :isOpen="isDialogueOpen" :product="selectedProduct" @close="closeDialogue" />
+    <product-dialogue
+      :isOpen="isDialogueOpen"
+      :product="selectedProduct"
+      @close="closeDialogue"
+      :storeId="store.id"
+    />
     <review-cards
       v-if="active === 'reviews'"
       :reviews="review"
@@ -68,7 +73,7 @@
       @add-review="addReview"
       @edit-review="editReview"
     />
-    <store-news v-if="active === 'news'" />
+    <news v-if="active === 'news'" />
   </base-card>
 </template>
 
@@ -76,12 +81,14 @@
 import ProductItems from '@/components/products/ProductItems.vue'
 import ProductDialogue from '@/components/products/ProductDialogue.vue'
 import StoreNews from '@/components/store/StoreNews.vue'
-
+import ReviewCards from '@/components/ui/index/ReviewCards.vue'
+import News from '@/components/news/News.vue'
 export default {
   components: {
     ProductItems,
     ProductDialogue,
     StoreNews,
+    News,
   },
   data() {
     return {
@@ -124,32 +131,7 @@ export default {
           description: 'Description of Product 3',
         },
       ],
-      reviews: [
-        {
-          id: 1,
-          image: '/groceries.jpg',
-          name: 'John Doe',
-          date: '2021-01-01',
-          rating: 5,
-          content: 'This is a review',
-        },
-        {
-          id: 2,
-          image: '/groceries.jpg',
-          name: 'Jane Smith',
-          date: '2021-02-10',
-          rating: 3,
-          content: 'Pretty good overall, could be better.',
-        },
-        {
-          id: 3,
-          image: '/groceries.jpg',
-          name: 'Alex Johnson',
-          date: '2021-03-05',
-          rating: 4,
-          content: 'Satisfied with the purchase.',
-        },
-      ],
+      reviews: this.$store.getters['comments/myStoreComments'],
     }
   },
   async created() {

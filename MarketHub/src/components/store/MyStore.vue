@@ -63,7 +63,7 @@
           </base-card>
         </div>
         <div v-if="active === 'current-orders'">
-          <cart-items :cartItems="cartItems" page="my-store" />
+          <current-orders />
         </div>
         <div v-if="active === 'history'">
           <cart-items :cartItems="cartItems" page="order-history" />
@@ -72,18 +72,21 @@
       <product-dialogue
         :isOpen="isDialogueOpen"
         :product="selectedProduct"
+        :store-id="store.id"
         @close="closeDialogue"
       />
       <review-cards
         v-if="active === 'reviews'"
-        :reviews="reviews"
+        :reviews="review"
         :page="'store'"
-        :store-id="store.id != null ? store.id : null"
+        :store-id="store.id"
+        @add-review="addReview"
+        @edit-review="editReview"
       />
       <div v-if="active === 'news'">
         <base-card class="store-news">
           <base-button class="button button-primary add-button">Add News</base-button>
-          <store-news v-if="active === 'news'" />
+          <news v-if="active === 'news'" />
         </base-card>
       </div>
     </div>
@@ -98,7 +101,9 @@
 import ProductItems from '@/components/products/ProductItems.vue'
 import ProductDialogue from '@/components/products/ProductDialogue.vue'
 import StoreNews from '@/components/store/StoreNews.vue'
+import News from '@/components/news/News.vue'
 import CartItems from '@/components/order/CartItems.vue'
+import CurrentOrders from '@/components/order/CurrentOrders.vue'
 
 export default {
   components: {
@@ -106,6 +111,8 @@ export default {
     ProductDialogue,
     StoreNews,
     CartItems,
+    CurrentOrders,
+    News,
   },
   data() {
     return {
@@ -155,32 +162,6 @@ export default {
         {
           name: 'Order History',
           identifier: 'history',
-        },
-      ],
-      reviews: [
-        {
-          id: 1,
-          name: 'Review 1',
-          image: '/groceries.jpg',
-          content: 'Content of Review 1',
-          date: '2021-01-01',
-          rating: 5,
-        },
-        {
-          id: 2,
-          name: 'Review 2',
-          image: '/groceries.jpg',
-          content: 'Content of Review 2',
-          date: '2021-01-02',
-          rating: 4,
-        },
-        {
-          id: 3,
-          name: 'Review 3',
-          image: '/groceries.jpg',
-          content: 'Content of Review 3',
-          date: '2021-01-03',
-          rating: 3,
         },
       ],
       cartItems: [
@@ -258,6 +239,12 @@ export default {
     myStore() {
       return !!this.$store.getters['stores/myStore']
     },
+    review() {
+      return this.$store.getters['comments/myStoreComments']
+    },
+  },
+  async created() {
+    await this.$store.dispatch('comments/fetchStoreComments')
   },
   methods: {
     makeActive(menu) {

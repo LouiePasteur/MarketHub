@@ -76,6 +76,7 @@
     <review-cards
       v-if="activeTab === 'reviews'"
       :reviews="reviews"
+      :store-id="product?.storeId || storeId"
       page="product"
       :product-id="product?.id"
     />
@@ -99,6 +100,10 @@ export default {
     product: {
       type: Object,
       default: null,
+    },
+    storeId: {
+      type: [String],
+      default: '',
     },
   },
   emits: ['close', 'add-to-cart', 'buy-now'],
@@ -141,6 +146,7 @@ export default {
   },
   methods: {
     closeDialogue() {
+      console.log(this.storeId)
       this.$emit('close')
     },
     setActiveTab(tab) {

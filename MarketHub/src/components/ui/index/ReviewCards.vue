@@ -188,10 +188,10 @@ export default {
       if (!store) {
         return null
       }
-      return store.id ?? store.storeId ?? null
+      return store.id || store.storeId || null
     },
     isViewingOwnStore() {
-      if (this.page !== 'store' || this.storeId == null || this.myStoreId == null) {
+      if (!this.myStoreId || !this.storeId) {
         return false
       }
       return String(this.storeId) === String(this.myStoreId)

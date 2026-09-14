@@ -46,6 +46,7 @@
             <option value="preparing">Preparing</option>
             <option value="shipping">In Shipping</option>
             <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
           </select>
         </div>
 
@@ -88,6 +89,8 @@ export default {
           return 'status-shipping'
         case 'completed':
           return 'status-completed'
+        case 'cancelled':
+          return 'status-cancelled'
         default:
           return '' // default - no color
       }
@@ -252,6 +255,18 @@ export default {
         outline: none;
         border-color: #4caf50;
         box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+      }
+    }
+
+    &.status-cancelled {
+      background-color: #ffebee;
+      color: #c62828;
+      border-color: #ef5350;
+
+      &:focus {
+        outline: none;
+        border-color: #ef5350;
+        box-shadow: 0 0 0 3px rgba(239, 83, 80, 0.2);
       }
     }
   }
