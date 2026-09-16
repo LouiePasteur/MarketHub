@@ -86,7 +86,7 @@
       <div v-if="active === 'news'">
         <base-card class="store-news">
           <base-button class="button button-primary add-button">Add News</base-button>
-          <news v-if="active === 'news'" />
+          <news />
         </base-card>
       </div>
     </div>
@@ -100,7 +100,6 @@
 <script>
 import ProductItems from '@/components/products/ProductItems.vue'
 import ProductDialogue from '@/components/products/ProductDialogue.vue'
-import StoreNews from '@/components/store/StoreNews.vue'
 import News from '@/components/news/News.vue'
 import CartItems from '@/components/order/CartItems.vue'
 import CurrentOrders from '@/components/order/CurrentOrders.vue'
@@ -109,10 +108,9 @@ export default {
   components: {
     ProductItems,
     ProductDialogue,
-    StoreNews,
+    News,
     CartItems,
     CurrentOrders,
-    News,
   },
   data() {
     return {

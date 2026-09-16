@@ -80,15 +80,14 @@
 <script>
 import ProductItems from '@/components/products/ProductItems.vue'
 import ProductDialogue from '@/components/products/ProductDialogue.vue'
-import StoreNews from '@/components/store/StoreNews.vue'
-import ReviewCards from '@/components/ui/index/ReviewCards.vue'
 import News from '@/components/news/News.vue'
+import ReviewCards from '@/components/ui/index/ReviewCards.vue'
 export default {
   components: {
     ProductItems,
     ProductDialogue,
-    StoreNews,
     News,
+    ReviewCards,
   },
   data() {
     return {
