@@ -1,13 +1,13 @@
 <template>
   <base-form @submit.prevent="submitForm">
     <base-card>
-      <h1>Add Product</h1>
+      <h1 class="text-title text-primary">Add Product</h1>
       <div class="form-group">
-        <label for="name">Product Name</label>
+        <label class="text-label" for="name">Product Name</label>
         <input type="text" id="name" required v-model="productName" />
       </div>
       <div class="form-group">
-        <label for="image">Product Image</label>
+        <label class="text-label" for="image">Product Image</label>
         <div class="image-upload-grid">
           <div class="image-upload-slot" v-for="slotIndex in visibleUploadSlots" :key="slotIndex">
             <input
@@ -30,13 +30,13 @@
             </label>
           </div>
         </div>
-        <small class="input-help">
+        <small class="input-help text-caption text-muted">
           {{ selectedImages.length }}/{{ maxUploads }} images uploaded (you can select multiple at
           once)
         </small>
       </div>
       <div class="form-group">
-        <label for="address">Category</label>
+        <label class="text-label" for="address">Category</label>
         <select id="category" name="category" v-model="category" required>
           <option disabled value="">Select a category</option>
           <option v-for="category in categories" :key="category.id" :value="category.name">
@@ -45,15 +45,15 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="description">Description</label>
+        <label class="text-label" for="description">Description</label>
         <textarea id="description" required v-model="description"></textarea>
       </div>
       <div class="form-group">
-        <label for="stocks">Stocks</label>
+        <label class="text-label" for="stocks">Stocks</label>
         <input type="number" id="stocks" required v-model="stocks" />
       </div>
       <div class="form-group">
-        <label for="price">Price</label>
+        <label class="text-label" for="price">Price</label>
         <div class="currency-input-wrapper">
           <span class="currency-prefix" aria-hidden="true">$</span>
           <input
@@ -224,12 +224,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h1 {
-  @media (max-width: 1024px) {
-    font-size: 1.8em;
-  }
-}
-
 .form-group {
   display: flex;
   flex-direction: column;
@@ -239,7 +233,6 @@ h1 {
 
   label {
     min-width: 120px;
-    font-weight: 500;
     flex-shrink: 0;
 
     &:has(+ input[required]),
@@ -275,7 +268,6 @@ h1 {
     padding: 0.5rem;
     border: 1px solid var(--border, #e2e8f0);
     border-radius: var(--radius-md, 0.375rem);
-    font-size: 1rem;
     width: 100%;
 
     &:focus {
@@ -313,8 +305,6 @@ h1 {
 
   .input-help {
     margin-top: 0.5rem;
-    font-size: 0.85rem;
-    color: #475569;
   }
 
   .currency-input-wrapper {
@@ -387,13 +377,13 @@ h1 {
     inset: auto 0 0 0;
     background: rgba(15, 23, 42, 0.65);
     color: #fff;
-    font-size: 0.85rem;
+    font-size: var(--text-body-sm);
     text-align: center;
     padding: 0.35rem 0.25rem;
   }
 
   .image-upload-placeholder {
-    font-size: 0.95rem;
+    font-size: var(--text-body-sm);
     color: #475569;
     text-align: center;
     padding: 0 0.5rem;

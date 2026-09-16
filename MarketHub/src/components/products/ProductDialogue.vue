@@ -40,12 +40,12 @@
         </div>
       </div>
       <div class="product-details">
-        <h2 class="product-name">{{ product?.productName }}</h2>
+        <h2 class="product-name text-heading text-dark">{{ product?.productName }}</h2>
         <div>
-          <div class="product-price">$ {{ product?.price }}</div>
-          <small class="product-stocks">Stocks: {{ product?.stocks }}</small>
+          <div class="product-price text-subheading text-primary">$ {{ product?.price }}</div>
+          <small class="product-stocks text-caption text-muted">Stocks: {{ product?.stocks }}</small>
         </div>
-        <div class="product-description">{{ product?.productDescription }}</div>
+        <div class="product-description text-body text-muted">{{ product?.productDescription }}</div>
 
         <div class="product-actions">
           <base-button class="button button-secondary"> Add to Cart </base-button>
@@ -226,7 +226,7 @@ export default {
   right: 0;
   background: none;
   border: none;
-  font-size: 2rem;
+  font-size: var(--icon-xl);
   color: #64748b;
   cursor: pointer;
   width: 40px;
@@ -355,17 +355,10 @@ div :is(.previous-image, .next-image) {
 }
 
 .product-name {
-  font-family: var(--font-secondary);
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #1e293b;
   text-align: left;
 }
 
 .product-price {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primary);
   text-align: left;
 }
 
@@ -405,10 +398,6 @@ div :is(.previous-image, .next-image) {
 
   .product-image--main {
     height: 250px;
-  }
-
-  .product-name {
-    font-size: 1.5rem;
   }
 
   .product-actions {

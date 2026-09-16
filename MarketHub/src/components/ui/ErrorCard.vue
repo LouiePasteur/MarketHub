@@ -1,6 +1,6 @@
 <template>
   <base-card class="error_card">
-    <p class="form_subtitle">{{ errorMessage }}</p>
+    <p class="form_subtitle text-body-sm">{{ errorMessage }}</p>
   </base-card>
 </template>
 
@@ -18,8 +18,6 @@ export default {
 <style scoped lang="scss">
 .form_subtitle {
   color: var(--error);
-  font-size: 0.8rem;
-  font-weight: 400;
 }
 
 .error_card {

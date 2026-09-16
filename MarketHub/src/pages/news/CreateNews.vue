@@ -1,6 +1,6 @@
 <template>
   <base-card class="container">
-    <h1>Create News</h1>
+    <h1 class="text-title text-primary">Create News</h1>
     <news-form class="news_form" @submit="handleSubmit"></news-form>
   </base-card>
 </template>
@@ -27,9 +27,4 @@ export default {
   gap: 1rem;
 }
 
-h1 {
-  @media (max-width: 1024px) {
-    font-size: 1.8em;
-  }
-}
 </style>

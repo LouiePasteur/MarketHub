@@ -1,21 +1,21 @@
 <template>
   <base-form @submit.prevent="submitForm">
-    <h1>Create Store</h1>
+    <h1 class="text-title text-primary">Create Store</h1>
     <error-card v-if="error" :errorMessage="errorMessage"></error-card>
     <div class="form-group">
-      <label for="name">Store Name</label>
+      <label class="text-label" for="name">Store Name</label>
       <input type="text" id="name" required v-model="storename" />
     </div>
     <div class="form-group">
-      <label for="address">Address</label>
+      <label class="text-label" for="address">Address</label>
       <input type="text" id="address" required v-model="address" />
     </div>
     <div class="form-group">
-      <label for="description">Description</label>
+      <label class="text-label" for="description">Description</label>
       <textarea id="description" required v-model="description"></textarea>
     </div>
     <div class="form-group">
-      <label for="contact">Contact Number</label>
+      <label class="text-label" for="contact">Contact Number</label>
       <input
         type="tel"
         id="contact"
@@ -28,7 +28,7 @@
       />
     </div>
     <div class="form-group">
-      <label for="email">Email</label>
+      <label class="text-label" for="email">Email</label>
       <input
         type="email"
         id="email"
@@ -160,7 +160,6 @@ export default {
   label {
     min-width: 120px;
     text-align: left;
-    font-weight: 500;
     flex-shrink: 0;
 
     &:has(+ input[required]),
@@ -192,7 +191,6 @@ export default {
     padding: 0.5rem;
     border: 1px solid var(--border, #e2e8f0);
     border-radius: var(--radius-md, 0.375rem);
-    font-size: 1rem;
     width: 100%;
 
     &:focus {
@@ -231,9 +229,4 @@ button {
   }
 }
 
-h1 {
-  @media (max-width: 1024px) {
-    font-size: 1.8em;
-  }
-}
 </style>

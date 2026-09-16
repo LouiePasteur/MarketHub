@@ -1,15 +1,15 @@
 <template>
   <base-form @submit.prevent="submitForm">
     <div class="form-group">
-      <label for="header">Header</label>
+      <label class="text-label" for="header">Header</label>
       <input type="text" id="name" required v-model="newsheader" />
     </div>
     <div class="form-group">
-      <label for="description">Description</label>
+      <label class="text-label" for="description">Description</label>
       <textarea id="description" required v-model="description"></textarea>
     </div>
     <div class="form-group">
-      <label for="image">Image</label>
+      <label class="text-label" for="image">Image</label>
       <input type="file" id="image" accept="image/*" @change="handleImageChange" />
     </div>
 
@@ -70,7 +70,6 @@ export default {
   label {
     min-width: 120px;
     text-align: right;
-    font-weight: 500;
     flex-shrink: 0;
 
     &:has(+ input[required]),
@@ -103,7 +102,6 @@ export default {
     padding: 0.5rem;
     border: 1px solid var(--border, #e2e8f0);
     border-radius: var(--radius-md, 0.375rem);
-    font-size: 1rem;
     width: 100%;
 
     &:focus {

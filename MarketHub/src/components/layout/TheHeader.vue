@@ -2,15 +2,15 @@
   <div class="header">
     <div class="header-content">
       <div class="app_name">
-        <span class="header-title">Market</span
-        ><span class="header-title header-title--highlight">Hub</span>
+        <span class="header-title text-subheading text-white">Market</span
+        ><span class="header-title header-title--highlight text-subheading text-primary">Hub</span>
       </div>
 
       <div class="icons-container">
         <router-link to="/store" class="store-icon">
           <i class="fa-solid fa-store" />
         </router-link>
-        <span class="cart-icon" @click="openCartDialogue">
+        <span class="cart-icon" :class="{ active: isCartDialogueOpen }" @click="openCartDialogue">
           <i class="fa-solid fa-cart-shopping" />
         </span>
         <span class="notification-icon">
@@ -20,8 +20,8 @@
           <div class="profile-container">
             <img src="/groceries.jpg" alt="Profile" />
           </div>
-          <span class="profile-name">{{ $store.getters['user/currentUser']?.firstName }} </span>
-          <span class="profile-name">{{ $store.getters['user/currentUser']?.lastName }}</span>
+          <span class="profile-name text-body-sm text-white">{{ $store.getters['user/currentUser']?.firstName }} </span>
+          <span class="profile-name text-body-sm text-white">{{ $store.getters['user/currentUser']?.lastName }}</span>
         </div>
       </div>
     </div>
@@ -44,20 +44,21 @@ export default {
     openCartDialogue() {
       this.isCartDialogueOpen = !this.isCartDialogueOpen
     },
+    closeCartDialogue() {
+      this.isCartDialogueOpen = false
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
 .header-title {
-  font-size: 1.5rem;
-  font-weight: 500;
   color: #fff;
   background-color: var(--primary);
   border-radius: var(--radius-lg);
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  padding: 0.25rem 1rem;
+  padding: 0.55rem 1rem;
 
   &--highlight {
     color: var(--primary);
@@ -71,13 +72,17 @@ export default {
     cursor: pointer;
   }
 
-  @media (max-width: 1024px) {
-    font-size: 1.25rem;
-  }
 }
 
 .cart-icon {
   position: relative;
+  padding: 0.35rem;
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s ease;
+
+  &.active {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
 }
 
 .header {
@@ -104,7 +109,7 @@ export default {
   gap: 20px;
 
   & i {
-    font-size: 1.4rem;
+    font-size: var(--icon-lg);
     cursor: pointer;
   }
 

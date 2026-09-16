@@ -26,9 +26,8 @@ export default {
 /* Additional CSS Variables (shadows, spacing, fonts, etc.) */
 :root {
   /* Font Families */
-  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  --font-secondary:
-    'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-main: var(--font-body);
+  --font-secondary: var(--font-title);
 
   /* Shadow Colors */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -59,7 +58,6 @@ export default {
 }
 
 body {
-  font-family: var(--font-main);
   background-color: #f8fafc;
   color: #1e293b;
   line-height: 1.6;
@@ -73,19 +71,6 @@ body {
   align-items: center;
   justify-content: flex-start;
   text-align: center;
-}
-
-h1 {
-  font-family: var(--font-secondary);
-  font-size: 3rem;
-  font-weight: 700;
-  color: var(--primary);
-  margin-bottom: var(--spacing-md);
-}
-
-p {
-  font-size: 1.25rem;
-  color: #64748b;
 }
 
 .container {

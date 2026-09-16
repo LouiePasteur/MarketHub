@@ -1,7 +1,7 @@
 <template>
   <div class="search">
     <i class="fa-solid fa-magnifying-glass"></i>
-    <input type="text" placeholder="Search for products" />
+    <input class="text-input" type="text" placeholder="Search for products" />
   </div>
 </template>
 

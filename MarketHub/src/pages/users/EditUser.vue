@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Personal Information</h1>
+    <h1 class="text-title text-white">Personal Information</h1>
     <div class="user_form-container">
       <user-form class="user_form" @submit="handleSubmit"></user-form>
       <img src="/edituser.png" alt="Auth Background" />
@@ -54,13 +54,7 @@ img {
 }
 
 h1 {
-  font-weight: 700;
-  color: #fff;
   margin-bottom: 0;
-
-  @media (max-width: 1024px) {
-    font-size: 1.8em;
-  }
 }
 
 .user_form-container {

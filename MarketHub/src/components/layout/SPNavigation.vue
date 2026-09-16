@@ -64,7 +64,7 @@ export default {
   }
 
   i {
-    font-size: 1.5rem;
+    font-size: var(--icon-lg);
     cursor: pointer;
   }
 

@@ -2,14 +2,14 @@
   <base-card>
     <li class="product-item" @click="openDialogue">
       <img :src="image" alt="Product Image" />
-      <div class="product-item-name">
+      <div class="product-item-name text-subheading">
         {{ name }}
       </div>
       <div class="products-stars">
         <span v-for="star in 5" :key="star" class="star filled"> ★ </span>
-        <span class="numeric-rating">(4.5)</span>
+        <span class="numeric-rating text-caption text-muted">(4.5)</span>
       </div>
-      <div class="product-item-price">$ {{ price }}</div>
+      <div class="product-item-price text-subheading text-primary">$ {{ price }}</div>
       <base-button class="button" :class="'button-secondary'"> Add to Cart </base-button>
       <base-button class="button" :class="'button-primary'"> Buy Now </base-button>
     </li>
@@ -41,10 +41,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.numeric-rating {
-  font-size: 0.75rem;
-}
-
 .product-item {
   display: flex;
   flex-direction: column;
@@ -57,6 +53,14 @@ export default {
   &:hover {
     transform: translateY(-4px);
   }
+
+  &-name {
+    text-align: left;
+  }
+
+  &-price {
+    text-align: left;
+  }
 }
 
 img {
@@ -67,24 +71,13 @@ img {
   border-radius: var(--radius-md);
 }
 
-.product-item-name {
-  font-weight: 700;
-  text-align: left;
-}
-
-.product-item-price {
-  font-weight: 700;
-  text-align: left;
-  color: var(--primary);
-}
-
 .star {
-  font-size: 1rem;
+  font-size: var(--icon-md);
   color: #cbd5f5;
-}
 
-.star.filled {
-  color: #f59e0b;
+  &.filled {
+    color: #f59e0b;
+  }
 }
 
 .products-stars {

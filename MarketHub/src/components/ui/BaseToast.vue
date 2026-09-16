@@ -1,16 +1,8 @@
 <template>
   <transition name="toast-fade">
-    <div
-      v-if="visible"
-      class="toast"
-      :class="[`toast--${type}`]"
-      role="status"
-      aria-live="polite"
-    >
-      <span class="toast__message">{{ message }}</span>
-      <button class="toast__close" type="button" @click="$emit('close')">
-        ✕
-      </button>
+    <div v-if="visible" class="toast" :class="[`toast--${type}`]" role="status" aria-live="polite">
+      <span class="toast__message text-body-sm">{{ message }}</span>
+      <button class="toast__close" type="button" @click="$emit('close')">✕</button>
     </div>
   </transition>
 </template>
@@ -36,7 +28,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .toast {
   position: fixed;
   bottom: 1.5rem;
@@ -44,7 +36,6 @@ export default {
   max-width: 320px;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
-  font-size: 0.95rem;
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -52,35 +43,35 @@ export default {
   color: #0f172a;
   background-color: #e5e7eb;
   z-index: 50;
-}
 
-.toast--success {
-  background-color: #dcfce7;
-  color: #166534;
-}
+  &--success {
+    background-color: #dcfce7;
+    color: #166534;
+  }
 
-.toast--error {
-  background-color: #fee2e2;
-  color: #b91c1c;
-}
+  &--error {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
 
-.toast--info {
-  background-color: #eff6ff;
-  color: #1d4ed8;
-}
+  &--info {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+  }
 
-.toast__message {
-  flex: 1;
-  text-align: left;
-}
+  &__message {
+    flex: 1;
+    text-align: left;
+  }
 
-.toast__close {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: inherit;
-  font-size: 1rem;
-  padding: 0;
+  &__close {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: inherit;
+    font-size: var(--icon-md);
+    padding: 0;
+  }
 }
 
 .toast-fade-enter-active,
@@ -94,20 +85,3 @@ export default {
   transform: translateY(8px);
 }
 </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

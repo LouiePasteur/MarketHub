@@ -28,7 +28,7 @@
       </ul>
     </div>
     <div class="no-store" v-else>
-      <h3>There is no available store yet.</h3>
+      <h3 class="text-heading text-muted">There is no available store yet.</h3>
     </div>
   </div>
 </template>
@@ -56,30 +56,34 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.store__filter--action {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+.store {
+  &__filter {
+    &--action {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-  }
-}
-
-.store-list {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 1rem;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: repeat(4, 1fr);
+      @media (max-width: 768px) {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+      }
+    }
   }
 
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
+  &-list {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 }
 </style>

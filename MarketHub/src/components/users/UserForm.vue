@@ -1,19 +1,19 @@
 <template>
   <base-form @submit.prevent="submitForm">
     <div class="form-group">
-      <label for="firstname">First Name</label>
+      <label class="text-label" for="firstname">First Name</label>
       <input type="text" id="firstname" required v-model="firstname" />
     </div>
     <div class="form-group">
-      <label for="lastname">Last Name</label>
+      <label class="text-label" for="lastname">Last Name</label>
       <input type="text" id="lastname" required v-model="lastname" />
     </div>
     <div class="form-group">
-      <label for="address">Address</label>
+      <label class="text-label" for="address">Address</label>
       <input type="text" id="address" required v-model="address" />
     </div>
     <div class="form-group">
-      <label for="contact">Phone Number</label>
+      <label class="text-label" for="contact">Phone Number</label>
       <input type="number" id="contact" required v-model="contact" />
     </div>
 
@@ -64,7 +64,6 @@ export default {
 
   label {
     text-align: right;
-    font-weight: 500;
     flex-shrink: 0;
 
     &:has(+ input[required]),
@@ -93,7 +92,6 @@ export default {
     padding: 0.5rem;
     border: 1px solid var(--border, #e2e8f0);
     border-radius: var(--radius-md, 0.375rem);
-    font-size: 1rem;
     width: 100%;
 
     &:focus {

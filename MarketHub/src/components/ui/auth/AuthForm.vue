@@ -1,20 +1,22 @@
 <template>
   <div>
-    <h1>
+    <h1 class="text-display text-white">
       <span class="app_name">Market</span><span class="app_name app_name--highlight">Hub</span>
     </h1>
-    <p class="app_subtitle">Your trusted marketplace for all your shopping needs</p>
+    <p class="app_subtitle text-body-lg text-white">
+      Your trusted marketplace for all your shopping needs
+    </p>
     <div class="login_container" v-if="login">
       <base-form @submit.prevent="submitForm">
-        <h2>{{ login ? 'Login' : 'Register' }}</h2>
-        <p>
+        <h2 class="text-title text-primary">{{ login ? 'Login' : 'Register' }}</h2>
+        <p class="text-body text-muted">
           {{
             login ? 'Welcome back! Please enter your details.' : 'Create an account to get started.'
           }}
         </p>
         <auth-error v-if="error" :errorMessage="errorMessage"></auth-error>
         <div class="form-group">
-          <label for="email">Email</label>
+          <label class="text-label" for="email">Email</label>
           <input
             type="email"
             id="email"
@@ -26,7 +28,7 @@
           />
         </div>
         <div class="form-group">
-          <label for="password">Password</label>
+          <label class="text-label" for="password">Password</label>
           <input
             type="password"
             id="password"
@@ -41,8 +43,10 @@
           <base-button class="button button-primary" type="submit">Login</base-button>
         </div>
         <div class="form-group form-group--links">
-          <a href="/forgot-password" class="form-group--links-forgot">Forgot password?</a>
-          <p @click="toggleLoginForm" class="form-group--links-signup">
+          <a href="/forgot-password" class="form-group--links-forgot text-body-sm"
+            >Forgot password?</a
+          >
+          <p @click="toggleLoginForm" class="form-group--links-signup text-body-sm text-primary">
             Don't have an account? Sign up
           </p>
         </div>
@@ -68,7 +72,7 @@
                 />
               </svg>
             </span>
-            <span class="social-button-text">Sign in with Google</span>
+            <span class="social-button-text text-body-sm">Sign in with Google</span>
           </base-button>
           <base-button class="button-facebook" type="button" @click="facebookLogin">
             <span class="facebook-icon-wrapper">
@@ -83,22 +87,22 @@
                 />
               </svg>
             </span>
-            <span class="social-button-text">Login with Facebook</span>
+            <span class="social-button-text text-body-sm">Login with Facebook</span>
           </base-button>
         </div>
       </base-form>
     </div>
     <div class="login_container" v-else>
       <base-form @submit.prevent="submitForm">
-        <h2>{{ login ? 'Login' : 'Register' }}</h2>
-        <p>
+        <h2 class="text-title text-primary">{{ login ? 'Login' : 'Register' }}</h2>
+        <p class="text-body text-muted">
           {{
             login ? 'Welcome back! Please enter your details.' : 'Create an account to get started.'
           }}
         </p>
         <auth-error v-if="error" :errorMessage="errorMessage"></auth-error>
         <div class="form-group">
-          <label for="email">Email</label>
+          <label class="text-label" for="email">Email</label>
           <input
             type="email"
             id="email"
@@ -110,7 +114,7 @@
           />
         </div>
         <div class="form-group">
-          <label for="password">Password</label>
+          <label class="text-label" for="password">Password</label>
           <input
             type="password"
             id="password"
@@ -122,7 +126,7 @@
           />
         </div>
         <div class="form-group">
-          <label for="confirmPassword">Confirm Password</label>
+          <label class="text-label" for="confirmPassword">Confirm Password</label>
           <input
             type="password"
             id="confirmPassword"
@@ -242,14 +246,14 @@ h1 {
 }
 
 .app_name {
-  font-size: 3rem;
+  font-size: var(--text-display);
   font-weight: 700;
   color: #fff;
   background-color: var(--primary);
   border-radius: var(--radius-lg);
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  padding: 0 1rem;
+  padding: 0.55rem 1rem;
 
   &--highlight {
     color: var(--primary);
@@ -258,21 +262,11 @@ h1 {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
-
-  @media (max-width: 1024px) {
-    font-size: 2rem;
-  }
 }
 
 .app_subtitle {
-  font-size: 1rem;
-  color: #fff;
-  font-weight: 500;
   margin-bottom: 1rem;
-
-  @media (max-width: 1024px) {
-    font-size: 0.8rem;
-  }
+  margin-top: 0.5rem;
 }
 
 .error {
@@ -296,11 +290,6 @@ h1 {
 
   & label {
     text-align: left;
-    font-weight: 700;
-
-    @media (max-width: 1024px) {
-      font-size: 0.8rem;
-    }
   }
 
   & input {
@@ -314,8 +303,6 @@ h1 {
 
   &--links-signup {
     cursor: pointer;
-    color: var(--primary);
-    font-weight: 500;
     &:hover {
       color: var(--primary-dark);
       text-decoration: underline;
@@ -329,29 +316,6 @@ h1 {
     &:hover {
       color: var(--secondary-dark);
       text-decoration: underline;
-    }
-
-    @media (max-width: 1024px) {
-      font-size: 0.8rem;
-    }
-  }
-}
-
-.login_container {
-  & h2 {
-    font-size: 1.75rem;
-    color: var(--primary);
-
-    @media (max-width: 1024px) {
-      font-size: 1.25rem;
-    }
-  }
-
-  & p {
-    font-size: 1rem;
-
-    @media (max-width: 1024px) {
-      font-size: 0.8rem;
     }
   }
 }
@@ -376,10 +340,6 @@ h1 {
   width: 18px;
   height: 18px;
   display: block;
-}
-
-.social-button-text {
-  font-size: 14px;
 }
 
 .facebook-icon-wrapper {

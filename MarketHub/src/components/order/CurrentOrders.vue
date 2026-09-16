@@ -1,17 +1,17 @@
 <template>
   <div class="current-orders">
     <div v-if="orders.length === 0" class="no-orders">
-      <h3>No current orders yet.</h3>
+      <h3 class="text-heading text-muted">No current orders yet.</h3>
     </div>
     <div v-else class="orders-list">
       <div class="order-card" v-for="order in orders" :key="order.id">
         <div class="order-header">
           <div class="order-customer">
-            <h3>{{ order.customerName }}</h3>
-            <p class="order-date">{{ order.date }}</p>
+            <h3 class="text-subheading">{{ order.customerName }}</h3>
+            <p class="order-date text-caption text-muted">{{ order.date }}</p>
           </div>
           <div class="order-status">
-            <label :for="`status-${order.id}`">Status:</label>
+            <label class="text-label" :for="`status-${order.id}`">Status:</label>
             <select
               :id="`status-${order.id}`"
               v-model="order.status"
@@ -32,10 +32,10 @@
             </div>
             <div class="item-details">
               <div class="item-name-row">
-                <h4 class="item-name">{{ item.name }}</h4>
-                <span class="item-quantity">x({{ item.quantity }})</span>
+                <h4 class="item-name text-subheading">{{ item.name }}</h4>
+                <span class="item-quantity text-caption text-muted">x({{ item.quantity }})</span>
               </div>
-              <p class="item-price">
+              <p class="item-price text-body-sm text-primary">
                 <span>${{ item.price * item.quantity }}</span>
               </p>
             </div>
@@ -43,8 +43,8 @@
         </div>
 
         <div class="order-footer">
-          <p class="order-total">
-            Total: <span>${{ getOrderTotal(order) }}</span>
+          <p class="order-total text-body">
+            Total: <span class="text-subheading text-primary">${{ getOrderTotal(order) }}</span>
           </p>
           <base-button class="button button-primary"> Update </base-button>
         </div>
@@ -148,7 +148,7 @@ export default {
 <style lang="scss" scoped>
 .current-orders {
   width: 100%;
-  margin: 20px 0;
+  margin: 0;
 }
 
 .no-orders {
@@ -170,200 +170,191 @@ export default {
   }
 }
 
-.order-card {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-  border: 1px solid #e2e8f0;
-  border-radius: var(--radius-md);
-  background-color: #fff;
-  height: 100%;
-}
-
-.order-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-  width: 100%;
-
-  @media (max-width: 1024px) {
+.order {
+  &-card {
+    display: flex;
     flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    background-color: #fff;
+    height: 100%;
   }
-}
 
-.order-customer {
-  h3 {
-    margin: 0;
-    font-size: 1.25rem;
+  &-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+
+    @media (max-width: 1024px) {
+      flex-direction: column;
+    }
   }
-}
 
-.order-date {
-  margin: 0.25rem 0 0;
-  font-size: 0.85rem;
-  color: #64748b;
-}
+  &-customer {
+    h3 {
+      margin: 0;
+    }
+  }
 
-.order-status {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
+  &-date {
+    margin: 0.25rem 0 0;
+  }
 
-  select {
-    padding: 0.5rem;
-    border-radius: var(--radius-lg);
-    border: 1px solid #ddd;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  &-status {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
 
-    &.status-preparing {
-      background-color: #fff3e0;
-      color: #e65100;
-      border-color: #ff9800;
+    select {
+      padding: 0.5rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid #ddd;
+      cursor: pointer;
+      transition: all 0.3s ease;
 
-      &:focus {
-        outline: none;
+      &.status-preparing {
+        background-color: #fff3e0;
+        color: #e65100;
         border-color: #ff9800;
-        box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.2);
+
+        &:focus {
+          outline: none;
+          border-color: #ff9800;
+          box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.2);
+        }
       }
-    }
 
-    &.status-shipping {
-      background-color: #e3f2fd;
-      color: #1565c0;
-      border-color: #2196f3;
-
-      &:focus {
-        outline: none;
+      &.status-shipping {
+        background-color: #e3f2fd;
+        color: #1565c0;
         border-color: #2196f3;
-        box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+
+        &:focus {
+          outline: none;
+          border-color: #2196f3;
+          box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+        }
       }
-    }
 
-    &.status-completed {
-      background-color: #e8f5e9;
-      color: #2e7d32;
-      border-color: #4caf50;
-
-      &:focus {
-        outline: none;
+      &.status-completed {
+        background-color: #e8f5e9;
+        color: #2e7d32;
         border-color: #4caf50;
-        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+
+        &:focus {
+          outline: none;
+          border-color: #4caf50;
+          box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
       }
-    }
 
-    &.status-cancelled {
-      background-color: #ffebee;
-      color: #c62828;
-      border-color: #ef5350;
-
-      &:focus {
-        outline: none;
+      &.status-cancelled {
+        background-color: #ffebee;
+        color: #c62828;
         border-color: #ef5350;
-        box-shadow: 0 0 0 3px rgba(239, 83, 80, 0.2);
+
+        &:focus {
+          outline: none;
+          border-color: #ef5350;
+          box-shadow: 0 0 0 3px rgba(239, 83, 80, 0.2);
+        }
       }
     }
   }
-}
 
-.order-items {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  &-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 
-  &.scrollable {
-    max-height: 220px;
-    overflow-y: auto;
-    padding-right: 0.5rem;
-  }
-}
-
-.order-item {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  align-items: center;
-}
-
-.item-image {
-  flex-shrink: 0;
-
-  img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: var(--radius-lg);
-
-    @media (max-width: 768px) {
-      width: 120px;
-      height: 120px;
+    &.scrollable {
+      max-height: 220px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
     }
   }
-}
 
-.item-details {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
+  &-item {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+  }
 
-.item-name-row {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  gap: 0.5rem;
-}
+  &-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e2e8f0;
+    gap: 1rem;
 
-.item-name {
-  margin: 0;
-  font-size: 1.1rem;
-}
+    @media (max-width: 1024px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
 
-.item-quantity {
-  font-size: 0.75rem;
-  color: #64748b;
-  white-space: nowrap;
-}
-
-.item-price {
-  margin: 0;
-
-  span {
+  &-total {
+    margin: 0;
     font-weight: 500;
-    color: var(--primary);
   }
 }
 
-.order-footer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin-top: auto;
-  padding-top: 0.75rem;
-  border-top: 1px solid #e2e8f0;
-  gap: 1rem;
+.item {
+  &-image {
+    flex-shrink: 0;
 
-  @media (max-width: 1024px) {
+    img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: var(--radius-lg);
+
+      @media (max-width: 768px) {
+        width: 120px;
+        height: 120px;
+      }
+    }
+  }
+
+  &-details {
+    display: flex;
     flex-direction: column;
-    align-items: stretch;
+    gap: 0.35rem;
   }
-}
 
-.order-total {
-  margin: 0;
-  font-weight: 500;
+  &-name-row {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
 
-  span {
-    color: var(--primary);
-    font-size: 1.15rem;
-    font-weight: 700;
+  &-name {
+    margin: 0;
+  }
+
+  &-quantity {
+    white-space: nowrap;
+  }
+
+  &-price {
+    margin: 0;
+
+    span {
+      font-weight: 500;
+      color: var(--primary);
+    }
   }
 }
 </style>

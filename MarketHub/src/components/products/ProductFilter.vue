@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label for="categories">Category </label>
+    <label class="text-label" for="categories">Category </label>
     <select id="categories" name="categories" v-model="selectedCategoryId">
       <option v-for="category in categories" :key="category.id" :value="category.id">
         {{ category.name }}

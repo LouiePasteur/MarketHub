@@ -38,39 +38,41 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.dialogue-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: var(--spacing-md);
-}
-
-.dialogue-content {
-  background-color: #fff;
-  padding: var(--spacing-xl);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  max-width: 600px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  animation: slideUp 0.3s ease-out;
-
-  @media (max-width: 1024px) {
-    padding: var(--spacing-lg);
-    max-height: 70vh;
+.dialogue {
+  &-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--spacing-md);
   }
 
-  @media (max-width: 768px) {
-    max-height: 50vh;
+  &-content {
+    background-color: #fff;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideUp 0.3s ease-out;
+
+    @media (max-width: 1024px) {
+      padding: var(--spacing-lg);
+      max-height: 70vh;
+    }
+
+    @media (max-width: 768px) {
+      max-height: 50vh;
+    }
   }
 }
 
@@ -91,7 +93,7 @@ export default {
   right: 0;
   background: none;
   border: none;
-  font-size: 2rem;
+  font-size: var(--icon-xl);
   color: #64748b;
   cursor: pointer;
   width: 40px;

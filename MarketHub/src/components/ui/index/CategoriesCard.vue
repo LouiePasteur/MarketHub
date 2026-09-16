@@ -1,11 +1,10 @@
 <template>
   <div class="categories-card">
-    <div class="card-content" :style="{ backgroundImage: `url(${image})` }">
-      <div class="overlay-white"></div>
-      <div class="overlay-black"></div>
-      <div class="card-content-text">
-        <h3>{{ title }}</h3>
-        <p>{{ description }}</p>
+    <div class="categories-card__media" :style="{ backgroundImage: `url(${image})` }">
+      <div class="categories-card__shade"></div>
+      <div class="categories-card__content">
+        <h3 class="text-heading text-white">{{ title }}</h3>
+        <p class="text-body text-white">{{ description }}</p>
       </div>
     </div>
   </div>
@@ -33,100 +32,64 @@ export default {
 <style lang="scss" scoped>
 .categories-card {
   width: 100%;
-  height: 250px;
-  list-style: none;
+  height: 100%;
+  min-height: 280px;
 
-  p {
-    font-family: var(--font-secondary);
-    font-size: 1.25rem;
-    font-weight: 500;
-    color: #000;
-    display: none;
-  }
-
-  h3 {
-    font-family: var(--font-primary);
-    font-size: 2.75rem;
-    color: var(--primary);
-
-    @media (max-width: 768px) {
-      font-size: 2rem;
-    }
-  }
-
-  .card-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-size: cover;
-    background-position: center;
+  &__media {
+    position: relative;
     width: 100%;
     height: 100%;
-    position: relative;
-    border-radius: 20px;
-
-    .overlay-white {
-      background-color: #fff;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0.7;
-      transition: transform 0.3s ease-in-out;
-      transform: translateX(0);
-      z-index: 1;
-      border-radius: 20px;
-    }
-
-    .overlay-black {
-      background-color: #000;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      transition: all 0.3s ease-in-out;
-      transform: translateX(-100%);
-      z-index: 1;
-      border-radius: 20px;
-    }
-
-    .card-content-text {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 20px;
-      z-index: 2;
-    }
+    min-height: 280px;
+    background-size: cover;
+    background-position: center;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    transition: transform 0.35s ease;
 
     &:hover {
-      .overlay-white {
-        transform: translateX(100%);
-        display: none;
-      }
+      transform: scale(1.015);
 
-      .overlay-black {
-        opacity: 0.7;
-        transform: translateX(0);
+      .categories-card__shade {
+        opacity: 1;
       }
+    }
+  }
 
-      h3 {
-        color: var(--primary-light);
-        transition: color 0.3s ease-in-out;
-      }
+  &__shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(15, 23, 42, 0.88) 0%,
+      rgba(15, 23, 42, 0.55) 42%,
+      rgba(15, 23, 42, 0.2) 100%
+    );
+    opacity: 0.92;
+    transition: opacity 0.35s ease;
+    z-index: 1;
+  }
 
-      p {
-        display: block;
-        color: #fff;
-        transition: all 0.3s ease-in-out;
-      }
+  &__content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 1.5rem;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    h3 {
+      margin: 0;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+    }
+
+    p {
+      margin: 0;
+      opacity: 0.95;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
     }
   }
 }

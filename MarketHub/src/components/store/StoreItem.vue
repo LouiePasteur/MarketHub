@@ -5,12 +5,12 @@
         <img :src="'fashion.jpg'" alt="Store Image" />
         <div class="store-stars">
           <span v-for="star in 5" :key="star" class="star filled"> ★ </span>
-          <span class="numeric-rating">(4.5)</span>
+          <span class="numeric-rating text-caption text-muted">(4.5)</span>
         </div>
-        <div class="store-name">
+        <div class="store-name text-subheading">
           {{ name }}
         </div>
-        <div class="store-address"><i class="fa-solid fa-location-dot"></i> {{ address }}</div>
+        <div class="store-address text-caption text-muted"><i class="fa-solid fa-location-dot"></i> {{ address }}</div>
         <div class="store-action">
           <base-button class="button button-secondary"> + Follow </base-button>
           <base-button class="button button-primary" @click="openStore"> View Store </base-button>
@@ -46,33 +46,37 @@ export default {
   margin-bottom: 10px;
 }
 
-.numeric-rating {
-  font-size: 0.75rem;
-}
+.store {
+  &-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
 
-.store-address {
-  font-size: 0.75rem;
-  color: #000;
-  text-align: left;
-}
-
-.store-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-
-  &:hover {
-    transform: translateY(-4px);
+    &:hover {
+      transform: translateY(-4px);
+    }
   }
-}
 
-.store-link {
-  text-decoration: none;
-  color: var(--primary);
+  &-name {
+    text-align: left;
+  }
+
+  &-address {
+    text-align: left;
+  }
+
+  &-stars {
+    text-align: left;
+  }
+
+  &-link {
+    text-decoration: none;
+    color: var(--primary);
+  }
 }
 
 img {
@@ -83,11 +87,6 @@ img {
   border-radius: var(--radius-md);
 }
 
-.store-name {
-  font-weight: 700;
-  text-align: left;
-}
-
 .product-item-price {
   font-weight: 700;
   text-align: left;
@@ -95,15 +94,11 @@ img {
 }
 
 .star {
-  font-size: 1rem;
+  font-size: var(--icon-md);
   color: #cbd5f5;
-}
 
-.star.filled {
-  color: #f59e0b;
-}
-
-.store-stars {
-  text-align: left;
+  &.filled {
+    color: #f59e0b;
+  }
 }
 </style>

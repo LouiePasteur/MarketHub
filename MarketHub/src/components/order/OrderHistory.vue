@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>Order History</p>
+    <p class="text-title text-primary">Order History</p>
     <order-history-items />
   </div>
 </template>

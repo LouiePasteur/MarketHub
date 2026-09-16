@@ -1,7 +1,7 @@
 <template>
   <div class="product-description">
-    <p v-if="productDescription">{{ productDescription }}</p>
-    <p v-else class="no-description">No description available</p>
+    <p v-if="productDescription" class="text-body-sm text-muted">{{ productDescription }}</p>
+    <p v-else class="no-description text-body-sm text-muted">No description available</p>
   </div>
 </template>
 
@@ -20,9 +20,6 @@ export default {
 p {
   width: 100%;
   margin-top: 20px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: #000;
 }
 
 .no-description {

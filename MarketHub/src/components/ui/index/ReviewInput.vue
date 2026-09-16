@@ -3,7 +3,7 @@
     <button
       v-if="variant === 'standalone' && isEditing"
       type="button"
-      class="cancel-edit-button"
+      class="cancel-edit-button text-body-sm"
       @click="handleCancel"
     >
       Cancel
@@ -59,7 +59,7 @@
             </button>
           </div>
         </div>
-        <small class="input-help">
+        <small class="input-help text-caption text-muted">
           {{ reviewImages.length }}/{{ maxImages }} images (optional)
         </small>
       </div>
@@ -87,7 +87,7 @@
         placeholder="Edit your review"
       ></textarea>
       <div class="review-inline-actions">
-        <button type="button" class="cancel-edit-button" @click="handleCancel">Cancel</button>
+        <button type="button" class="cancel-edit-button text-body-sm" @click="handleCancel">Cancel</button>
         <button type="button" class="add-review-button" @click="submitReview">Update Review</button>
       </div>
     </template>
@@ -307,6 +307,34 @@ export default {
   gap: 0.75rem;
   margin-bottom: 1rem;
   flex-wrap: wrap;
+
+  &-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  textarea {
+    width: 100%;
+    height: 100px;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    padding: 0.5rem;
+    resize: none;
+    font-weight: 500;
+    color: #0f172a;
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+  }
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .cancel-edit-button {
@@ -317,41 +345,10 @@ export default {
   background-color: #fff;
   color: #64748b;
   cursor: pointer;
-  font-size: 0.875rem;
 
   &:hover {
     background-color: #f8fafc;
     color: #0f172a;
-  }
-}
-
-.review-input-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.review-rating-input {
-  display: flex;
-  align-items: center;
-  gap: 0.15rem;
-}
-
-.review-input textarea {
-  width: 100%;
-  height: 100px;
-  border: 1px solid #e2e8f0;
-  border-radius: var(--radius-md);
-  padding: 0.5rem;
-  resize: none;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #0f172a;
-
-  &:focus {
-    outline: none;
-    border-color: var(--primary);
   }
 }
 
@@ -369,27 +366,76 @@ export default {
   &:hover {
     background-color: var(--primary-dark);
   }
+
+  @media (max-width: 1024px) {
+    width: 100%;
+  }
 }
 
 .star {
-  font-size: 1.25rem;
+  font-size: var(--icon-lg);
   color: #cbd5e1;
   line-height: 1;
+
+  &.filled {
+    color: #f59e0b;
+  }
+
+  &--interactive {
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
 }
 
-.star.filled {
-  color: #f59e0b;
-}
+.review {
+  &-rating-input {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+  }
 
-.star--interactive {
-  cursor: pointer;
-  transition: color 0.15s ease;
-}
+  &-images {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
 
-.review-images {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
+  &-inline {
+    &-edit {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    &-textarea {
+      width: 100%;
+      min-height: 80px;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 0.5rem;
+      resize: vertical;
+      font-size: var(--text-body-sm);
+      font-weight: 500;
+      color: #0f172a;
+
+      &:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+    }
+
+    &-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+
+      .add-review-button {
+        width: auto;
+        min-width: 100px;
+      }
+    }
+  }
 }
 
 .visually-hidden-file-input {
@@ -403,58 +449,60 @@ export default {
   border: 0;
 }
 
-.image-upload-grid {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.image-upload-slot {
-  position: relative;
-}
-
-.image-upload-square {
-  position: relative;
-  width: 72px;
-  height: 72px;
-  border: 2px dashed #cbd5e1;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f8fafc;
-  cursor: pointer;
-  overflow: hidden;
-  transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease;
-
-  &:hover {
-    border-color: var(--primary);
-    background-color: #eff6ff;
+.image-upload {
+  &-grid {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+  &-slot {
+    position: relative;
   }
-}
 
-.image-upload-overlay {
-  position: absolute;
-  inset: auto 0 0 0;
-  background: rgba(15, 23, 42, 0.65);
-  color: #fff;
-  font-size: 0.65rem;
-  text-align: center;
-  padding: 0.2rem;
-}
+  &-square {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    border: 2px dashed #cbd5e1;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    cursor: pointer;
+    overflow: hidden;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease;
 
-.image-upload-placeholder {
-  font-size: 1.1rem;
-  color: #94a3b8;
+    &:hover {
+      border-color: var(--primary);
+      background-color: #eff6ff;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  &-overlay {
+    position: absolute;
+    inset: auto 0 0 0;
+    background: rgba(15, 23, 42, 0.65);
+    color: #fff;
+    font-size: var(--text-caption);
+    text-align: center;
+    padding: 0.2rem;
+  }
+
+  &-placeholder {
+    font-size: var(--icon-lg);
+    color: #94a3b8;
+  }
 }
 
 .image-remove-button {
@@ -472,62 +520,11 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 0;
-  font-size: 0.65rem;
+  font-size: var(--icon-sm);
   line-height: 1;
 
   &:hover {
     background: #b91c1c;
-  }
-}
-
-.input-help {
-  font-size: 0.75rem;
-  color: #64748b;
-}
-
-.review-inline-edit {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.review-inline-textarea {
-  width: 100%;
-  min-height: 80px;
-  border: 1px solid #e2e8f0;
-  border-radius: var(--radius-md);
-  padding: 0.5rem;
-  resize: vertical;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: #0f172a;
-
-  &:focus {
-    outline: none;
-    border-color: var(--primary);
-  }
-}
-
-.review-inline-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-
-  .add-review-button {
-    width: auto;
-    min-width: 100px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .review-input {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .add-review-button {
-    width: 100%;
   }
 }
 </style>

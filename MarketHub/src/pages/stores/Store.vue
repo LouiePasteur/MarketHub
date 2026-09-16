@@ -1,22 +1,18 @@
 <template>
-  <div>
+  <div class="store-page">
     <div class="store-navigation">
       <div
-        class="navigation-item"
-        :class="{ active: active === 'my-store' }"
-        @click="makeActive('my-store')"
+        v-for="item in tabs"
+        :key="item.identifier"
+        class="store-navigation__item text-label"
+        :class="{ active: active === item.identifier }"
+        @click="makeActive(item.identifier)"
       >
-        My Store
-      </div>
-      <div
-        class="navigation-item"
-        :class="{ active: active === 'store-list' }"
-        @click="makeActive('store-list')"
-      >
-        Store List
+        <i :class="item.icon"></i>
+        <span>{{ item.name }}</span>
       </div>
     </div>
-    <base-card class="container">
+    <base-card class="store-page__content">
       <store-list v-if="active === 'store-list'"></store-list>
       <my-store v-else></my-store>
     </base-card>
@@ -33,6 +29,18 @@ export default {
   data() {
     return {
       active: 'my-store',
+      tabs: [
+        {
+          name: 'My Store',
+          identifier: 'my-store',
+          icon: 'fa-solid fa-store',
+        },
+        {
+          name: 'Store List',
+          identifier: 'store-list',
+          icon: 'fa-solid fa-shop',
+        },
+      ],
     }
   },
   methods: {
@@ -44,24 +52,51 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.store-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  :deep(.store-page__content) {
+    margin-top: 0;
+    border-top-left-radius: 0;
+  }
+}
+
 .store-navigation {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  color: #fff;
+  align-items: flex-end;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
 
-  & div {
-    padding: 5px 10px;
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.7rem 1.35rem;
     border-top-left-radius: var(--radius-md);
     border-top-right-radius: var(--radius-md);
+    background-color: rgba(15, 23, 42, 0.18);
+    color: #fff;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+
+    i {
+      font-size: var(--icon-sm);
+    }
 
     &:hover {
-      cursor: pointer;
-      background-color: var(--primary-dark);
+      background-color: rgba(15, 23, 42, 0.28);
     }
 
     &.active {
-      background-color: var(--primary);
+      background-color: #fff;
+      color: var(--primary);
     }
   }
 }

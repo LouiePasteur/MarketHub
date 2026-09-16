@@ -74,16 +74,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.product__filter--action {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+.product {
+  &__filter {
+    &--action {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
+      @media (max-width: 768px) {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+      }
+    }
   }
 }
 

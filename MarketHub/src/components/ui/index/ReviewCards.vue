@@ -10,7 +10,7 @@
     />
 
     <div v-if="normalizedReviews.length === 0" class="reviews-empty">
-      <h3>No reviews yet</h3>
+      <h3 class="text-heading text-muted">No reviews yet</h3>
     </div>
     <div v-else>
       <div v-for="review in normalizedReviews" :key="review.id" class="review-container">
@@ -19,7 +19,7 @@
             <div class="reviewer-profile">
               <img :src="review.image" alt="Reviewer Profile" />
               <div class="reviewer-name">
-                <h3>{{ review.reviewerName }}</h3>
+                <h3 class="text-subheading">{{ review.reviewerName }}</h3>
               </div>
             </div>
             <div class="review-actions" v-if="currentUserIds.includes(review.reviewerId)">
@@ -42,7 +42,7 @@
           </div>
           <div class="rating-container">
             <div class="review-date">
-              <p>{{ review.reviewDate }}</p>
+              <p class="text-caption text-muted">{{ review.reviewDate }}</p>
             </div>
             <div class="rating-actions">
               <div v-if="!(page === 'store' && isEditingReview(review.id))" class="review-rating">
@@ -54,7 +54,7 @@
                 >
                   ★
                 </span>
-                <span class="numeric-rating">{{ review.rating }}</span>
+                <span class="numeric-rating text-caption text-muted">{{ review.rating }}</span>
               </div>
               <div
                 class="review-actions-desktop"
@@ -81,7 +81,7 @@
         </div>
         <div class="review-content">
           <template v-if="!isEditingReview(review.id)">
-            <p>{{ review.reviewContent }}</p>
+            <p class="text-body-sm text-muted">{{ review.reviewContent }}</p>
             <div v-if="review.images?.length && page != 'store'" class="review-attached-images">
               <img
                 v-for="(image, index) in review.images"
@@ -277,14 +277,7 @@ export default {
 }
 
 .reviews-empty h3 {
-  font-size: 1rem;
-  color: #64748b;
   margin: 0;
-}
-
-.review-container {
-  border-bottom: 1px solid #e2e8f0;
-  padding: 0.75rem 0;
 }
 
 .basic-information {
@@ -292,88 +285,109 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
-}
-
-.reviewer-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.reviewer-profile {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.reviewer-profile img {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.review-rating {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.rating-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.25rem;
-}
-
-.rating-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.review-date {
-  text-align: right;
-
-  & p {
-    font-size: 0.65rem;
-  }
 
   @media (max-width: 1024px) {
-    text-align: left;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.review {
+  &-container {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0.75rem 0;
+  }
+
+  &-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  &-date {
+    text-align: right;
+
+    @media (max-width: 1024px) {
+      text-align: left;
+    }
+  }
+
+  &-attached-images {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+
+    img {
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      border: 1px solid #e2e8f0;
+    }
+  }
+}
+
+.reviewer {
+  &-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    @media (max-width: 1024px) {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+
+  &-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+}
+
+.rating {
+  &-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+
+    @media (max-width: 1024px) {
+      align-items: flex-start;
+    }
+  }
+
+  &-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 }
 
 .star {
-  font-size: 1.25rem;
+  font-size: var(--icon-lg);
   color: #cbd5e1;
   line-height: 1;
-}
 
-.star.filled {
-  color: #f59e0b;
+  &.filled {
+    color: #f59e0b;
+  }
 }
 
 .numeric-rating {
-  font-size: 0.8rem;
   font-weight: 600;
-  color: #64748b;
   margin-left: 0.25rem;
-}
-
-.review-attached-images {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-top: 0.5rem;
-
-  img {
-    width: 64px;
-    height: 64px;
-    object-fit: cover;
-    border-radius: var(--radius-md);
-    border: 1px solid #e2e8f0;
-  }
 }
 
 .delete-button {
@@ -396,7 +410,25 @@ export default {
   }
 
   i {
-    font-size: 0.9rem;
+    font-size: var(--icon-sm);
+  }
+
+  &--mobile {
+    display: none;
+  }
+
+  &--desktop {
+    display: inline-flex;
+  }
+
+  @media (max-width: 1024px) {
+    &--desktop {
+      display: none;
+    }
+
+    &--mobile {
+      display: inline-flex;
+    }
   }
 }
 
@@ -420,50 +452,25 @@ export default {
   }
 
   i {
-    font-size: 0.9rem;
-  }
-}
-
-.delete-button--mobile,
-.edit-button--mobile {
-  display: none;
-}
-
-.delete-button--desktop,
-.edit-button--desktop {
-  display: inline-flex;
-}
-
-.review-content p {
-  font-size: 0.8rem;
-  color: #0f172a;
-}
-
-@media (max-width: 1024px) {
-  .basic-information {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
+    font-size: var(--icon-sm);
   }
 
-  .reviewer-header {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .rating-container {
-    align-items: flex-start;
-  }
-
-  .delete-button--desktop,
-  .edit-button--desktop {
+  &--mobile {
     display: none;
   }
 
-  .delete-button--mobile,
-  .edit-button--mobile {
+  &--desktop {
     display: inline-flex;
+  }
+
+  @media (max-width: 1024px) {
+    &--desktop {
+      display: none;
+    }
+
+    &--mobile {
+      display: inline-flex;
+    }
   }
 }
 </style>
