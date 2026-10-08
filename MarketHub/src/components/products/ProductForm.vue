@@ -1,7 +1,7 @@
 <template>
   <base-form @submit.prevent="submitForm">
     <base-card>
-      <h1 class="text-title text-primary">Add Product</h1>
+      <h1 class="text-title text-primary">{{ isEditMode ? 'Edit Product' : 'Add Product' }}</h1>
       <div class="form-group">
         <label class="text-label" for="name">Product Name</label>
         <input type="text" id="name" required v-model="productName" />
@@ -18,16 +18,27 @@
               multiple
               @change="handleImageChange($event, slotIndex)"
             />
-            <label :for="`image-${slotIndex}`" class="image-upload-square">
-              <img
+            <div class="image-upload-square">
+              <label :for="`image-${slotIndex}`" class="image-upload-hitarea">
+                <img
+                  v-if="selectedImages[slotIndex]"
+                  :src="selectedImages[slotIndex].preview"
+                  :alt="`Selected Product Image ${slotIndex + 1}`"
+                  required
+                />
+                <span v-if="selectedImages[slotIndex]" class="image-upload-overlay">Change</span>
+                <span v-else class="image-upload-placeholder">+ Upload Image</span>
+              </label>
+              <button
                 v-if="selectedImages[slotIndex]"
-                :src="selectedImages[slotIndex].preview"
-                :alt="`Selected Product Image ${slotIndex + 1}`"
-                required
-              />
-              <span v-if="selectedImages[slotIndex]" class="image-upload-overlay">Change</span>
-              <span v-else class="image-upload-placeholder">+ Upload Image</span>
-            </label>
+                type="button"
+                class="image-upload-delete"
+                aria-label="Remove image"
+                @click.stop.prevent="removeImage(slotIndex)"
+              >
+                ×
+              </button>
+            </div>
           </div>
         </div>
         <small class="input-help text-caption text-muted">
@@ -69,9 +80,9 @@
         </div>
       </div>
       <div class="form-group form-group--button">
-        <base-button class="button button-primary" :disabled="validInputs" type="submit"
-          >Add Product</base-button
-        >
+        <base-button class="button button-primary" :disabled="validInputs" type="submit">
+          {{ isEditMode ? 'Update Product' : 'Add Product' }}
+        </base-button>
       </div>
     </base-card>
   </base-form>
@@ -79,16 +90,40 @@
 
 <script>
 import BaseForm from '@/components/ui/BaseForm.vue'
+
+function mapProductImages(productImage) {
+  if (!productImage) {
+    return []
+  }
+  const images = Array.isArray(productImage) ? productImage : [productImage]
+  return images
+    .filter((image) => typeof image === 'string' && image.length > 0)
+    .map((image) => ({
+      file: null,
+      preview: image,
+    }))
+}
+
 export default {
   components: {
     BaseForm,
   },
+  props: {
+    product: {
+      type: Object,
+      default: null,
+    },
+  },
   emits: ['submit', 'image-selected'],
   data() {
     return {
-      selectedImages: [],
+      selectedImages: mapProductImages(this.product?.productImage),
       maxUploads: 4,
-      category: '',
+      productName: this.product?.productName || this.product?.name || '',
+      category: this.product?.productCategory || '',
+      description: this.product?.productDescription || '',
+      stocks: this.product?.stocks ?? '',
+      price: this.product?.price ?? '',
       categories: [
         {
           id: 1,
@@ -113,7 +148,28 @@ export default {
       ],
     }
   },
+  watch: {
+    product: {
+      handler(newProduct) {
+        if (!newProduct) return
+        this.productName = newProduct.productName || newProduct.name || ''
+        this.category = newProduct.productCategory || ''
+        this.description = newProduct.productDescription || ''
+        this.stocks = newProduct.stocks ?? ''
+        this.price = newProduct.price ?? ''
+        this.selectedImages.forEach((image) => {
+          if (image?.preview?.startsWith('blob:')) {
+            URL.revokeObjectURL(image.preview)
+          }
+        })
+        this.selectedImages = mapProductImages(newProduct.productImage)
+      },
+    },
+  },
   computed: {
+    isEditMode() {
+      return !!this.product?.id
+    },
     visibleUploadSlots() {
       const totalSlots = Math.min(this.selectedImages.length + 1, this.maxUploads)
       return Array.from({ length: totalSlots }, (_, index) => index)
@@ -132,16 +188,29 @@ export default {
   methods: {
     submitForm() {
       this.$emit('submit', {
+        ...this.product,
+        id: this.product?.id,
         productName: this.productName,
         productImage: this.selectedImages,
         productCategory: this.category,
         productDescription: this.description,
         stocks: this.stocks,
         price: this.price,
-        sold: 0,
-        storeId: this.storeId,
-        productRating: 0,
+        sold: this.product?.sold ?? 0,
+        storeId: this.product?.storeId || '',
+        productRating: this.product?.productRating ?? 0,
       })
+    },
+    removeImage(slotIndex) {
+      const existing = this.selectedImages[slotIndex]
+      if (existing?.preview?.startsWith('blob:')) {
+        URL.revokeObjectURL(existing.preview)
+      }
+      this.selectedImages.splice(slotIndex, 1)
+      this.$emit(
+        'image-selected',
+        this.selectedImages.map((image) => image.file).filter(Boolean),
+      )
     },
     handleImageChange(event, slotIndex) {
       const files = Array.from(event.target.files || [])
@@ -218,7 +287,11 @@ export default {
     },
   },
   beforeUnmount() {
-    this.selectedImages.forEach((image) => URL.revokeObjectURL(image.preview))
+    this.selectedImages.forEach((image) => {
+      if (image?.preview?.startsWith('blob:')) {
+        URL.revokeObjectURL(image.preview)
+      }
+    })
   },
 }
 </script>
@@ -349,11 +422,7 @@ export default {
     height: 180px;
     border: 2px dashed #cbd5e1;
     border-radius: var(--radius-md, 0.375rem);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background: #f8fafc;
-    cursor: pointer;
     overflow: hidden;
     transition:
       border-color 0.2s ease,
@@ -363,12 +432,50 @@ export default {
       border-color: var(--primary, #3b82f6);
       background-color: #eff6ff;
     }
+  }
+
+  .image-upload-hitarea {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    margin: 0;
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
+    }
+  }
+
+  .image-upload-delete {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.35rem;
+    z-index: 3;
+    width: 1.5rem !important;
+    height: 1.5rem;
+    min-width: 1.5rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: auto;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: #ef4444;
+    font-size: var(--icon-lg, 1.25rem);
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #b91c1c;
+      background: transparent;
     }
   }
 

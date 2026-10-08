@@ -11,10 +11,13 @@
       </div>
       <div class="product-item-price text-subheading text-primary">$ {{ price }}</div>
     </li>
-    <base-button class="button" :class="'button-secondary'" @click="addToCart">
+    <base-button class="button" :class="'button-secondary'" @click="addToCart" v-if="!isOwner">
       Add to Cart
     </base-button>
-    <base-button class="button" :class="'button-primary'"> Buy Now </base-button>
+    <base-button class="button" :class="'button-primary'" v-if="!isOwner"> Buy Now </base-button>
+    <base-button class="button" :class="'button-secondary'" v-else @click="openEditForm">
+      Edit Product
+    </base-button>
     <base-toast
       :visible="toastVisible"
       :message="toastMessage"
@@ -46,6 +49,12 @@ export default {
       clearTimeout(this.toastTimer)
     }
   },
+  computed: {
+    isOwner() {
+      if (this.product.storeId === this.$store.getters['stores/myStore'].id) return true
+      return false
+    },
+  },
   methods: {
     openDialogue() {
       this.$emit(
@@ -56,6 +65,9 @@ export default {
           price: this.price,
         },
       )
+    },
+    openEditForm() {
+      this.$router.push(`/products/${this.product.id}/edit`)
     },
     showToast(message, type = 'info') {
       if (this.toastTimer) {

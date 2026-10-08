@@ -80,14 +80,16 @@
               <h2 class="text-heading text-dark">Products</h2>
               <p class="text-body-sm text-muted">Manage the items listed in your store.</p>
             </div>
-            <base-button class="button button-primary add-button">Add Product</base-button>
+            <base-button class="button button-primary add-button" @click="openProductForm"
+              >Add Product</base-button
+            >
           </div>
           <ul class="product-item">
             <product-items
-              v-for="product in products"
+              v-for="product in myItems"
               :key="product.id"
               :name="product.name"
-              :image="product.image"
+              :image="product.productImage[0]"
               :price="product.price"
               :product="product"
               @open-dialogue="openDialogue"
@@ -99,7 +101,9 @@
           <div class="store-panel__header">
             <div class="store-panel__heading">
               <h2 class="text-heading text-dark">Current Orders</h2>
-              <p class="text-body-sm text-muted">Track and update orders that are still in progress.</p>
+              <p class="text-body-sm text-muted">
+                Track and update orders that are still in progress.
+              </p>
             </div>
           </div>
           <current-orders />
@@ -125,7 +129,9 @@
           <div class="store-panel__header">
             <div class="store-panel__heading">
               <h2 class="text-heading text-dark">News</h2>
-              <p class="text-body-sm text-muted">Share updates and announcements with your buyers.</p>
+              <p class="text-body-sm text-muted">
+                Share updates and announcements with your buyers.
+              </p>
             </div>
             <base-button class="button button-primary add-button">Add News</base-button>
           </div>
@@ -150,7 +156,9 @@
       />
     </div>
     <div class="no-store" v-else>
-      <h3 class="text-heading text-muted">You don't have any store yet. Please create a store first.</h3>
+      <h3 class="text-heading text-muted">
+        You don't have any store yet. Please create a store first.
+      </h3>
       <base-button class="button button-primary">Create Store</base-button>
     </div>
   </div>
@@ -178,29 +186,6 @@ export default {
       isDialogueOpen: false,
       selectedProduct: null,
       active: 'products',
-      products: [
-        {
-          id: 1,
-          name: 'Product 1',
-          image: '/cosmetics.jpg',
-          price: 100,
-          description: 'Description of Product 1',
-        },
-        {
-          id: 2,
-          name: 'Product 2',
-          image: '/groceries.jpg',
-          price: 100,
-          description: 'Description of Product 2',
-        },
-        {
-          id: 3,
-          name: 'Product 3',
-          image: '/computer.jpg',
-          price: 100,
-          description: 'Description of Product 3',
-        },
-      ],
       menu: [
         {
           name: 'Products',
@@ -310,6 +295,9 @@ export default {
         createdDate: myStore.createdDate || '2021-01-01',
       }
     },
+    myItems() {
+      return this.$store.getters['products/myProducts']
+    },
     myStore() {
       return !!this.$store.getters['stores/myStore']
     },
@@ -321,6 +309,9 @@ export default {
     await this.$store.dispatch('comments/fetchStoreComments')
   },
   methods: {
+    openProductForm() {
+      this.$router.push('/products/create')
+    },
     makeActive(menu) {
       this.active = menu
     },
