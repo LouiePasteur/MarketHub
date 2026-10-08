@@ -1,5 +1,5 @@
 <template>
-  <button :class="buttonClasses" v-if="!isLink" :disabled="disabled">
+  <button :class="buttonClasses" v-if="!isLink" :disabled="disabled" @click="onClick">
     <slot></slot>
   </button>
   <router-link :class="buttonClasses" :to="endpoint" v-else>
@@ -9,6 +9,7 @@
 
 <script>
 export default {
+  emits: ['click'],
   props: {
     classes: {
       type: String,
@@ -40,6 +41,11 @@ export default {
           : 'text-button'
 
       return [typographyClass, this.classes].filter(Boolean)
+    },
+  },
+  methods: {
+    onClick(event) {
+      this.$emit('click', event)
     },
   },
 }

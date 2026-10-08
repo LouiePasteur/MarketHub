@@ -43,12 +43,18 @@
         <h2 class="product-name text-heading text-dark">{{ product?.productName }}</h2>
         <div>
           <div class="product-price text-subheading text-primary">$ {{ product?.price }}</div>
-          <small class="product-stocks text-caption text-muted">Stocks: {{ product?.stocks }}</small>
+          <small class="product-stocks text-caption text-muted"
+            >Stocks: {{ product?.stocks }}</small
+          >
         </div>
-        <div class="product-description text-body text-muted">{{ product?.productDescription }}</div>
+        <div class="product-description text-body text-muted">
+          {{ product?.productDescription }}
+        </div>
 
         <div class="product-actions">
-          <base-button class="button button-secondary"> Add to Cart </base-button>
+          <base-button class="button button-secondary" @click="addToCart">
+            Add to Cart
+          </base-button>
           <base-button class="button button-primary"> Buy Now </base-button>
         </div>
       </div>
@@ -166,6 +172,9 @@ export default {
     },
     setImageIndex(index) {
       this.imageIndex = index
+    },
+    addToCart() {
+      this.$emit('add-to-cart', this.product)
     },
   },
   watch: {

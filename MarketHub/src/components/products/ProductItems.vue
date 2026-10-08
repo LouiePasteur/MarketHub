@@ -7,12 +7,20 @@
       </div>
       <div class="products-stars">
         <span v-for="star in 5" :key="star" class="star filled"> ★ </span>
-        <span class="numeric-rating text-caption text-muted">(4.5)</span>
+        <span class="numeric-rating text-caption text-muted">(4.5)</span>z
       </div>
       <div class="product-item-price text-subheading text-primary">$ {{ price }}</div>
-      <base-button class="button" :class="'button-secondary'"> Add to Cart </base-button>
-      <base-button class="button" :class="'button-primary'"> Buy Now </base-button>
     </li>
+    <base-button class="button" :class="'button-secondary'" @click="addToCart">
+      Add to Cart
+    </base-button>
+    <base-button class="button" :class="'button-primary'"> Buy Now </base-button>
+    <base-toast
+      :visible="toastVisible"
+      :message="toastMessage"
+      :type="toastType"
+      @close="closeToast"
+    />
   </base-card>
 </template>
 
@@ -25,6 +33,19 @@ export default {
     product: { type: Object },
   },
   emits: ['open-dialogue', 'add-to-cart', 'buy-now'],
+  data() {
+    return {
+      toastVisible: false,
+      toastMessage: '',
+      toastType: 'info',
+      toastTimer: null,
+    }
+  },
+  beforeUnmount() {
+    if (this.toastTimer) {
+      clearTimeout(this.toastTimer)
+    }
+  },
   methods: {
     openDialogue() {
       this.$emit(
@@ -35,6 +56,43 @@ export default {
           price: this.price,
         },
       )
+    },
+    showToast(message, type = 'info') {
+      if (this.toastTimer) {
+        clearTimeout(this.toastTimer)
+      }
+      this.toastMessage = message
+      this.toastType = type
+      this.toastVisible = true
+      this.toastTimer = setTimeout(() => {
+        this.toastVisible = false
+      }, 3000)
+    },
+    closeToast() {
+      if (this.toastTimer) {
+        clearTimeout(this.toastTimer)
+        this.toastTimer = null
+      }
+      this.toastVisible = false
+    },
+    addToCart() {
+      this.$store
+        .dispatch('cart/addCartItem', {
+          productId: this.product.id,
+          productName: this.product.productName || this.name,
+          productPrice: this.product.price ?? this.price,
+          productQuantity: 1,
+          productImage: this.image || this.product.productImage,
+          productStoreId: this.product.storeId,
+          sellerId: this.product.sellerId || '',
+          sellerName: this.product.sellerName || '',
+        })
+        .then(() => {
+          this.showToast('Item added to cart', 'success')
+        })
+        .catch((error) => {
+          this.showToast(error.message || 'Failed to add item to cart', 'error')
+        })
     },
   },
 }
@@ -61,6 +119,11 @@ export default {
   &-price {
     text-align: left;
   }
+}
+
+.button {
+  width: 100%;
+  margin-top: 0.5rem;
 }
 
 img {

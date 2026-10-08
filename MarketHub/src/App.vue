@@ -18,6 +18,7 @@ export default {
     await this.$store.dispatch('user/fetchUsers')
     await this.$store.dispatch('stores/fetchStores')
     await this.$store.dispatch('products/fetchProducts')
+    await this.$store.dispatch('cart/fetchCartItems')
   },
 }
 </script>

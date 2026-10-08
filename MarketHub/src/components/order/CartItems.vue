@@ -1,6 +1,15 @@
 <template>
   <div class="cart-container" :class="{ compact }">
-    <div class="cart-item" v-for="item in cartItems" :key="item.id">
+    <div class="cart-item" v-for="item in normalizedItems" :key="item.id">
+      <label v-if="!page" class="item-select" :for="`cart-item-${item.id}`">
+        <input
+          :id="`cart-item-${item.id}`"
+          type="checkbox"
+          :checked="isSelected(item.id)"
+          @change="toggleItem(item.id)"
+        />
+        <span class="item-select__box"></span>
+      </label>
       <div class="item-image">
         <img :src="item.image || '/groceries.jpg'" :alt="item.name" />
       </div>
@@ -13,7 +22,7 @@
             </div>
           </div>
           <div class="item-delete" v-if="!page">
-            <button type="button" aria-label="Remove item">
+            <button type="button" aria-label="Remove item" @click="removeItem(item.id)">
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </div>
@@ -80,13 +89,40 @@ export default {
       type: Boolean,
       default: false,
     },
+    selectedIds: {
+      type: Array,
+      default: () => [],
+    },
   },
+  emits: ['toggle-item'],
   computed: {
     isCartPage() {
       return this.page === 'my-store' || this.page === 'order-history'
     },
+    normalizedItems() {
+      return this.cartItems.map((item, index) => {
+        const image = item.image || item.productImage
+        return {
+          ...item,
+          id: item.id || `cart-item-${index}`,
+          name: item.name || item.productName || 'Product',
+          image: Array.isArray(image) ? image[0] : image,
+          price: item.price ?? item.productPrice ?? 0,
+          quantity: item.quantity ?? item.productQuantity ?? 1,
+        }
+      })
+    },
   },
   methods: {
+    isSelected(id) {
+      return this.selectedIds.includes(id)
+    },
+    toggleItem(id) {
+      this.$emit('toggle-item', id)
+    },
+    removeItem(id) {
+      this.$store.dispatch('cart/deleteCartItem', { id })
+    },
     getStatusClass(status) {
       if (!status) return ''
 
@@ -123,6 +159,7 @@ export default {
         gap: 0.75rem;
         padding: 0.85rem 1.25rem;
         border-bottom: 1px solid #f1f5f9;
+        align-items: center;
 
         &:last-child {
           border-bottom: none;
@@ -202,6 +239,55 @@ export default {
 }
 
 .item {
+  &-select {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+
+    input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    &__box {
+      width: 1.15rem;
+      height: 1.15rem;
+      border: 2px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      background-color: #fff;
+      transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+      position: relative;
+    }
+
+    input:checked + &__box {
+      background-color: var(--primary);
+      border-color: var(--primary);
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0.28rem;
+        top: 0.05rem;
+        width: 0.28rem;
+        height: 0.55rem;
+        border: solid #fff;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+    }
+
+    &:hover &__box {
+      border-color: var(--primary);
+    }
+  }
+
   &-name {
     display: flex;
     flex-direction: row;
@@ -348,7 +434,9 @@ export default {
     font-size: var(--text-body-lg);
     line-height: 1;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
 
     &:hover {
       background-color: var(--primary);

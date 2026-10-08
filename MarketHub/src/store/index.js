@@ -4,6 +4,7 @@ import userModule from './modules/user'
 import storesModule from './modules/stores'
 import productsModule from './modules/products'
 import commentsModule from './modules/comments'
+import cartModule from './modules/cart'
 
 const store = createStore({
   modules: {
@@ -12,6 +13,7 @@ const store = createStore({
     stores: storesModule,
     products: productsModule,
     comments: commentsModule,
+    cart: cartModule,
   },
 })
 

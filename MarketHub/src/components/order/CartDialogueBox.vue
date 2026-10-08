@@ -5,8 +5,8 @@
         <div class="cart-dialogue__title">
           <i class="fa-solid fa-cart-shopping"></i>
           <h2 class="text-heading text-dark">Shopping Cart</h2>
-          <span v-if="items.length" class="cart-dialogue__count text-caption">{{
-            items.length
+          <span v-if="cartItems.length" class="cart-dialogue__count text-caption">{{
+            cartItems.length
           }}</span>
         </div>
         <button
@@ -19,20 +19,47 @@
         </button>
       </div>
 
-      <div v-if="items.length === 0" class="cart-dialogue__empty">
+      <div v-if="cartItems.length === 0" class="cart-dialogue__empty">
         <i class="fa-solid fa-bag-shopping"></i>
         <h3 class="text-subheading text-dark">Your cart is empty</h3>
         <p class="text-body-sm text-muted">Add items to get started.</p>
       </div>
 
-      <cart-items v-else :cartItems="items" compact />
+      <template v-else>
+        <div class="cart-dialogue__select-all">
+          <label class="cart-dialogue__checkbox" for="cart-select-all">
+            <input
+              id="cart-select-all"
+              ref="selectAllCheckbox"
+              type="checkbox"
+              :checked="allSelected"
+              @change="toggleSelectAll"
+            />
+            <span class="cart-dialogue__checkbox-box"></span>
+            <span class="text-body-sm text-muted">Select all</span>
+          </label>
+          <span class="text-caption text-muted">{{ selectedCount }} selected</span>
+        </div>
+
+        <cart-items
+          :cartItems="cartItems"
+          :selectedIds="selectedIds"
+          compact
+          @toggle-item="toggleItem"
+        />
+      </template>
 
       <div v-if="items.length" class="cart-dialogue__footer">
         <div class="cart-dialogue__total">
           <span class="text-body text-muted cart-dialogue__total-label">Total</span>
           <span class="text-subheading text-primary cart-dialogue__total-value">${{ total }}</span>
         </div>
-        <base-button class="button button-primary cart-dialogue__checkout">Checkout</base-button>
+        <base-button
+          class="button button-primary cart-dialogue__checkout"
+          :disabled="selectedCount === 0"
+        >
+          Checkout
+        </base-button>
       </div>
     </div>
   </div>
@@ -58,35 +85,74 @@ export default {
   emits: ['close'],
   data() {
     return {
-      items: [
-        {
-          id: 1,
-          name: 'Fresh Vegetables Pack',
-          image: '/groceries.jpg',
-          price: 50,
-          quantity: 2,
-        },
-        {
-          id: 2,
-          name: 'Cosmetic Set',
-          image: '/cosmetics.jpg',
-          price: 100,
-          quantity: 1,
-        },
-        {
-          id: 3,
-          name: 'Laptop Stand',
-          image: '/computer.jpg',
-          price: 250,
-          quantity: 1,
-        },
-      ],
+      selectedIds: [],
     }
   },
   computed: {
-    total() {
-      return this.items.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0)
+    items() {
+      return this.cartItems.map((item, index) => {
+        const image = item.image || item.productImage
+        return {
+          ...item,
+          id: item.id || `cart-item-${index}`,
+          name: item.name || item.productName || 'Product',
+          image: Array.isArray(image) ? image[0] : image,
+          price: Number(item.price ?? item.productPrice ?? 0),
+          quantity: Number(item.quantity ?? item.productQuantity ?? 1),
+        }
+      })
     },
+    selectedItems() {
+      return this.items.filter((item) => this.selectedIds.includes(item.id))
+    },
+    selectedCount() {
+      return this.selectedItems.length
+    },
+    allSelected() {
+      return this.items.length > 0 && this.selectedCount === this.items.length
+    },
+    someSelected() {
+      return this.selectedCount > 0
+    },
+    total() {
+      return this.selectedItems.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0)
+    },
+  },
+  watch: {
+    cartItems: {
+      immediate: true,
+      handler(items) {
+        const validIds = items.map((item, index) => item.id || `cart-item-${index}`)
+        this.selectedIds = this.selectedIds.filter((id) => validIds.includes(id))
+      },
+    },
+  },
+  methods: {
+    toggleItem(id) {
+      if (this.selectedIds.includes(id)) {
+        this.selectedIds = this.selectedIds.filter((itemId) => itemId !== id)
+      } else {
+        this.selectedIds = [...this.selectedIds, id]
+      }
+      this.$nextTick(this.updateSelectAllState)
+    },
+    toggleSelectAll() {
+      if (this.allSelected) {
+        this.selectedIds = []
+      } else {
+        this.selectedIds = this.items.map((item) => item.id)
+      }
+      this.$nextTick(this.updateSelectAllState)
+    },
+    updateSelectAllState() {
+      const checkbox = this.$refs.selectAllCheckbox
+      if (checkbox) {
+        checkbox.indeterminate = this.someSelected && !this.allSelected
+      }
+    },
+  },
+  updated() {
+    this.updateSelectAllState()
   },
 }
 </script>
@@ -201,6 +267,80 @@ export default {
     h3,
     p {
       margin: 0;
+    }
+  }
+
+  &__select-all {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  &__checkbox {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    cursor: pointer;
+
+    input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    &-box {
+      width: 1.15rem;
+      height: 1.15rem;
+      border: 2px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      background-color: #fff;
+      transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    input:checked + &-box {
+      background-color: var(--primary);
+      border-color: var(--primary);
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0.28rem;
+        top: 0.05rem;
+        width: 0.28rem;
+        height: 0.55rem;
+        border: solid #fff;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+    }
+
+    input:indeterminate + &-box {
+      background-color: var(--primary);
+      border-color: var(--primary);
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0.2rem;
+        top: 0.4rem;
+        width: 0.55rem;
+        height: 0.12rem;
+        background-color: #fff;
+        border-radius: 1px;
+      }
+    }
+
+    &:hover &-box {
+      border-color: var(--primary);
     }
   }
 

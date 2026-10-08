@@ -20,12 +20,20 @@
           <div class="profile-container">
             <img src="/groceries.jpg" alt="Profile" />
           </div>
-          <span class="profile-name text-body-sm text-white">{{ $store.getters['user/currentUser']?.firstName }} </span>
-          <span class="profile-name text-body-sm text-white">{{ $store.getters['user/currentUser']?.lastName }}</span>
+          <span class="profile-name text-body-sm text-white"
+            >{{ $store.getters['user/currentUser']?.firstName }}
+          </span>
+          <span class="profile-name text-body-sm text-white">{{
+            $store.getters['user/currentUser']?.lastName
+          }}</span>
         </div>
       </div>
     </div>
-    <cart-dialogue-box :isOpen="isCartDialogueOpen" @close="closeCartDialogue" />
+    <cart-dialogue-box
+      :isOpen="isCartDialogueOpen"
+      @close="closeCartDialogue"
+      :cartItems="cartItems"
+    />
   </div>
 </template>
 
@@ -39,6 +47,11 @@ export default {
     return {
       isCartDialogueOpen: false,
     }
+  },
+  computed: {
+    cartItems() {
+      return this.$store.getters['cart/cartItems']
+    },
   },
   methods: {
     openCartDialogue() {
@@ -71,7 +84,6 @@ export default {
   &:hover {
     cursor: pointer;
   }
-
 }
 
 .cart-icon {
