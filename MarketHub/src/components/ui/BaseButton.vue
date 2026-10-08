@@ -62,11 +62,17 @@ export default {
     cursor: pointer;
     border-radius: var(--radius-md);
 
-    &:hover {
+    &:hover:not(:disabled) {
       color: #fff;
       background-color: var(--primary-dark);
       transition: all 0.3s ease;
       text-decoration: none;
+    }
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      background-color: #94a3b8;
     }
 
     @media (max-width: 768px) {
@@ -122,6 +128,27 @@ export default {
       background-color: var(--secondary);
       transition: all 0.3s ease;
       text-decoration: none;
+    }
+  }
+
+  &-danger {
+    background-color: var(--error);
+    color: #fff;
+    border: none;
+    box-shadow: none;
+    padding: var(--spacing-md);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+
+    &:hover {
+      color: #fff;
+      background-color: #dc2626;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      padding: var(--spacing-sm);
     }
   }
 

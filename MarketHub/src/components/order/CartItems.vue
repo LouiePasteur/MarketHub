@@ -22,19 +22,44 @@
             </div>
           </div>
           <div class="item-delete" v-if="!page">
-            <button type="button" aria-label="Remove item" @click="removeItem(item.id)">
+            <button type="button" aria-label="Remove item" @click="openDeleteDialogue(item)">
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </div>
         </div>
 
         <div class="quantity-container" v-if="!page">
-          <button class="quantity-button" type="button" aria-label="Decrease quantity">-</button>
+          <button
+            class="quantity-button"
+            type="button"
+            aria-label="Decrease quantity"
+            @click="changeQuantity(item, -1)"
+          >
+            -
+          </button>
           <div class="item-quantity">
-            <input class="text-body" type="number" :value="item.quantity || 1" min="1" />
+            <input
+              class="text-body"
+              type="number"
+              :value="item.quantity || 1"
+              min="1"
+              :max="item.stocks ?? undefined"
+              @change="onQuantityInput(item, $event)"
+            />
           </div>
-          <button class="quantity-button" type="button" aria-label="Increase quantity">+</button>
+          <button
+            class="quantity-button"
+            type="button"
+            aria-label="Increase quantity"
+            :disabled="disableAddingQuantity(item)"
+            @click="changeQuantity(item, 1)"
+          >
+            +
+          </button>
         </div>
+        <p v-if="!page && item.exceedsStock" class="quantity-warning text-caption">
+          This product exceeds the remaining stocks ({{ item.stocks }} left).
+        </p>
 
         <div class="sold-quantity" v-if="isCartPage">
           <p class="text-body-sm text-muted">
@@ -71,6 +96,28 @@
         </div>
       </div>
     </div>
+
+    <base-dialogue :isOpen="isDeleteDialogueOpen" @close="closeDeleteDialogue">
+      <div class="delete-dialogue">
+        <h3 class="text-heading delete-dialogue__title">Remove item</h3>
+        <p class="text-body text-muted">
+          Do you want to delete
+          <span v-if="pendingDeleteItem">{{ pendingDeleteItem.name }}</span>
+          from your cart?
+        </p>
+        <div class="delete-dialogue__actions">
+          <base-button class="button button-secondary" @click="closeDeleteDialogue">No</base-button>
+          <base-button class="button button-danger" @click="confirmDeleteItem">Yes</base-button>
+        </div>
+      </div>
+    </base-dialogue>
+
+    <base-toast
+      :visible="toastVisible"
+      :message="toastMessage"
+      :type="toastType"
+      @close="closeToast"
+    />
   </div>
 </template>
 
@@ -95,20 +142,41 @@ export default {
     },
   },
   emits: ['toggle-item'],
+  data() {
+    return {
+      isDeleteDialogueOpen: false,
+      pendingDeleteItem: null,
+      toastVisible: false,
+      toastMessage: '',
+      toastType: 'info',
+      toastTimer: null,
+    }
+  },
+  beforeUnmount() {
+    if (this.toastTimer) {
+      clearTimeout(this.toastTimer)
+    }
+  },
   computed: {
     isCartPage() {
       return this.page === 'my-store' || this.page === 'order-history'
     },
     normalizedItems() {
+      const products = this.$store.getters['products/products'] || []
       return this.cartItems.map((item, index) => {
         const image = item.image || item.productImage
+        const product = products.find((entry) => String(entry.id) === String(item.productId))
+        const stocks = product != null ? Number(product.stocks) : null
+        const quantity = item.quantity ?? item.productQuantity ?? 1
         return {
           ...item,
           id: item.id || `cart-item-${index}`,
           name: item.name || item.productName || 'Product',
           image: Array.isArray(image) ? image[0] : image,
           price: item.price ?? item.productPrice ?? 0,
-          quantity: item.quantity ?? item.productQuantity ?? 1,
+          quantity,
+          stocks: Number.isNaN(stocks) ? null : stocks,
+          exceedsStock: stocks != null && !Number.isNaN(stocks) && quantity > stocks,
         }
       })
     },
@@ -120,9 +188,87 @@ export default {
     toggleItem(id) {
       this.$emit('toggle-item', id)
     },
-    removeItem(id) {
-      this.$store.dispatch('cart/deleteCartItem', { id })
+    disableAddingQuantity(item) {
+      if (item.stocks == null) {
+        return false
+      }
+      return (item.quantity || 1) >= item.stocks
     },
+    showToast(message, type = 'info') {
+      if (this.toastTimer) {
+        clearTimeout(this.toastTimer)
+      }
+      this.toastMessage = message
+      this.toastType = type
+      this.toastVisible = true
+      this.toastTimer = setTimeout(() => {
+        this.toastVisible = false
+      }, 3000)
+    },
+    closeToast() {
+      if (this.toastTimer) {
+        clearTimeout(this.toastTimer)
+        this.toastTimer = null
+      }
+      this.toastVisible = false
+    },
+    openDeleteDialogue(item) {
+      this.pendingDeleteItem = item
+      this.isDeleteDialogueOpen = true
+    },
+    closeDeleteDialogue() {
+      this.isDeleteDialogueOpen = false
+      this.pendingDeleteItem = null
+    },
+    confirmDeleteItem() {
+      if (!this.pendingDeleteItem?.id) {
+        this.closeDeleteDialogue()
+        return
+      }
+      this.$store.dispatch('cart/deleteCartItem', { id: this.pendingDeleteItem.id })
+      this.closeDeleteDialogue()
+    },
+    changeQuantity(item, counter) {
+      const currentQuantity = item.quantity || 1
+      if (counter < 0 && currentQuantity <= 1) {
+        this.openDeleteDialogue(item)
+        return
+      }
+
+      if (counter > 0 && this.disableAddingQuantity(item)) {
+        this.showToast('This product exceeds the remaining stocks.', 'error')
+        return
+      }
+
+      const nextQuantity = Math.max(1, currentQuantity + counter)
+      if (nextQuantity === currentQuantity) {
+        return
+      }
+      this.$store.dispatch('cart/updateCartItem', {
+        id: item.id,
+        productQuantity: nextQuantity,
+      })
+    },
+    onQuantityInput(item, event) {
+      let nextQuantity = Math.max(1, Number(event.target.value) || 1)
+
+      if (item.stocks != null && nextQuantity > item.stocks) {
+        nextQuantity = item.stocks
+        event.target.value = nextQuantity
+        this.showToast('This product exceeds the remaining stocks.', 'error')
+      } else {
+        event.target.value = nextQuantity
+      }
+
+      if (nextQuantity === (item.quantity || 1)) {
+        return
+      }
+      this.$store.dispatch('cart/updateCartItem', {
+        id: item.id,
+        productQuantity: nextQuantity,
+      })
+    },
+
     getStatusClass(status) {
       if (!status) return ''
 
@@ -438,9 +584,53 @@ export default {
       background-color 0.2s ease,
       color 0.2s ease;
 
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: var(--primary);
       color: #fff;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      border-color: #cbd5e1;
+      color: #94a3b8;
+    }
+  }
+
+  &-warning {
+    margin: 0;
+    color: var(--error);
+  }
+}
+
+.delete-dialogue {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: center;
+
+  h3,
+  p {
+    margin: 0;
+  }
+
+  &__title {
+    color: var(--error);
+  }
+
+  span {
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+
+    .button {
+      min-width: 7rem;
     }
   }
 }

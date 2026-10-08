@@ -76,6 +76,11 @@ export default {
       this.toastVisible = false
     },
     addToCart() {
+      const storeId = this.product.storeId
+      const store = this.$store.getters['stores/stores'].find(
+        (item) => String(item.id) === String(storeId) || String(item.storeId) === String(storeId),
+      )
+
       this.$store
         .dispatch('cart/addCartItem', {
           productId: this.product.id,
@@ -83,9 +88,8 @@ export default {
           productPrice: this.product.price ?? this.price,
           productQuantity: 1,
           productImage: this.image || this.product.productImage,
-          productStoreId: this.product.storeId,
-          sellerId: this.product.sellerId || '',
-          sellerName: this.product.sellerName || '',
+          productStoreId: storeId,
+          productStoreName: store?.storeName || '',
         })
         .then(() => {
           this.showToast('Item added to cart', 'success')

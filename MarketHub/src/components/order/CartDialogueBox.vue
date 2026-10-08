@@ -56,7 +56,7 @@
         </div>
         <base-button
           class="button button-primary cart-dialogue__checkout"
-          :disabled="selectedCount === 0"
+          :disabled="isCheckoutDisabled"
         >
           Checkout
         </base-button>
@@ -90,15 +90,21 @@ export default {
   },
   computed: {
     items() {
+      const products = this.$store.getters['products/products'] || []
       return this.cartItems.map((item, index) => {
         const image = item.image || item.productImage
+        const product = products.find((entry) => String(entry.id) === String(item.productId))
+        const stocks = product != null ? Number(product.stocks) : null
+        const quantity = Number(item.quantity ?? item.productQuantity ?? 1)
         return {
           ...item,
           id: item.id || `cart-item-${index}`,
           name: item.name || item.productName || 'Product',
           image: Array.isArray(image) ? image[0] : image,
           price: Number(item.price ?? item.productPrice ?? 0),
-          quantity: Number(item.quantity ?? item.productQuantity ?? 1),
+          quantity,
+          stocks: Number.isNaN(stocks) ? null : stocks,
+          exceedsStock: stocks != null && !Number.isNaN(stocks) && quantity > stocks,
         }
       })
     },
@@ -107,6 +113,12 @@ export default {
     },
     selectedCount() {
       return this.selectedItems.length
+    },
+    hasSelectedExceedingStock() {
+      return this.selectedItems.some((item) => item.exceedsStock)
+    },
+    isCheckoutDisabled() {
+      return this.selectedCount === 0 || this.hasSelectedExceedingStock
     },
     allSelected() {
       return this.items.length > 0 && this.selectedCount === this.items.length

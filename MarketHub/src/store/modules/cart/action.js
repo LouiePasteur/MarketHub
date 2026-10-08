@@ -1,3 +1,5 @@
+const quantityUpdateTimers = {}
+
 export default {
   async fetchCartItems(context) {
     const token = context.rootGetters.token
@@ -25,6 +27,14 @@ export default {
       throw new Error('You must be logged in to add an item to your cart.')
     }
 
+    const stores = context.rootGetters['stores/stores'] || []
+    const store = stores.find(
+      (item) =>
+        String(item.id) === String(payload.productStoreId) ||
+        String(item.storeId) === String(payload.productStoreId),
+    )
+    const productStoreName = payload.productStoreName || store?.storeName || ''
+
     const cartItem = {
       id: '',
       cartOwnerId: currentUser.userId,
@@ -34,8 +44,7 @@ export default {
       productQuantity: payload.productQuantity,
       productImage: payload.productImage,
       productStoreId: payload.productStoreId,
-      sellerId: payload.sellerId || '',
-      sellerName: payload.sellerName || '',
+      productStoreName: productStoreName,
     }
 
     const response = await fetch(
@@ -73,18 +82,51 @@ export default {
       throw new Error('You must be logged in to update an item in your cart.')
     }
 
-    const response = await fetch(
-      `https://markethub-e46d7-default-rtdb.asia-southeast1.firebasedatabase.app/cartItems/${payload.id}.json?auth=${token}`,
-      {
-        method: 'PATCH',
-        body: JSON.stringify(payload),
-      },
-    )
-    const responseData = await response.json()
-    if (!response.ok) {
-      throw new Error(responseData.error || responseData.message || 'Failed to update item in cart')
+    const existingItem = context.state.cartItems.find((item) => item.id === payload.id)
+    if (!existingItem) {
+      throw new Error('Cart item not found.')
     }
-    context.commit('updateCartItem', responseData)
+
+    const updatedItem = {
+      ...existingItem,
+      ...payload,
+    }
+    context.commit('updateCartItem', updatedItem)
+
+    if (quantityUpdateTimers[payload.id]) {
+      clearTimeout(quantityUpdateTimers[payload.id])
+    }
+
+    quantityUpdateTimers[payload.id] = setTimeout(async () => {
+      const latestItem = context.state.cartItems.find((item) => item.id === payload.id)
+      if (!latestItem) {
+        return
+      }
+
+      try {
+        const response = await fetch(
+          `https://markethub-e46d7-default-rtdb.asia-southeast1.firebasedatabase.app/cartItems/${payload.id}.json?auth=${token}`,
+          {
+            method: 'PATCH',
+            body: JSON.stringify({
+              productQuantity: latestItem.productQuantity,
+            }),
+          },
+        )
+        const responseData = await response.json()
+        if (!response.ok) {
+          throw new Error(
+            responseData.error || responseData.message || 'Failed to update item in cart',
+          )
+        }
+        context.commit('updateCartItem', {
+          ...latestItem,
+          ...responseData,
+        })
+      } catch (error) {
+        await context.dispatch('fetchCartItems')
+      }
+    }, 400)
   },
 
   async deleteCartItem(context, payload) {

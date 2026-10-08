@@ -8,7 +8,10 @@ export default {
   updateCartItem(state, payload) {
     const index = state.cartItems.findIndex((item) => item.id === payload.id)
     if (index !== -1) {
-      state.cartItems[index] = payload
+      state.cartItems[index] = {
+        ...state.cartItems[index],
+        ...payload,
+      }
     }
   },
   deleteCartItem(state, payload) {
