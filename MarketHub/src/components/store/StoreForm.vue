@@ -1,6 +1,6 @@
 <template>
   <base-form @submit.prevent="submitForm">
-    <h1 class="text-title text-primary">Create Store</h1>
+    <h1 class="text-title text-primary">{{ isEditMode ? 'Edit Store' : 'Create Store' }}</h1>
     <error-card v-if="error" :errorMessage="errorMessage"></error-card>
     <div class="form-group">
       <label class="text-label" for="name">Store Name</label>
@@ -39,9 +39,9 @@
       />
     </div>
     <div class="form-group form-group--button">
-      <base-button class="button button-primary" type="submit" :disabled="validInputs"
-        >Create Store</base-button
-      >
+      <base-button class="button button-primary" type="submit" :disabled="validInputs">{{
+        isEditMode ? 'Update Store' : 'Create Store'
+      }}</base-button>
     </div>
   </base-form>
 </template>
@@ -79,11 +79,11 @@ export default {
       handler(newStore) {
         if (!newStore) return
         const {
-          storeName = '',
-          storeAddress = '',
-          storeDescription = '',
-          storeContact = '',
-          storeEmail = '',
+          storeName = newStore.storeName || '',
+          storeAddress = newStore.storeAddress || '',
+          storeDescription = newStore.storeDescription || '',
+          storeContact = newStore.storeContact || '',
+          storeEmail = newStore.storeEmail || '',
         } = newStore
 
         this.storename = storeName
@@ -95,6 +95,9 @@ export default {
     },
   },
   computed: {
+    isEditMode() {
+      return !!this.store?.id
+    },
     validInputs() {
       return (
         !this.storename ||
@@ -228,5 +231,4 @@ button {
     }
   }
 }
-
 </style>

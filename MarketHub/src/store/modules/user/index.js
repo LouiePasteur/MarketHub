@@ -14,7 +14,9 @@ export default {
           lastName: 'Doe',
           email: 'john.doe@example.com',
           phone: '1234567890',
-          addresses: ['123 Main St, Anytown, USA'],
+          addresses: [
+            { addressLine: '123 Main St, Anytown, USA', isDefault: true },
+          ],
           cart: [],
           orders: [],
           paymentMethods: [],

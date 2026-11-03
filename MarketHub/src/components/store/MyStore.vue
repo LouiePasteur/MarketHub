@@ -15,7 +15,7 @@
                 </p>
               </div>
               <div class="store-edit" data-tooltip="Edit Store">
-                <i class="fa-solid fa-pen"></i>
+                <i class="fa-solid fa-pen" @click="openEditStore"></i>
               </div>
             </div>
 
@@ -311,6 +311,9 @@ export default {
   methods: {
     openProductForm() {
       this.$router.push('/products/create')
+    },
+    openEditStore() {
+      this.$router.push(`/store/${this.store.id}/edit`)
     },
     makeActive(menu) {
       this.active = menu

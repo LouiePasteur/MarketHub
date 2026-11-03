@@ -51,8 +51,9 @@ export default {
   },
   computed: {
     isOwner() {
-      if (this.product.storeId === this.$store.getters['stores/myStore'].id) return true
-      return false
+      const myStore = this.$store.getters['stores/myStore']
+      if (!myStore || !this.product) return false
+      return this.product.storeId === myStore.id
     },
   },
   methods: {

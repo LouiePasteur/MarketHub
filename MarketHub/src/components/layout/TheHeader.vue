@@ -16,7 +16,7 @@
         <span class="notification-icon">
           <i class="fa-solid fa-bell" />
         </span>
-        <div class="profile-icon">
+        <profile-menu class="profile-icon">
           <div class="profile-container">
             <img src="/groceries.jpg" alt="Profile" />
           </div>
@@ -26,7 +26,7 @@
           <span class="profile-name text-body-sm text-white">{{
             $store.getters['user/currentUser']?.lastName
           }}</span>
-        </div>
+        </profile-menu>
       </div>
     </div>
     <cart-dialogue-box
@@ -39,9 +39,11 @@
 
 <script>
 import CartDialogueBox from '@/components/order/CartDialogueBox.vue'
+import ProfileMenu from '@/components/layout/ProfileMenu.vue'
 export default {
   components: {
     CartDialogueBox,
+    ProfileMenu,
   },
   data() {
     return {

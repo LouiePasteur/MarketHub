@@ -11,4 +11,13 @@ export default {
       state.users[index] = user
     }
   },
+  updateUserAddresses(state, { userId, addresses }) {
+    const index = state.users.findIndex((u) => u.userId === userId || u.id === userId)
+    if (index !== -1) {
+      state.users[index] = {
+        ...state.users[index],
+        addresses,
+      }
+    }
+  },
 }

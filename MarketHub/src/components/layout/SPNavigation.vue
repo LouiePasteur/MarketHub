@@ -18,7 +18,8 @@
     >
       <i class="fa-solid fa-bell" />
     </span>
-    <div
+    <profile-menu
+      dropup
       class="profile-icon"
       :class="{ active: active === 'profile' }"
       @click="makeActive('profile')"
@@ -26,12 +27,17 @@
       <div class="profile-container">
         <img src="/groceries.jpg" alt="Profile" />
       </div>
-    </div>
+    </profile-menu>
   </div>
 </template>
 
 <script>
+import ProfileMenu from '@/components/layout/ProfileMenu.vue'
+
 export default {
+  components: {
+    ProfileMenu,
+  },
   data() {
     return {
       active: 'products',
@@ -49,6 +55,7 @@ export default {
 .sp-navigation {
   display: none;
   position: fixed;
+  z-index: 30;
   bottom: 0;
   left: 0;
   right: 0;

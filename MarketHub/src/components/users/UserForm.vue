@@ -2,19 +2,42 @@
   <base-form @submit.prevent="submitForm">
     <div class="form-group">
       <label class="text-label" for="firstname">First Name</label>
-      <input type="text" id="firstname" required v-model="firstname" />
+      <input
+        type="text"
+        id="firstname"
+        required
+        v-model="firstname"
+        :class="{ error: fieldError('firstname') }"
+        @blur="touchField('firstname')"
+      />
+      <p v-if="fieldError('firstname')" class="form-error">{{ fieldError('firstname') }}</p>
     </div>
     <div class="form-group">
       <label class="text-label" for="lastname">Last Name</label>
-      <input type="text" id="lastname" required v-model="lastname" />
+      <input
+        type="text"
+        id="lastname"
+        required
+        v-model="lastname"
+        :class="{ error: fieldError('lastname') }"
+        @blur="touchField('lastname')"
+      />
+      <p v-if="fieldError('lastname')" class="form-error">{{ fieldError('lastname') }}</p>
     </div>
-    <div class="form-group">
-      <label class="text-label" for="address">Address</label>
-      <input type="text" id="address" required v-model="address" />
-    </div>
+
+    <address-fields ref="addressFields" v-model="addressForm" />
+
     <div class="form-group">
       <label class="text-label" for="contact">Phone Number</label>
-      <input type="number" id="contact" required v-model="contact" />
+      <input
+        type="number"
+        id="contact"
+        required
+        v-model="contact"
+        :class="{ error: fieldError('contact') }"
+        @blur="touchField('contact')"
+      />
+      <p v-if="fieldError('contact')" class="form-error">{{ fieldError('contact') }}</p>
     </div>
 
     <div class="form-group form-group--button">
@@ -25,10 +48,13 @@
 
 <script>
 import BaseForm from '@/components/ui/BaseForm.vue'
+import AddressFields from '@/components/users/AddressFields.vue'
+import { createEmptyAddressForm, formatAddress } from '@/services/phAddress'
 
 export default {
   components: {
     BaseForm,
+    AddressFields,
   },
   emits: ['submit'],
   data() {
@@ -36,16 +62,48 @@ export default {
       selectedImage: null,
       firstname: '',
       lastname: '',
-      address: '',
+      addressForm: createEmptyAddressForm(),
       contact: '',
+      showErrors: false,
+      touched: {
+        firstname: false,
+        lastname: false,
+        contact: false,
+      },
     }
   },
+  computed: {
+    errors() {
+      return {
+        firstname: this.firstname.trim() ? '' : 'First name is required',
+        lastname: this.lastname.trim() ? '' : 'Last name is required',
+        contact: this.contact ? '' : 'Phone number is required',
+      }
+    },
+  },
   methods: {
+    fieldError(field) {
+      if (!this.showErrors && !this.touched[field]) return ''
+      return this.errors[field]
+    },
+    touchField(field) {
+      this.touched[field] = true
+    },
     submitForm() {
+      this.showErrors = true
+      Object.keys(this.touched).forEach((field) => {
+        this.touched[field] = true
+      })
+
+      const addressValid = this.$refs.addressFields?.validate()
+      const userValid = Object.values(this.errors).every((error) => !error)
+
+      if (!userValid || !addressValid) return
+
       this.$emit('submit', {
         firstName: this.firstname,
         lastName: this.lastname,
-        address: this.address,
+        address: formatAddress(this.addressForm),
         phone: this.contact,
       })
     },
@@ -99,6 +157,10 @@ export default {
       border-color: var(--primary, #3b82f6);
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
+
+    &.error {
+      border-color: var(--error, #ef4444);
+    }
   }
 
   textarea {
@@ -106,7 +168,6 @@ export default {
     resize: vertical;
   }
 
-  // For the button group, center it
   &--button {
     align-items: flex-end;
     margin-top: 0.5rem;
@@ -115,6 +176,12 @@ export default {
       display: none;
     }
   }
+}
+
+.form-error {
+  margin: 0;
+  color: var(--error, #ef4444);
+  font-size: 0.875rem;
 }
 
 .button {

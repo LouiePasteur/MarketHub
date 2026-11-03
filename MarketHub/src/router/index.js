@@ -9,6 +9,8 @@ import EditProducts from '../pages/products/EditProducts.vue'
 import EditUser from '../pages/users/EditUser.vue'
 import StoreDetail from '@/components/store/StoreDetail.vue'
 import Auth from '../pages/Auth.vue'
+import EditStore from '../pages/stores/EditStore.vue'
+import UserDetails from '../components/users/UserDetails.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -18,10 +20,12 @@ const router = createRouter({
     { path: '/store', component: Store, meta: { hideHeader: false } },
     { path: '/store/create', component: CreateStore, meta: { hideHeader: false } },
     { path: '/store/:id', component: StoreDetail, meta: { hideHeader: false } },
+    { path: '/store/:id/edit', component: EditStore, meta: { hideHeader: false } },
     { path: '/news/create', component: CreateNews, meta: { hideHeader: false } },
     { path: '/products/create', component: CreateProducts, meta: { hideHeader: false } },
     { path: '/products/:id/edit', component: EditProducts, meta: { hideHeader: false } },
     { path: '/user/:id/edit', component: EditUser, meta: { hideHeader: false } },
+    { path: '/user/:id', component: UserDetails, meta: { hideHeader: false } },
     { path: '/login', component: Auth, meta: { hideHeader: true } },
     { path: '/signup', component: Auth, meta: { hideHeader: true } },
   ],

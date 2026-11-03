@@ -207,10 +207,7 @@ export default {
         URL.revokeObjectURL(existing.preview)
       }
       this.selectedImages.splice(slotIndex, 1)
-      this.$emit(
-        'image-selected',
-        this.selectedImages.map((image) => image.file).filter(Boolean),
-      )
+      this.$emit('image-selected', this.selectedImages.map((image) => image.file).filter(Boolean))
     },
     handleImageChange(event, slotIndex) {
       const files = Array.from(event.target.files || [])

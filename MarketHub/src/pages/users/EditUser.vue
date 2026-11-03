@@ -23,7 +23,9 @@ export default {
         lastName: payload.lastName,
         phone: payload.phone,
         cart: [],
-        addresses: payload.address,
+        addresses: payload.address
+          ? [{ addressLine: payload.address, isDefault: true }]
+          : [],
         paymentMethods: [],
         followers: [],
         followedStores: [],

@@ -153,4 +153,28 @@ export default {
     context.commit('updateUser', updatedUser)
     router.push('/products')
   },
+
+  async updateAddresses(context, addresses) {
+    const currentUser = context.getters.currentUser
+    if (!currentUser?.id) return
+
+    const response = await fetch(
+      `https://markethub-e46d7-default-rtdb.asia-southeast1.firebasedatabase.app/users/${currentUser.id}.json?auth=${context.rootGetters.token}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({ addresses }),
+      },
+    )
+    const responseData = await response.json()
+
+    if (!response.ok) {
+      const error = new Error(responseData.message || 'Failed to update addresses')
+      throw error
+    }
+
+    context.commit('updateUserAddresses', {
+      userId: currentUser.id,
+      addresses,
+    })
+  },
 }
