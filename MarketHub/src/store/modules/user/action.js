@@ -177,4 +177,24 @@ export default {
       addresses,
     })
   },
+
+  async deleteUser(context) {
+    const currentUser = context.getters.currentUser
+    if (!currentUser?.id) return
+
+    const response = await fetch(
+      `https://markethub-e46d7-default-rtdb.asia-southeast1.firebasedatabase.app/users/${currentUser.id}.json?auth=${context.rootGetters.token}`,
+      {
+        method: 'DELETE',
+      },
+    )
+
+    if (!response.ok) {
+      const responseData = await response.json()
+      const error = new Error(responseData.message || 'Failed to delete user')
+      throw error
+    }
+
+    context.commit('removeUser', currentUser.id)
+  },
 }

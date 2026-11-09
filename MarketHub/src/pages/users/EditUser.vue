@@ -16,20 +16,20 @@ export default {
   },
   methods: {
     handleSubmit(payload) {
+      const currentUser = this.$store.getters['user/currentUser']
+
       this.$store.dispatch('user/updateUser', {
         id: this.$route.params.id,
         userId: this.$store.getters.userId,
         firstName: payload.firstName,
         lastName: payload.lastName,
         phone: payload.phone,
-        cart: [],
-        addresses: payload.address
-          ? [{ addressLine: payload.address, isDefault: true }]
-          : [],
-        paymentMethods: [],
-        followers: [],
-        followedStores: [],
-        settings: [],
+        cart: currentUser?.cart || [],
+        addresses: currentUser?.addresses || [],
+        paymentMethods: currentUser?.paymentMethods || [],
+        followers: currentUser?.followers || [],
+        followedStores: currentUser?.followedStores || [],
+        settings: currentUser?.settings || [],
       })
     },
   },

@@ -20,4 +20,7 @@ export default {
       }
     }
   },
+  removeUser(state, userId) {
+    state.users = state.users.filter((user) => user.id !== userId && user.userId !== userId)
+  },
 }

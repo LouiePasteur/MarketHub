@@ -1,5 +1,9 @@
 <template>
   <base-card class="container">
+    <h3 class="button button-secondary button--back" @click="goBack">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+      Back to Stores
+    </h3>
     <div class="store-detail">
       <div class="store-detail-header">
         <div class="store-image">
@@ -231,6 +235,9 @@ export default {
     addReview(review) {
       this.$store.dispatch('comments/addStoreComment', review)
     },
+    goBack() {
+      this.$router.push('/store')
+    },
   },
 }
 </script>
@@ -253,6 +260,20 @@ div {
   padding: 0.65rem 1.25rem;
   height: fit-content;
   white-space: nowrap;
+}
+
+.button--back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  color: var(--primary);
+
+  &:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+  }
 }
 
 .store-detail {

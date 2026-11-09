@@ -25,8 +25,6 @@
       <p v-if="fieldError('lastname')" class="form-error">{{ fieldError('lastname') }}</p>
     </div>
 
-    <address-fields ref="addressFields" v-model="addressForm" />
-
     <div class="form-group">
       <label class="text-label" for="contact">Phone Number</label>
       <input
@@ -48,13 +46,10 @@
 
 <script>
 import BaseForm from '@/components/ui/BaseForm.vue'
-import AddressFields from '@/components/users/AddressFields.vue'
-import { createEmptyAddressForm, formatAddress } from '@/services/phAddress'
 
 export default {
   components: {
     BaseForm,
-    AddressFields,
   },
   emits: ['submit'],
   data() {
@@ -62,7 +57,6 @@ export default {
       selectedImage: null,
       firstname: '',
       lastname: '',
-      addressForm: createEmptyAddressForm(),
       contact: '',
       showErrors: false,
       touched: {
@@ -95,15 +89,12 @@ export default {
         this.touched[field] = true
       })
 
-      const addressValid = this.$refs.addressFields?.validate()
       const userValid = Object.values(this.errors).every((error) => !error)
-
-      if (!userValid || !addressValid) return
+      if (!userValid) return
 
       this.$emit('submit', {
         firstName: this.firstname,
         lastName: this.lastname,
-        address: formatAddress(this.addressForm),
         phone: this.contact,
       })
     },
